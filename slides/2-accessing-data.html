@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>Accessing data</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/white.css"id="theme">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/html.min.js"></script>
+
+    
+    <script src="/fontawesome-6.4.2/js/all.min.js"></script>
+    <link rel="stylesheet" href="./style.css">
+
+    <script src="print.js"></script>
+
+    <script>hljs.highlightAll();</script>
+
+</head>
+
+<body>
+
+    <div class="reveal">
+        <div class="slides">
+            <!-- Title and outline -->
+            <section data-background="#333333">
+                <h2>AMT</h2>
+                <h1>Accessing data</h1>
+                <p>Bertil Chapuis</p>      
+            </section>
+            <section data-markdown>
+                <textarea data-template>
+                    ## <i class="fas fa-tasks"></i> Overview of Today's Class
+                    - Quizz
+                    - Data tier
+                    - Java Database Connectivity (JDBC)
+                    - Java Persistence API (JPA)
+                </textarea>
+            </section>
+
+            <!-- Data tier -->
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fas fa-database"></i> Data tier</h2>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Data tier
+
+                        <img src="/images/layered-architecture-1.png" alt="Layered architecture">
+                        
+                        Notes:
+                       
+                        Recall that the data tier is often split into two parts: the **persistence layer** and the **database layer**.
+
+                        The **persistence layer** is the layer that allows the application to access the data. 
+                        It is often a set of classes that encapsulate the database access logic.
+                        As it requires a lot of boilerplate code, it is often implemented using a framework.
+
+                        The **database layer** is the actual storage of the data. 
+                        It is often a **relational database**, but it can also be a NoSQL database or a file system.
+                        
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Object-oriented programming (POO)
+
+                        Object-oriented programming is often used to implement the persistence layer.
+
+                        At this level, data is stored in **objects**.
+                        - Each **object** has a *type* (class) and a set of *attributes* (fields).
+                        - Each **instance** (object) represents an instance of the *entity type*.
+                        - Objects can have **methods** (functions) that can be used to manipulate the data.
+                        
+                        Object-oriented software is often designed using UML diagrams.
+                        Approaches, such as Domain-driven design (DDD), are used to design the domain model and the business logic.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Relational database (BDR)
+
+                        Relational databases are often used to implement the database layer.
+
+                        At this level, data is stored in **tables** (relations).
+                        - Each **table** has a *name* and a set of *columns* (attributes) and represents an *entity type*.
+                        - Each **row** (tuple) represents an instance of the *entity type*.
+                        - Tables can be related to each other using **foreign keys**.
+                        
+                        Databases are often designed using **Entity-Relationship diagrams** (ER diagrams).
+                        Database **normalization** is the process of organizing the columns and tables of a relational database to minimize data redundancy.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> POO vs BDR
+
+                        People familiar with object-oriented programming often prefer to design their classes first, and then generate the database.
+
+                        People familiar with relational database often prefer to design their database first, and then generate the code to access it.
+
+                        Who is right?
+
+                    </textarea>
+                </section>
+            </section>
+
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fas fa-database"></i> Java Database Connectivity (JDBC)</h2>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> JDBC API and drivers
+                        
+                        JDBC is a **Java API** that allows Java applications to interact with a database.
+
+                        A **JDBC driver** is an **implementation** of the JDBC API for a specific database.
+
+                        It is a **low-level API** that requires a lot of boilerplate code.
+
+                        If you have performance issues, you will often need to understand it or to use it.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> JDBC Connection
+                        
+                        A JDBC **connection** is a **session** with a specific database that allows to execute SQL queries and retrieve the results.
+
+                        ```java
+                        // Load the postgresql driver
+                        Class.forName("org.postgresql.Driver");
+
+                        // Connect to the database
+                        Connection connection = DriverManager.getConnection(
+                            "jdbc:postgresql://localhost:5432/postgres",
+                            "postgres",
+                            "postgres"
+                        );
+
+                        // Create a statement
+                        Statement statement = connection.createStatement();
+
+                        // Execute a query
+                        ResultSet resultSet = statement.executeQuery("SELECT 1");
+
+                        // Iterate over the results
+                        while (resultSet.next()) {
+                            System.out.println(resultSet.getInt(1));
+                        }
+                        ```
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> JDBC Data Source
+                        
+                        A JDBC **data source** is a factory for JDBC connections and the preferred way to connect to a database.
+
+                        ```java
+                        // Load the postgresql driver
+                        Class.forName("org.postgresql.Driver");
+
+                        // Create a data source
+                        DataSource dataSource = new PGSimpleDataSource();
+                        dataSource.setServerName("localhost");
+                        dataSource.setPortNumber(5432);
+                        dataSource.setDatabaseName("postgres");
+                        dataSource.setUser("postgres");
+                        dataSource.setPassword("postgres");
+
+                        // Connect to the database
+                        Connection connection = dataSource.getConnection();
+
+                        // ...
+                        ```
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-hand-paper"></i> Try it yourself
+
+                        Start a postgresql database using docker:
+
+                        ```bash
+                        docker run --rm --name postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres
+                        ```
+
+                        Create a new maven project and add the following dependencies:
+
+                        ```xml
+                        <dependency>
+                            <groupId>org.postgresql</groupId>
+                            <artifactId>postgresql</artifactId>
+                            <version>42.6.0</version>
+                        </dependency>
+                        ```
+
+                        Create a java program that connects to the database and executes a query.
+
+                        Try to open as many connections as possible and see what happens.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-hand-paper"></i> Releasing resources
+
+                        The number of connections is limited by the database. As a result, it is important to close the connections when they are not used anymore.
+
+                        The Connection, Statement and ResultSet classes implement the **AutoCloseable** interface. 
+                        Therefore, they should be used with the **try-with-resources** statement.
+
+                        ```java
+                        // Create a data source
+                        DataSource dataSource = new PGSimpleDataSource();
+                        
+                        // ...
+
+                        // Connect to the database
+                        try (Connection connection = dataSource.getConnection();
+                                Statement statement = connection.createStatement();
+                                ResultSet resultSet = statement.executeQuery("SELECT 1")) {
+
+                            // Iterate over the results
+                            while (resultSet.next()) {
+                                System.out.println(resultSet.getInt(1));
+                            }
+                        }
+                        ```
+                    </textarea>
+                </section>
+
+                
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Connection Pooling
+                        
+                        Many applications need to handle a large number of concurrent users that exeed the capacity of the database in terms of connections.
+
+                        Opening and closing connections is a costly operation. Therefore, it is better to reuse connections when possible.
+
+                        A **connection pool** is a cache of database connections that can be reused when future requests to the database are required.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+
+                        <img src="/images/connection-pool.png" alt="Connection pool">
+
+
+                        Notes:
+
+                        If the number of threads that need to access the database is greater than the number of connections in the pool, the threads are blocked until a connection is available.
+                        In this case, the application is said to be **connection pool exhausted**.
+                        - One strategy to avoid this problem is to increase the size of the connection pool. However, this is not always possible as the database may not be able to handle more connections.
+                        - Another strategy is to size the connection pool to the number of threads that handles the user requests. This is often a good strategy as the number of threads is often limited by the number of CPU cores.
+                        - In all cases, it is important to release the connections as soon as possible.
+
+                        The number of concurrent connections to the database sometimes becomes a bottleneck.
+                        If you are doing things right, it means your application is extremely popular (e.g. instagram, figma) or has particular scalability requirements (e.g. backblaze, dropbox).
+                        In this case, micro services are not the solution. 
+                        Instead, you should consider **replicating** or **sharding** your database.
+
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+
+                        ## <i class="fas fa-database"></i> Connection Pooling
+
+                        HikariCP and Apache DBCP are two popular connection pooling libraries.
+
+                        ```java
+                        // Create a data source
+                        HikariConfig config = new HikariConfig();
+                        config.setJdbcUrl("jdbc:postgresql://localhost:5432/postgres");
+                        config.setUsername("postgres");
+                        config.setPassword("postgres");
+                        config.setMaximumPoolSize(10);
+                        
+                        DataSource dataSource = new HikariDataSource(config);
+                        ```
+
+                        Connection pooling does not solve all the problems. 
+                        
+                        Can you think of a situation where the use of a connection pool could lead to a deadlock?
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+
+                        ## <i class="fas fa-database"></i> Connection Pooling
+
+                        HikariCP and Apache DBCP are two popular connection pooling libraries.
+
+                        ```java
+                        // Create a data source
+                        HikariConfig config = new HikariConfig();
+                        config.setJdbcUrl("jdbc:postgresql://localhost:5432/postgres");
+                        config.setUsername("postgres");
+                        config.setPassword("postgres");
+                        config.setMaximumPoolSize(10);
+                        
+                        DataSource dataSource = new HikariDataSource(config);
+                        ```
+
+                        Connection pooling does not solve all the problems. 
+                        
+                        Can you think of a situation where the use of a connection pool could lead to a deadlock?
+
+                    </textarea>
+                </section>
+            </section>
+
+            <!-- Section -->
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fas fa-database"></i> Java Persistence API (JPA)</h2>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Object relational mapping for Java
+
+                        **Object relational mapping (ORM)** is a technique that allows to map objects to relational databases.
+                        
+                        **The Java Persistence API (JPA)** is a Java API for object relational mapping that allows Java applications to interact with a database.
+
+                        JPA runtimes, such as Hibernate, are implementations of the JPA API. In general, they are implemented using the JDBC API.
+
+                        JPA is a **high-level API** that allows to write less boilerplate code.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Plain Old Java Objects (POJO) and Java Beans
+                        
+                        A **plain old Java object (POJO)** is an ordinary Java object that does not follow some specialized conventions.
+
+                        By contrast, a **Java Bean** is a Java class that follows some conventions:
+                        - It has a public default constructor.
+                        - It has private fields.
+                        - It has public getter and setter methods for the fields.
+                        - It implements the Serializable interface.
+
+                        Java beans are easy to manipulate using reflection and, therefore, are extensively used by frameworks.
+                        The persistence layer is often implemented using Java beans.
+
+                        On a case by case basis, some of these constraints may be relaxed.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Entity
+                        
+                        A **JPA entity** is a Java class that represents an entity type in the database.
+
+                        It is often a Java bean that is annotated with the **@Entity** annotation. The serialization requirement is often relaxed by the JPA runtime.
+
+                        ```java
+                        @Entity
+                        public class Person {
+                            
+                            @Id
+                            @Column(name = "id")
+                            private Long id;
+
+                            @Column(name = "first_name")
+                            private String firstName;
+
+                            @Column(name = "last_name")
+                            private String lastName;
+
+                            // ...
+                        }
+                        ```
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Entity Manager
+                        
+                        The **entity manager** allows to interact with the database using **JPA entities**.
+
+                        It is often injected in the service layer using the **@Inject** annotation (more about this in a future class).
+
+                        ```java
+                        @ApplicationScoped
+                        public class PersonService {
+                            
+                            @Inject
+                            private EntityManager em;
+
+                            @Transactional
+                            public void create(Person person) {
+                                em.persist(person);
+                            }
+
+                            // ...
+                        }
+                        ```
+                        
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Entity Annotations
+                        
+                        Mapping the entity to the database is done using annotations, such as:
+                        
+                        - `@Entity` to mark the class as an entity.
+                        - `@Id` to mark the primary key.
+                        - `@Column` to map the fields to the columns.
+                        - `@OneToOne`, `@OneToMany`, `@ManyToOne` and `@ManyToMany` to map the relationships between entities.
+                        - `@JoinColumn` to map the foreign keys.
+                        - `@GeneratedValue` to generate the primary key.
+                        - `@Enumerated` to map an enum to a column.
+                        - `@Embeddable` and `@Embedded` to map an embedded object to a column.
+                        - etc.
+
+                        Notes:
+
+                        The extent of the possibilities offered by JPA is beyond the scope of this class.
+                        However, you should be aware that it is possible to map almost anything to a database using JPA.
+                        
+                        When developping an application, you should keep the specifiaction (JPA) and the documentation of the runtime (Hibernate) at hand.
+
+                        
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-hand-paper"></i> Learn more about JPA and Hibernate
+                        
+                        Form small groups and choose an annotation among the following one:
+                        - `@OneToOne`
+                        - `@OneToMany`
+                        - `@ManyToOne`
+                        - `@ManyToMany`
+                        - `@JoinColumn`
+                        - `@Embeddable`
+
+                        Then, read the documentation of the annotation, create a small example, see what happens in the database and present your findings to the class.
+                        
+                        **Jackarta Persistence (JPA) documentation:**
+                        
+                        https://jakarta.ee/specifications/persistence/3.1/
+
+                        **Hibernate documentation:**
+
+                        https://hibernate.org/orm/releases/6.3/
+
+                    </textarea>
+                </section>
+
+            </section>
+
+
+
+
+            <section>
+                <h2><i class="fas fa-hand-paper"></i> Questions?</h2>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/markdown/markdown.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.js"></script>
+    <script src="./script.js" type="module"></script>
+
+</body>
+
+</html>
