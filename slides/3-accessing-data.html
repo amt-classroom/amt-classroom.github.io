@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>Accessing data</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/white.css"id="theme">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/html.min.js"></script>
+
+    
+    <script src="/fontawesome-6.4.2/js/all.min.js"></script>
+    <link rel="stylesheet" href="./style.css">
+
+    <script src="print.js"></script>
+
+    <script>hljs.highlightAll();</script>
+
+</head>
+
+<body>
+
+    <div class="reveal">
+        <div class="slides">
+            <!-- Title and outline -->
+            <section data-background="#333333">
+                <h2>AMT</h2>
+                <h1>Accessing data</h1>
+                <p>Bertil Chapuis</p>      
+            </section>
+            <section data-markdown>
+                <textarea data-template>
+                    ## <i class="fas fa-tasks"></i> Overview of Today's Class
+                    - Quizz
+                    - Manipulating data
+                    - Querying databases
+                    - Migrating databases
+                    - Object relational impedance mismatch
+                </textarea>
+            </section>
+
+            <!-- Manipulating data -->
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fas fa-database"></i> Manipulating data </h2>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Manipulating data
+
+                        Let's condider the following model:
+                        - Person(id, first_name, last_name)
+                        - Order(id, person_id, date)
+                        - OrderLine(id, order_id, item_id, quantity)
+                        - Item(id, name, price)
+
+                        We will use this model in today's class to illustrate different ways to access data.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Person entity
+
+                        ```java
+                        @Entity(name = "persons")
+                        public class Person {
+                        
+                            @Id
+                            @Column(name = "id", nullable = false)
+                            private Long id;
+                        
+                            @Column(name = "first_name", nullable = false)
+                            private String firstName;
+                        
+                            @Column(name = "last_name", nullable = false)
+                            private String lastName;
+
+                            @OneToMany
+                            private List<Order> orders;
+
+                            // ...
+                        }
+                        ```
+                    </textarea>
+                </section>
+                
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Order entity
+
+                        ```java
+                        @Entity(name = "orders")
+                        public class Order {
+
+                            @Id
+                            @Column(name = "id", nullable = false)
+                            private Long id;
+
+                            @OneToMany
+                            private List<OrderLine> orderLines;
+
+                            // ...
+                        }
+                        ```
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+
+                        ## <i class="fas fa-database"></i> Order line entity
+
+                        ```java
+                        @Entity(name = "order_lines")
+                        public class OrderLine {
+
+                            @Id
+                            @Column(name = "id", nullable = false)
+                            private Long id;
+
+                            @ManyToOne
+                            private Item item;
+
+                            @Column(name = "quantity", nullable = false)
+                            private int quantity;
+                            
+                            // ...
+                        }
+                        ```
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+
+                        ## <i class="fas fa-database"></i> Item entity
+
+                        ```java
+                        @Entity(name = "items")
+                        public class Item {
+                        
+                            @Id
+                            @Column(name = "id", nullable = false)
+                            private Long id;
+                        
+                            @Column(name = "price", nullable = false)
+                            private int price;
+
+                            // ...
+                        }
+                        ```
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Generated schema
+
+                        <img src="/images/generated-schema.png" alt="Generated schema" style="width: 80%;">
+
+                        Notes:
+
+                        Hibernate will automatically generate the database schema based on the entities.
+
+                        This is very convenient for development, but should not be used in production.
+
+                        Does this schema look good to you?
+                        
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Always tell the ORM what to do!
+
+                        In the Person class: 
+                        ```java
+                        @OneToMany
+                        @JoinColumn(name = "person_id", referencedColumnName = "id")
+                        private List<Order> orders;
+                        ```
+
+                        In the Order class:
+                        ```java
+                        @OneToMany
+                        @JoinColumn(name = "order_id", referencedColumnName = "id")
+                        private List<OrderLine> orderLines;
+                        ```
+
+                        In the OrderLine class:
+                        ```java
+                        @ManyToOne
+                        @JoinColumn(name = "item_id", referencedColumnName = "id")
+                        private Item item;
+                        ```
+
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Improved generated schema
+
+                        <img src="/images/generated-schema-improved.png" alt="Generated schema" style="width: 50%;">
+                        
+                    </textarea>
+                </section>
+
+
+
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Create
+
+                        In this example, the entity manager is used to create a new person.
+
+                        ```java
+                        // Getting the entity manager
+                        EntityManager em = ...;
+                    
+                        // Creating a person
+                        em.persist(new Person("John", "Doe"));
+                        em.persist(new Person("Jane", "Doe"));
+                        ```
+
+                        Here, the persist() method will create a new row in the database, and assign an id to the person.
+                        Each call to persist() will execute a SQL INSERT statement.
+
+                        ```SQL
+                        INSERT INTO person (first_name, last_name) VALUES ('John', 'Doe');
+                        INSERT INTO person (first_name, last_name) VALUES ('Jane', 'Doe');
+                        ```
+
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Update operation
+
+                        In this example, the entity manager is used to find a person and update it.
+
+                        ```java
+                        // Getting the entity manager
+                        EntityManager em = ...;
+
+                        // Finding a person
+                        Person person = em.find(Person.class, 1L);
+
+                        // Updating the person
+                        person.setFirstName("John");
+                        person.setLastName("Smith");
+                        em.merge(person);
+                        ```
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Lazy and eager loading
+
+                        By default, JPA will **lazily load** the relationships of an entity.
+
+                        - In other words, when loading an entity, JPA will not load its relationships. When accessing a relationship, JPA will load the relationship on demand.
+
+                        In some cases, you may want to **eagerly load** the relationships of an entity.
+
+                        - In other words, when loading an entity, JPA will load its relationships. This can be useful when you know that you will need the relationships.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Eager loading
+
+                        Eager loading can be enabled on a relationship using the @ManyToOne(fetch = FetchType.EAGER) annotation.
+
+                        ```java
+                        @Entity(name = "orders")
+                        public class Order {
+                        
+                            // ...
+                        
+                            @OneToMany(fetch = FetchType.EAGER)
+                            @JoinColumn(name = "order_id", referencedColumnName = "id")
+                            private List<OrderLine> orderLines;
+
+                            // ...
+                        }
+                        ````
+
+                        In this case, when loading an order, JPA will also load the person relationship.
+
+                        Observe the effect of lazy and eager loading in the logs.
+
+                        What could possibly go wrong if you always use eager loading?
+
+                        
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Batch insert and update
+
+                        When inserting or updating a large number of rows, it is more efficient to use batch operations.
+
+                        In a database, the default behavior is to commit each operation individually.
+
+                        This is not efficient when inserting or updating a large number of rows.
+                        
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Batch with JDBC
+
+                        Using JDBC, you can use the addBatch() method to add a batch operation.
+
+                        ```java
+                        PreparedStatement statement = connection.prepareStatement("INSERT INTO person (first_name, last_name) VALUES (?, ?)");
+                        statement.setString(1, "John");
+                        statement.setString(2, "Doe");
+                        statement.addBatch();
+                        statement.setString(1, "Jane");
+                        statement.setString(2, "Doe");
+                        statement.addBatch();
+                        statement.executeBatch();
+                        ```
+                        
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Batch with JPA
+
+                        By default quarkus will flush and clear the persistence context after each transaction and changing this behavior is out of scope for this class.
+
+                        However, JPA offers a way to flush and clear the persistence context manually.
+
+                        ```java
+                        EntityManager em;
+                        em.persist(new Person("John", "Doe"));
+                        em.persist(new Person("Jane", "Doe"));
+                        em.flush();
+                        em.clear();
+                        ```
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Lower level mechanisms
+                        
+                        When inserting millions of rows, some databases offer lower level mechanisms.
+
+                        For example, PostgreSQL offers the COPY command.
+
+                        ```SQL
+                        COPY person (first_name, last_name) FROM '/tmp/person.csv' DELIMITER ',' CSV HEADER;
+                        ```
+
+                        This command is much faster than using JDBC or JPA.
+
+                        Further optimizations include disabling indexes, constraints, triggers, logging, etc. at the database level.
+
+                    </textarea>
+                </section>
+
+            </section>
+
+            <!-- Querying databases -->
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fas fa-database"></i> Querying databases</h2>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Querying databases
+
+                        Beyond the CRUD operations, we often need to perform complex queries on our data.
+
+                        - SQL
+                        - Jakarta JPQL
+                        - Jakarta Criteria API
+                        - Jakarta Criteria Metamodel
+                        
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## SQL
+
+                        SQL remains the most powerful way to query your database.
+
+                        Lots of database offer specific features that are not part of the standard (e.g. JSON, XML, ...).
+
+                        ```SQL
+                        var query = """
+                                SELECT persons.first_name, persons.last_name, COUNT(orders.*) AS total
+                                FROM persons
+                                JOIN orders ON orders.person_id = persons.id
+                                GROUP BY persons.first_name, persons.last_name
+                                ORDER BY COUNT(orders.*) DESC
+                                """;
+                        List<Object[]> results = entityManager.createNativeQuery(query).getResultList();
+                        results.forEach(row -> {
+                            var firstName = (String) row[0];
+                            var lastName = (String) row[1];
+                            var total = (Long) row[2];
+                            System.out.println(firstName + " " + lastName + " " + total);
+                        });
+                        ```
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## Jackarta JPQL
+
+                        JPQL is a query language that is very similar to SQL Native.
+                        The main difference is that it is used to query entities and not tables.
+
+                        Here is the same query as before, but using JPQL.
+
+                        ```java
+                        TypedQuery<Object[]> query = entityManager.createQuery("""
+                                    SELECT persons.firstName, persons.lastName, COUNT(orders) AS total
+                                    FROM persons persons
+                                    JOIN persons.orders orders
+                                    GROUP BY persons.firstName, persons.lastName
+                                    ORDER BY COUNT(orders) DESC
+                                """, Object[].class);
+                        query.getResultList().forEach(row -> {
+                            var firstName = (String) row[0];
+                            var lastName = (String) row[1];
+                            var total = (Long) row[2];
+                            System.out.println(firstName + " " + lastName + " " + total);
+                        });
+                        ```
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ##  Jakarta Criteria API
+
+                        The Criteria API is a programmatic way to build queries.
+                        Here is the same query as before, but using the Criteria API.
+
+                        ```java
+                        var cb = entityManager.getCriteriaBuilder();
+                        var query = cb.createQuery(Object[].class);
+                        var persons = query.from(Person.class);
+                        var orders = persons.join("orders");
+                        query.multiselect(persons.get("firstName"), persons.get("lastName"), cb.count(orders));
+                        query.groupBy(persons.get("firstName"), persons.get("lastName"));
+                        query.orderBy(cb.desc(cb.count(orders)));
+
+                        entityManager.createQuery(query).getResultList().forEach(row -> {
+                            var firstName = (String) row[0];
+                            var lastName = (String) row[1];
+                            var total = (Long) row[2];
+                            System.out.println(firstName + " " + lastName + " " + total);
+                        });
+                        ```
+
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ##  Jakarta Criteria Metamodel
+
+                        The Criteria Metamodel is another way to build queries programatically.
+                        Here is the same query as before, but using the Criteria Metamodel.
+
+                        ```java       
+                        var cb = entityManager.getCriteriaBuilder();
+                        var query = cb.createQuery(Object[].class);
+                        var persons = query.from(Person.class);
+                        var orders = persons.join(Person_.orders);
+                        query.multiselect(persons.get(Person_.firstName), persons.get(Person_.lastName), cb.count(orders));
+                        query.groupBy(persons.get(Person_.firstName), persons.get(Person_.lastName));
+                        query.orderBy(cb.desc(cb.count(orders)));
+
+                        entityManager.createQuery(query).getResultList().forEach(row -> {
+                            var firstName = (String) row[0];
+                            var lastName = (String) row[1];
+                            var total = (Long) row[2];
+                            System.out.println(firstName + " " + lastName + " " + total);
+                        });
+                        ```
+
+                        Note that the Criteria Metamodel is generated at compile time from the entities.
+                        The main advantage of the Criteria Metamodel is that it is **type** and **refactoring safe**.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## Logging long running queries
+
+                        In a framework, it is often hard to trace which high level operation is causing a long running query.
+
+                        In Quarkus, you can enable the slow query logger to log queries that take more than a certain amount of time.
+
+                        ```
+                        quarkus.hibernate-orm.log.sql=true
+                        quarkus.hibernate-orm.log.sql.max-query-time=1s
+                        ```
+
+                        This will log all queries that take more than 1 second to execute.
+                        You can then analyze and optimize these queries using a database client.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## Optimizing long running queries
+
+                        Using a database client (e.g. DataGrip or DBeaver), you can easily analyze the query plan of long running queries.
+
+                        The EXPLAIN keyword will show you the query plan without executing the query.
+
+                        ```SQL
+                        EXPLAIN SELECT persons.first_name, persons.last_name, COUNT(orders.*) AS total
+                        FROM persons
+                        JOIN orders ON orders.person_id = persons.id
+                        GROUP BY persons.first_name, persons.last_name
+                        ORDER BY COUNT(orders.*) DESC
+                        ```
+
+                        The EXPLAIN ANALYZE keywords will show you the query plan and its actual execution time.
+
+                    </textarea>
+                </section>
+
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## Understanding a query plan
+
+                        In the query plan, you will see the following information:
+                        - The order in which the tables are accessed
+                        - The type of access (e.g. sequential scan, index scan, ...)
+                        - The estimated cost of the operation (e.g. number of rows to read)
+                        - The actual cost of the operation (e.g. number of rows to read)
+
+                        Some operations, like sequential scan, are very expensive and should be avoided.
+                        When joining tables, a sequential scan can result in the cartesian product of the tables.
+
+                        ```SQL
+                        SELECT * FROM persons, orders WHERE persons.id = orders.person_id;
+                        ```
+
+                        Notes:
+                        Here, if the person table has 1'000 rows and the orders table has 10'000 rows, the **cartesian product** will have 10'000'000 rows.           
+                        Without an index, the database will have to read all the rows of table1 and table2 to find the matching rows.
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## Indexing the database
+
+                        When using SQL, you can add indexes to your tables.
+
+                        ```SQL
+                        CREATE INDEX person_first_name_index ON person (first_name);
+                        ```
+                            
+                        When using JPA, you can also add indexes to your entities.
+
+                        ```java
+                        @Entity
+                        @Table(name = "person")
+                        @Index(name = "person_first_name_index", columnList = "first_name")
+                        public class Person {
+                            @Id
+                            @GeneratedValue(strategy = GenerationType.IDENTITY)
+                            private Long id;
+                            private String firstName;
+                            private String lastName;
+                        }
+                        ```
+                    </textarea>
+                </section>
+            </section>
+
+            <!-- Migrating databases -->
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fas fa-database"></i> Migrating databases </h2>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Migrating databases
+
+                        When **developing** an application, the database schema will evolve over time.
+                        - **Without production data**, it is easy to **drop and recreate** the database from scratch.
+
+                        Once the application is in **production**, the database schema will continue to evolve.
+                        - **With production data**, evolution requires **migrations**.
+
+                        **Migration tools** address this problem by allowing to evolve the database schema while keeping the data.
+                        
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        <img src="/images/deployment-and-migration-process.svg" alt="Deployment and migration process" style="width: 90%;">
+
+                        Notes:
+                        source: https://teamplify.com/blog/zero-downtime-DB-migrations/
+
+                        This figure illustrates a deployment and migration process orchestrated by a CI/CD pipeline.
+
+                        The CI/CD pipeline will:
+                        - Run the database migration scripts
+                        - Progresively deploy the new version of the application
+
+                        This process allows to deploy a new version of the application without downtime.
+                        However, some inconsistencies may occur during the deployment.
+                        
+                        **Can you spot them?**
+
+
+
+
+                    </textarea>
+                </section>
+
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Flyway
+
+                        Flyway is a database migration tool that is very easy to use.
+
+                        You can add Flyway to your Quarkus project by adding the following dependency:
+
+                        ```
+                        <dependency>
+                            <groupId>io.quarkus</groupId>
+                            <artifactId>quarkus-flyway</artifactId>
+                        </dependency>
+
+                        ```
+
+                        Then, you can add your migration scripts in the src/main/resources/db/migration folder.
+
+                        ```
+                        src/main/resources/db/migration/V1__create_person_table.sql
+                        src/main/resources/db/migration/V2__create_order_table.sql
+                        src/main/resources/db/migration/V3__create_order_line_table.sql
+                        src/main/resources/db/migration/V4__create_item_table.sql
+                        ```
+
+                        Flyway will automatically execute these scripts in the correct order and track which scripts have already been executed.
+
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Be careful with migrations
+
+                        When using migration tools, you should be **extremely careful**:
+                        - **Backup your database** before running a migration script.
+                        - **Test your migration** scripts on a dump of your production database before running them on the production database.
+                        - **Do not** **modify**, **delete**, **rename**, or **change** a migration script that has already been executed.
+
+                        If you do any of these things, you will probably **break the migration process**.
+                       
+                        **Forward thinking** is key when writing migration scripts.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> What about rollbacks?
+
+                        Sadly, the rollback feature of Flyway is part of the commercial version.
+
+                        However, even if opensource alternatives exists (e.g. [Liquibase](https://docs.liquibase.com/home.html)) the **rollback feature is not a silver bullets**. 
+                        
+                        - For instance, after dropping a table or a column, the data is lost forever and cannot be recovered.
+                        
+                        Again, **forward thinking** is crucial when writing migration scripts.
+
+                        - For instance, if a migration script deletes data, it is a good idea to first mark the data as deprecated, and then delete it in a later migration script.
+
+                    </textarea>
+                </section>
+
+            </section>
+
+            <!-- Object relational impedance mismatch -->
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fas fa-database"></i> <br> Object relational <br> impedance mismatch </h2>
+                </section>
+                <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Object relational impedance mismatch
+                        
+                        The object relational impedance mismatch is the difference between the object model and the relational model.
+
+                        <img src="/images/object-relational-impedance-mismatch.png" alt="Object relational impedance mismatch" style="width: 60%;">
+
+                        Notes:
+                        The object model has its roots in the graph theory.
+
+                        The relational model has its roots in the set theory and the predicate logic.
+
+                        source of the image: https://martinfowler.com/bliki/OrmHate.html
+
+
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Object relational impedance mismatch
+
+                        Some object oriented concepts do not exist in the relational model:
+                        - Inheritance
+                        - Polymorphism
+                        - Encapsulation
+                        - Identity
+                        - Behavior
+                        - etc.
+
+                        Some relational concepts do not exist in the object model:
+                        - Foreign keys
+                        - Joins
+                        - Indexes
+                        - Transactions
+                        - Aggregations
+                        - etc.
+
+                        These diferences are hard to reconcile, and result in a so called impedance mismatch.
+
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Object relational mapping (ORM)
+
+                        **Object relational mapping (ORM)** is a technique that tries to address the object relational impedance mismatch.
+
+                        The goal of an ORM is to **hide the differences** between the **object model** and the **relational model** as much as possible from the developer.
+
+                        In practice, the ORM will **always leak** some relational concepts into the object model and vice versa.
+
+                        Does it really matter?
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-hand-paper"></i> Better understand the discussion
+
+                        Read the summary at the end of the article <a href="/references/031.01-Neward-The-Vietnam-of-Computer-Science-June-2006.pdf">The Vietnam of Computer Science</a> by Ted Neward.
+
+                        Discuss with your neighbor and try to answer the following questions:
+                        - What is the main argument of the article?
+                        - Do you agree with the author?
+                        - What is your opinion on the subject?
+
+                    </textarea>
+                </section>
+
+            </section>
+
+            <section>
+                <h2><i class="fas fa-hand-paper"></i> Questions?</h2>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/markdown/markdown.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.js"></script>
+    <script src="./script.js" type="module"></script>
+
+</body>
+
+</html>
