@@ -395,6 +395,7 @@
 
                         - SQL
                         - Jakarta JPQL
+                        - Named queries
                         - Jakarta Criteria API
                         - Jakarta Criteria Metamodel
                         
@@ -450,6 +451,33 @@
                             var lastName = (String) row[1];
                             var total = (Long) row[2];
                             System.out.println(firstName + " " + lastName + " " + total);
+                        });
+                        ```
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## Jackarta Named Queries
+
+                        Named queries are a way to define queries in the entity class.
+
+                        ```java
+                        @Entity(name = "persons")
+                        @NamedQueries({
+                                @NamedQuery(name = "Person.findAll", query = "SELECT p FROM persons p"),
+                                @NamedQuery(name = "Person.findById", query = "SELECT p FROM persons p WHERE p.id = :id")
+                        })
+                        public class Person {
+                            //...
+                        }
+                        ```
+
+                        ```java
+                        TypedQuery<Person> query = entityManager.createNamedQuery("Person.findAll", Person.class);
+                        List<Person> results = query.getResultList();
+                
+                        results.forEach(person -> {
+                            System.out.println(person.getFirstName() + " " + person.getLastName());
                         });
                         ```
                     </textarea>
