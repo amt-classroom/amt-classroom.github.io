@@ -194,6 +194,12 @@
  
                     </textarea>
                 </section>
+                
+                <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        <img src="/images/loose-dependency.png" alt="Strong dependency" style="width: 100%;">
+                    </textarea>
+                </section>
 
                 <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
                     <textarea data-template>
@@ -206,11 +212,6 @@
                     </textarea>
                 </section>
 
-                <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
-                    <textarea data-template>
-                        <img src="/images/loose-dependency.png" alt="Strong dependency" style="width: 100%;">
-                    </textarea>
-                </section>
             </section>
 
             <!-- Dependency injection (DI) -->
@@ -380,11 +381,12 @@
 
                         In the java world, the term IoC is often used to refer to **interface injection**.
 
-                        However, the scope of the term IoC is broader than dependency injection, as the flow of the program is not limited to dependency instantiation and injection.
+                        However, the scope of the term IoC is much broader than dependency injection, as the flow of the program is not limited to dependency instantiation and injection.
+
+                        For instance, some MVC frameworks use IoC at the level of the HTTP router. They control the flow of the program based on the url and on routing conventions.
                         
                     </textarea>
                 </section>
-
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-hand-paper"></i> Example
