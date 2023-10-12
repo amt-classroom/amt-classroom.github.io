@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>DIP, DI, IoC</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/white.css"id="theme">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/html.min.js"></script>
+
+    
+    <script src="/fontawesome-6.4.2/js/all.min.js"></script>
+    <link rel="stylesheet" href="./style.css">
+
+    <script src="print.js"></script>
+
+    <script>hljs.highlightAll();</script>
+
+</head>
+
+<body>
+
+    <div class="reveal">
+        <div class="slides">
+            <!-- Title and outline -->
+            <section data-background="#333333">
+                <h2>AMT</h2>
+                <h1><i class="fa-solid fa-music"></i> DIP, DI, IoC</i></h1>
+                <p>Bertil Chapuis</p>      
+            </section>
+            <section data-markdown>
+                <textarea data-template>
+                    ## <i class="fas fa-tasks"></i> Overview of Today's Class
+                    - Dependency inversion principle (DIP)
+                    - Dependency injection (DI)
+                    - Inversion of control (IoC)
+                </textarea>
+            </section>
+
+            <!-- Dependency inversion principle (DIP) -->
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fa-solid fa-diagram-project"></i> DIP</h2>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> SOLID
+                        
+                        The **SOLID** principles are a set of principles that help us design better software. They are:
+                        - **S**ingle responsibility principle (SRP)
+                        - **O**pen/closed principle (OCP)
+                        - **L**iskov substitution principle (LSP)
+                        - **I**nterface segregation principle (ISP)
+                        - **D**ependency inversion principle (DIP)
+
+                        The first four principles will not be discussed in this course.
+
+                        The last principle is the one we will focus on today.
+                        
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Dependency inversion principle (DIP)
+                        
+                        The **Dependency Inversion Principle (DIP)** states that:
+
+                        - **High-level modules** should not depend on **low-level modules**. Both should depend on **abstractions**.
+                        - **Abstractions** should not depend on **details**. Details should depend on abstractions.
+
+                        By applying the DIP, we can **reduce the coupling** between modules and **increase their reusability**.
+
+                        Notes:
+                        - **High-level modules** are modules that provide the primary logic of the application.
+                        - **Low-level modules** are modules that provide utility functions or basic infrastructure.
+                        - **Abstractions** are interfaces or abstract classes.
+                        - **Details** are concrete implementations of abstractions.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Dependence between modules
+                        
+                        The following application has a **high-level module** that depends directly on a **low-level module**.
+
+
+                        ```java
+                        class ConsoleLogger {
+                            public void logMessage(String message) {
+                                System.out.println("Log message to console: " + message);
+                            }
+                        }
+                        
+                        class Application {
+                        
+                            // The high-level Application  depends directly on the low-level ConsoleLogger.
+                            private ConsoleLogger logger = new ConsoleLogger();
+                        
+                            public void performOperation() {
+                                logger.logMessage("Performing an operation");
+                            }
+                        }
+                        
+                        public class Main {
+                        
+                            public static void main(String[] args) {
+                                Application app = new Application();
+                                app.performOperation();
+                            }
+                        }
+                        ```
+
+                        Notes:
+
+                        - It is not possible to reuse the **high-level module** in another application without also reusing the **low-level module**.
+
+                        - It is not possible to replace the **low-level module** with another implementation without also changing the **high-level module**.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        <img src="/images/strong-dependency.png" alt="Strong dependency" style="width: 100%;">
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Applying the DIP
+                        
+                        The following application has a **high-level module** that depends on an **abstraction**.
+
+                        ```java
+                        // The Logger illustrates the dependency inversion principle (DIP), which corresponds to the "D" in the SOLID acronym.
+                        interface Logger {
+                            void logMessage(String message);
+                        }
+
+                        // The low-level ConsoleLogger implements the abstraction.
+                        class ConsoleLogger implements Logger {
+                            public void logMessage(String message) {
+                                System.out.println("Log message to console: " + message);
+                            }
+                        }
+
+                        class Application {
+
+                            // The high-level Application now depends on the abstraction.
+                            private Logger logger;
+
+                            // The dependency is injected via the constructor.
+                            public Application(Logger logger) {
+                                this.logger = logger;
+                            }
+
+                            public void performOperation() {
+                                logger.logMessage("Performing an operation");
+                            }
+                        }
+
+                        public class Main {
+                            public static void main(String[] args) {
+                                Application app = new Application(new ConsoleLogger());
+                                app.performOperation();
+                            }
+                        }
+                        ```
+
+                        Notes:
+
+                        Thanks to the DIP:
+
+                        - It is now possible to reuse the **high-level module** in another application without also reusing the **low-level module**.
+
+                        - It is now possible to replace the **low-level module** with another implementation without also changing the **high-level module**.
+
+                        Here, the dependencies are set programatically via the constructor or a setter. 
+                        It is not very practical when the graph of dependencies is large and complex.
+ 
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hand-paper"></i> Exercise
+
+                        Try to identify how the DIP is applied in the `java.sql` package (JDBC).
+
+                        Identify the main abstraction, the high-level modules and the low-level modules.
+ 
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        <img src="/images/loose-dependency.png" alt="Strong dependency" style="width: 100%;">
+                    </textarea>
+                </section>
+            </section>
+
+            <!-- Dependency injection (DI) -->
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fa-solid fa-diagram-project"></i> DI</h2>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Dependency injection (DI)
+
+                        **Dependency Injection (DI)** broadly refers to the process of supplying a dependency to a module from the outside.
+
+                        DI defines different roles:
+                        - A **Service** is a low-level module that provides a functionality.
+                        - A **Client** is a high-level module that depends on a service.
+                        - An **Injector** is a module that injects a service into a client.
+
+                        There are three main ways for an **Injector** to inject a dependency:
+                        - **Constructor injection** injects the dependency to the Service through a Client's constructor.
+                        - **Setter injection** injects the dependency to the service through a client's setter.
+                        - **Interface injection** injects the dependency to the service through an interface implemented by the client.
+                
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Constructor injection
+
+                        ```java
+                        // The Application correspond to the client.
+                        class Application {
+
+                            // The Logger correspond to the service.
+                            private Logger logger;
+
+                            // The dependency to the service is injected via a constructor.
+                            public Application(Logger logger) {
+                                this.logger = logger;
+                            }
+                        }
+                        ```
+
+                        Notes:
+
+                        This approach allows to inject the dependency when the object is created.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Setter injection
+
+                        ```java
+                        // The Application correspond to the client.
+                        class Application {
+
+                            // The Logger correspond to the service.
+                            private Logger logger;
+
+                            // The dependency to the service is injected via a setter.
+                            public void setLogger(Logger logger) {
+                                this.logger = logger;
+                            }
+                        }
+                        ```
+
+                        Notes:
+
+                        This approach allows to inject the dependency after the object has been created.
+
+                        It also allows to change the dependency at runtime.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Interface injection
+
+                        ```java
+                        // The Service provides an interface with an injector method.
+                        interface LoggerSetter {
+                            void setLogger(Logger logger);
+                        }
+
+                        // The Client implements the interface.
+                        class Application implements LoggerSetter {
+
+                            private Logger logger;
+
+                            // The dependency is injected via the setter.
+                            public void setLogger(Logger logger) {
+                                this.logger = logger;
+                            }
+                        }
+                        
+                        // An injector injects the dependency to the client.
+                        class Injector {
+                            public void injectLogger(LoggerSetter client) {
+                                client.setLogger(new ConsoleLogger());
+                            }
+                        }
+                        ```
+
+                        Notes:
+                        Here, the injection mechanism is defined by the service, implemented by the client and used by the injector.
+                        
+                        The injector is a low-level module typically implemented by a framework.
+
+                        This approach, which is rarely used in practice, further decouples the client and the service by introducing an interface between them.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Interface injection in the real world
+
+                        ```java
+                        // The Application correspond to the client.
+                        class Application {
+
+                            // The annotation acts as an interface and makes the injector aware of the dependency.
+                            @Inject
+                            private Logger logger;
+
+                        }
+                        ```
+
+                        Notes:
+
+                        Here, the @Inject annotation acts as an interface and makes the injector aware of the dependency.
+
+                        The injector is a low-level module typically implemented by a framework and the developer does not have to implement it.
+
+                        In general, reflection is used to inject the dependencies.
+
+                    </textarea>
+                </section>
+
+            </section>
+
+            <!-- Inversion of control (IoC) -->
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fa-solid fa-diagram-project"></i> IoC</h2>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Inversion of control (IoC)
+                        
+                        **Inversion of control (IoC)** is a design principle that states that the control of the flow of a program is inverted.
+
+                        - In a traditional program, the flow of the program is **controlled by the program** itself.
+
+                        - In an IoC program, the flow of the program is **controlled by a framework**.
+
+                        Notes:
+
+                        **Constructor and setter injection** do not necessarily imply IoC.
+
+                        **Interface injection** is a form of IoC among others.
+
+                        In the java world, the term IoC is often used to refer to **interface injection**.
+
+                        However, the scope of the term IoC is broader than dependency injection, as the flow of the program is not limited to dependency instantiation and injection.
+                        
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hand-paper"></i> Example
+
+                        Let's consider a more complete example!
+
+                        https://github.com/amt-classroom/example-dipdiioc
+
+                        Are we making simple things overly complex?
+
+                        Discuss the pros and cons of DIP, DI and IoC.
+                        
+                    </textarea>
+                </section>
+
+            </section>
+
+            <section>
+                <h2><i class="fas fa-hand-paper"></i> Questions?</h2>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/markdown/markdown.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.js"></script>
+    <script src="./script.js" type="module"></script>
+
+</body>
+
+</html>
