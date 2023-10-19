@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>Organisation</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/white.css" crossorigin="anonymous" id="theme">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js" integrity="sha512-rdhY3cbXURo13l/WU9VlaRyaIYeJ/KBakckXIvJNAQde8DgpOmE+eZf7ha4vdqVjTtwQt69bD2wH2LXob/LB7Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/fontawesome-6.4.2/js/all.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./style.css" crossorigin="anonymous">
+
+    <script src="print.js"></script>
+
+</head>
+
+<body>
+
+    <div class="reveal">
+        <div class="slides">
+            <!-- Title and outline -->
+            <section data-background="#333333">
+                <h2>AMT</h2>
+                <h1>Business Layer</h1>
+                <p>Bertil Chapuis</p>      
+            </section>
+            <section data-markdown>
+                <textarea data-template>
+                    ## <i class="fas fa-tasks"></i> Overview of Today's Class
+                    - Quizz
+                    - Jackarta CDI
+                    - Mocking
+
+                </textarea>
+            </section>
+
+            <!-- Dependency Injection -->
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fas fa-lightbulb-on"></i> Jakarta CDI</h2>
+                </section>
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Jakarta CDI
+                        
+                        Recall that Dependency Injection (DI) and Inversion of Control (IoC) are closely related concepts that promote modularity and testability.
+
+                        **Jackarta Context and Dependency Injection** is a specification for DI and IoC in Jackarta EE applications.
+
+                        Runtimes that implement this specification manage the creation and injection of dependencies and their **lifecycle**.
+
+                    </textarea>
+                </section>
+
+                <!-- Slide 4: Advantages & Use-Cases -->
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Some advantages of Jakarta DI
+            
+                        Jakarta CDI provides the following advantages:
+
+                        - Unopinionated and flexible.
+                        - Independance from the runtime.
+                        - Enhanced modularity.
+                        - Improved testability.
+                        - Clearer and well organized code.
+                        - Etc.
+
+                        As for the JPA specification, some developer criticize Jakarta DI for being too complex and verbose.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Core concepts of Jakarta DI
+            
+                        Last week, we examined a toy runtime supporting the @Inject annotation.
+
+                        Jakarta DI is a more complex specification that introduces the following concepts:
+                        - Beans
+                        - Scopes
+                        - Producers
+                        - Qualifiers
+                        - Lifecycle
+                        - Interceptors
+                        - Decorators
+                        - Events and Observers
+                        - Etc.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Beans
+
+                        A **bean** is a class that is managed by the runtime.
+                    
+                        It should not be confused with the JavaBean specification.
+
+                        An instance of a bean is called a **managed instance**.
+
+                        Notes:
+
+                        Do not confuse the term "bean" with the JavaBean specification.
+
+                        A bean is a class that is managed by the runtime.
+
+                        A managed instance is an instance of a bean.
+
+                        Sometimes, the term "CDI bean" is used to distinguish beans from JavaBeans and Enterprise JavaBeans.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-thumbs-up"></i> Scopes
+
+                        A **scope** defines the lifecycle of a **managed instance**.
+
+                        The following scopes are defined by the specification:
+                        - `@ApplicationScoped`: One instance is created per application.
+                        - `@SessionScoped`: one instance is created per session.
+                        - `@RequestScoped`: one instance is created per request.
+                        - `@Dependent`: one instance is created per injection point (default scope).
+
+                        Managed instances are usually created **lazily** (i.e. when they are first injected) and destroyed when the scope ends.
+                        In general managed instances are exposed as **proxies** (i.e. the runtime injects a proxy instead of the actual instance).
+                        
+                        - `@Singleton`: similar to @ApplicationScoped, but the instance is created **eagerly** (i.e. when the application starts) and destroyed when the application stops, and the instance is not exposed as a proxy (i.e. the runtime injects the actual instance).
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-thumbs-up"></i> Scopes
+
+                        The following code snippet illustrates the use of the @ApplicationScoped scope.
+
+                        ```java
+                        @ApplicationScoped
+                        public class HelloService {
+                            
+                            public String sayHello() {
+                                return "Hello!";
+                            }
+                        }
+                        ```
+
+                        Here, the runtime will create a single managed instance of the HelloService class and inject it whenever it is requested.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-thumbs-up"></i> Producers and Qualifiers
+
+                        The `@Produces` annotation can be used to define a **producer**.
+                        - It can be used on a method or a field.
+                        - Ambiguities arise when more than one producers are available for a given type.
+
+                        Qualifiers can be used to disambiguate producers.
+                        - The `@Named` annotation associates a name with a producer.
+                        - It can be used to distinguish between producers of the same type.
+
+                        Other qualifiers, such as `@Default` or `@Alternative`, are defined by the specification.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-thumbs-up"></i> Producers and Qualifiers
+
+                        The following code snippet illustrates the use of a producer with a qualifier.
+
+                        ```java
+                        @ApplicationScoped
+                        public class Producers {
+                            @Produces
+                            @Named("name")
+                            public String name() {
+                                return "Edouard";
+                            }
+                        }
+
+                        @ApplicationScoped
+                        public class HelloService {
+                            @Inject
+                            @Named("name")
+                            private String name;
+
+                            public String sayHello() {
+                                return "Hello " + name + "!";
+                            }
+                        }
+                        ```
+
+                        Here, the runtime will inject the String "Edouard" into the HelloService class.
+                        The `@Named` annotation is a **qualifier** that uses a String to disambiguate producers of the same type.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-thumbs-up"></i> Producers and Qualifiers
+
+                        The developer can define custom qualifiers by using the `@Qualifier` annotation.
+
+                        ```java
+                        @Qualifier
+                        @Retention(RetentionPolicy.RUNTIME)
+                        @Target({ElementType.FIELD, ElementType.METHOD, ElementType.TYPE})
+                        public @interface Name {
+                        }
+
+                        @ApplicationScoped
+                        public class NameProducer {
+                            @Produces
+                            @Name
+                            public String name() {
+                                return "Edouard";
+                            }
+                        }
+
+                        @ApplicationScoped
+                        public class HelloService {
+                            @Inject
+                            @Name
+                            private String name;
+                            public String sayHello() {
+                                return "Hello " + name + "!";
+                            }
+                        }
+                        ```
+
+                        Here, the runtime will inject the String "Edouard" into the HelloService class thanks to the custom `@Name` qualifier.
+
+                    </textarea>
+                </section>
+
+
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-thumbs-up"></i> Lifecycle
+
+                        The lifecycle of a managed instance is defined by the following events:
+
+                        - **Instantiation**: the managed instance is created.
+                        - **Dependency injection**: the managed instance is injected with its dependencies.
+                        - **Initialization**: the managed instance is initialized.
+                        - **Destruction**: the managed instance is destroyed.
+
+
+                        The following annotations can be used to define methods that are called when the corresponding event occurs:
+                        - `@PreConstruct`: the method is called before the initialization of the managed instance.
+                        - `@PostConstruct`: the method is called after the initialization of the managed instance.
+                        - `@PreDestroy`: the method is called before the destruction of the managed instance.
+                        - `@PostDestroy`: the method is called after the destruction of the managed instance.
+                        
+
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-thumbs-up"></i> Lifecycle
+
+                        The following code snippet illustrates the use of lifecycle annotations.
+
+                        ```java
+                        @ApplicationScoped
+                        public class HelloService {
+                            @PostConstruct
+                            public void PostConstruct() {
+                                System.out.println("The managed instance is initialized.");
+                            }
+                            public String sayHello() {
+                                return "Hello World!";
+                            }
+                        }
+                        ```
+
+                        Here, the runtime will call the `init()` method after the instantiation and injection of the managed instance.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-thumbs-up"></i> Interceptors
+
+                        An **interceptor** is a class that can intercept the execution of a method.
+
+                        The following annotations can be used to define an interceptor:
+                        - `@InterceptorBinding`: the annotation is used to define an interceptor binding.
+                        - `@Interceptor`: the class is an interceptor.
+                        - `@AroundInvoke`: the method is called before and after the execution of a method.
+                        - `@AroundConstruct`: the method is called before and after the instantiation of a managed instance.
+
+                        Interceptors can be used to implement cross-cutting concerns such as logging, security, etc.
+
+                        They should not be used to implement business logic.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-thumbs-up"></i> Interceptors
+
+                        The following code snippet illustrates the use of interceptors to create a binding and use it to intercept the execution of a method.
+
+                        ```java
+                        @InterceptorBinding
+                        @Retention(RetentionPolicy.RUNTIME)
+                        @Target({ElementType.METHOD, ElementType.TYPE})
+                        public @interface Logged {
+                        }
+
+                        @Interceptor
+                        public class LoggedInterceptor {
+                            @AroundInvoke
+                            public Object log(InvocationContext context) throws Exception {
+                                System.out.println("Before method " + context.getMethod().getName());
+                                Object result = context.proceed();
+                                System.out.println("After method " + context.getMethod().getName());
+                                return result;
+                            }
+                        }
+
+                        @ApplicationScoped
+                        @Logged
+                        public class HelloService {
+                            public String sayHello() {
+                                return "Hello World!";
+                            }
+                        }
+                        ```
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-thumbs-up"></i> Decorators
+
+                        A **decorator** is a class that can decorate the behavior of a managed instance.
+                        
+                        The following annotations can be used to define a decorator:
+                        - `@Decorator`: mark a class as a decorator.
+                        - `@Delegate` and `@Inject`: inject the decorated instance in a field.
+                        - `@Priority`: define the priority of the decorator (smaller values have higher priority).
+
+                        Decorators implement the interface of the decorated instance. As a result, they can be used to add behavior to a managed instance without modifying its code.
+
+                        They can be used to implement business logic.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-thumbs-up"></i> Decorators
+
+                        The following code snippet illustrates the use of decorators.
+
+                        ```java
+                        @Decorator
+                        public class HelloDecorator implements HelloService {
+                            @Inject
+                            @Delegate
+                            private HelloService helloService;
+
+                            @Override
+                            public String sayHello() {
+                                return helloService.sayHello() + " from decorator!";
+                            }
+                        }
+
+                        @ApplicationScoped
+                        public class HelloService {
+                            public String sayHello() {
+                                return "Hello World!";
+                            }
+                        }
+
+                        @ApplicationScoped
+                        public class HelloTrigger {
+                            @Inject
+                            private HelloService helloService;
+
+                            public void sayHello() {
+                                System.out.println(helloService.sayHello());
+                            }
+                        }
+                        ```
+
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-thumbs-up"></i> Events and Observers
+
+                        The **event** mechanism allows managed instances to communicate with each other without coupling them.
+                        - The Event class can be used to define and fire events.
+                        - The `@Observes` annotation can be used to define an **observer** method that is called when an event is fired.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-thumbs-up"></i> Events and Observers
+
+                        The following code snippet illustrates the use of events and observers.
+
+                        ```java
+                        @ApplicationScoped
+                        public class HelloTrigger {
+                            @Inject
+                            private Event<String> event;
+
+                            public void sayHello() {
+                                event.fire("Hello World!");
+                            }
+                        }
+
+                        @ApplicationScoped
+                        public class HelloObserver {
+                            public void observe(@Observes String message) {
+                                System.out.println(message);
+                            }
+                        }
+                        ```
+
+                        Here, the event can be whatever type, and the observer method can have any name.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hand-paper"></i> Use Jackarta CDI to represent a library
+
+                        Implement a **Book** object with a **title**, an **author**, and, optionally, a **borrower**.
+
+                        Implement a Publisher bean that **publishes** two books:
+                        - "The Lord of the Rings" by J.R.R. Tolkien qualified as "Heroic Fantasy"
+                        - "The Hobbit" by J.R.R. Tolkien qualified as "Heroic Fantasy"
+
+                        Implement a Shelf bean that **holds** books for the library.
+                        - The shelf should be filled with the "Heroic Fantasy" books when it is created.
+                        - The shelf should offer a method to retrieve books by title.
+
+                        Implement a **Librarian** bean that offers services to **borrow** and **return** books.
+                        - A client should be able to borrow a book to the librarian.
+                        - A client should be able to return a book to the librarian.
+                        - The librarian has access to the shelf.
+
+                        Whenever a book is removed from the shelf, it should be stamped and marked as borrowed.
+                        Implement this behaviour with a decorator on the shelf.
+
+                        Whenever a book is borrowed or returned, a bell should ring in the library.
+                        Implement this behaviour with an interceptor on the librarian.
+
+                        The library **Manager** is a control freak and asks to be notified whenever a book is returned.
+                        Implement this behaviour with an observer triggered by the librarian.
+
+                    </textarea>
+                </section>
+            </section>
+
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fas fa-lightbulb-on"></i> Mocking</h2>
+                </section>
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-lightbulb-on"></i> Mocking
+
+                        Mocking is a technique used to test a class in isolation.
+
+                        It is used to replace the dependencies of a class with mock objects.
+
+                        Mock objects are objects that simulate the behavior of the dependencies.
+
+                        Mocking is used to test the behavior of a class without testing the behavior of its dependencies.
+
+                    </textarea>
+                </section>
+            </section>
+
+            <section>
+                <h2><i class="fas fa-hand-paper"></i> Questions?</h2>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/markdown/markdown.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.js"></script>
+    <script src="./script.js" type="module"></script>
+
+</body>
+
+</html>
