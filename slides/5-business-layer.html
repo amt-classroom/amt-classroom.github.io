@@ -284,7 +284,7 @@
                         @ApplicationScoped
                         public class HelloService {
                             @PostConstruct
-                            public void PostConstruct() {
+                            public void init() {
                                 System.out.println("The managed instance is initialized.");
                             }
                             public String sayHello() {
