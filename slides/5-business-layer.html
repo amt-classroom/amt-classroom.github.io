@@ -6,14 +6,23 @@
     <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-	<title>Organisation</title>
+	<title>Business Layer</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/white.css" crossorigin="anonymous" id="theme">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/white.css"id="theme">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js" integrity="sha512-rdhY3cbXURo13l/WU9VlaRyaIYeJ/KBakckXIvJNAQde8DgpOmE+eZf7ha4vdqVjTtwQt69bD2wH2LXob/LB7Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="/fontawesome-6.4.2/js/all.min.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="./style.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/html.min.js"></script>
+
+    
+    <script src="/fontawesome-6.4.2/js/all.min.js"></script>
+    <link rel="stylesheet" href="./style.css">
 
     <script src="print.js"></script>
 
@@ -33,7 +42,7 @@
                 <textarea data-template>
                     ## <i class="fas fa-tasks"></i> Overview of Today's Class
                     - Quizz
-                    - Jackarta CDI
+                    - Jakarta CDI
                     - Mocking
 
                 </textarea>
@@ -42,7 +51,7 @@
             <!-- Dependency Injection -->
             <section>
                 <section data-background="#333333">
-                    <h2><i class="fas fa-lightbulb-on"></i> Jakarta CDI</h2>
+                    <h2><i class="fas fa-diagram-project"></i> Jakarta CDI</h2>
                 </section>
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
@@ -50,7 +59,7 @@
                         
                         Recall that Dependency Injection (DI) and Inversion of Control (IoC) are closely related concepts that promote modularity and testability.
 
-                        **Jackarta Context and Dependency Injection** is a specification for DI and IoC in Jackarta EE applications.
+                        **Jakarta Context and Dependency Injection** is a specification for DI and IoC in Jakarta EE applications.
 
                         Runtimes that implement this specification manage the creation and injection of dependencies and their **lifecycle**.
 
@@ -60,7 +69,7 @@
                 <!-- Slide 4: Advantages & Use-Cases -->
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> Some advantages of Jakarta DI
+                        ## <i class="fa-solid fa-diagram-project"></i> Some advantages of Jakarta CDI
             
                         Jakarta CDI provides the following advantages:
 
@@ -71,18 +80,18 @@
                         - Clearer and well organized code.
                         - Etc.
 
-                        As for the JPA specification, some developer criticize Jakarta DI for being too complex and verbose.
+                        As for the JPA specification, some developer criticize Jakarta CDI for being too complex and verbose.
 
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> Core concepts of Jakarta DI
+                        ## <i class="fa-solid fa-diagram-project"></i> Core concepts of Jakarta CDI
             
                         Last week, we examined a toy runtime supporting the @Inject annotation.
 
-                        Jakarta DI is a more complex specification that introduces the following concepts:
+                        Jakarta CDI is a more complex specification that introduces the following concepts:
                         - Beans
                         - Scopes
                         - Producers
@@ -255,19 +264,11 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-thumbs-up"></i> Lifecycle
 
-                        The lifecycle of a managed instance is defined by the following events:
-
-                        - **Instantiation**: the managed instance is created.
-                        - **Dependency injection**: the managed instance is injected with its dependencies.
-                        - **Initialization**: the managed instance is initialized.
-                        - **Destruction**: the managed instance is destroyed.
-
+                        The lifecycle of a managed instance is defined by the [Contextual](https://jakarta.ee/specifications/cdi/4.0/jakarta-cdi-spec-4.0.html#contextual) interface.
 
                         The following annotations can be used to define methods that are called when the corresponding event occurs:
-                        - `@PreConstruct`: the method is called before the initialization of the managed instance.
                         - `@PostConstruct`: the method is called after the initialization of the managed instance.
                         - `@PreDestroy`: the method is called before the destruction of the managed instance.
-                        - `@PostDestroy`: the method is called after the destruction of the managed instance.
                         
 
 
@@ -283,10 +284,12 @@
                         ```java
                         @ApplicationScoped
                         public class HelloService {
+
                             @PostConstruct
                             public void init() {
                                 System.out.println("The managed instance is initialized.");
                             }
+                            
                             public String sayHello() {
                                 return "Hello World!";
                             }
@@ -458,13 +461,13 @@
 
                 <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-hand-paper"></i> Use Jackarta CDI to represent a library
+                        ## <i class="fa-solid fa-hand-paper"></i> Use Jakarta CDI to represent a library
 
                         Implement a **Book** object with a **title**, an **author**, and, optionally, a **borrower**.
 
                         Implement a Publisher bean that **publishes** two books:
                         - "The Lord of the Rings" by J.R.R. Tolkien qualified as "Heroic Fantasy"
-                        - "The Hobbit" by J.R.R. Tolkien qualified as "Heroic Fantasy"
+                        - "Dune" by Frank Herbert qualified as "Science Fiction"
 
                         Implement a Shelf bean that **holds** books for the library.
                         - The shelf should be filled with the "Heroic Fantasy" books when it is created.
