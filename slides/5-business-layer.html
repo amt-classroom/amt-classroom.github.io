@@ -331,6 +331,7 @@
                         }
 
                         @Interceptor
+                        @Logged
                         public class LoggedInterceptor {
                             @AroundInvoke
                             public Object log(InvocationContext context) throws Exception {
@@ -383,15 +384,18 @@
                             @Inject
                             @Delegate
                             private HelloService helloService;
-
                             @Override
                             public String sayHello() {
                                 return helloService.sayHello() + " from decorator!";
                             }
                         }
 
+                        public interface HelloService {
+                            String sayHello();
+                        }
+
                         @ApplicationScoped
-                        public class HelloService {
+                        public class HelloServiceImpl implements HelloService {
                             public String sayHello() {
                                 return "Hello World!";
                             }
@@ -401,7 +405,6 @@
                         public class HelloTrigger {
                             @Inject
                             private HelloService helloService;
-
                             public void sayHello() {
                                 System.out.println(helloService.sayHello());
                             }
