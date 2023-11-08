@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>Abstraction, Hibernate and jOOQ</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/white.css"id="theme">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/html.min.js"></script>
+
+    
+    <script src="/fontawesome-6.4.2/js/all.min.js"></script>
+    <link rel="stylesheet" href="./style.css">
+
+    <script src="print.js"></script>
+
+</head>
+
+<body>
+
+    <div class="reveal">
+        <div class="slides">
+            <!-- Title and outline -->
+            <section data-background="#333333">
+                <h2>AMT</h2>
+                <h1>Abstraction, Hibernate and jOOQ</h1>
+                <p>Dorian Gambin</p>
+            </section>
+            <section data-markdown>
+                <textarea data-template>
+                    ## <i class="fas fa-tasks"></i> Overview of Today's Class
+                    - Abstraction in software engineering
+                    - Schema/Code generation through Hibernate ORM
+                    - jOOQ as data access layer
+
+                </textarea>
+            </section>
+
+            <!-- Dependency Injection -->
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fa-solid fa-cubes"></i> Abstraction in software engineering</h2>
+                </section>
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-cubes"></i> Abstraction
+
+                        Abstraction is a skill and process in computer science.
+                        
+                        - Generalization (grouping, simplification, categorization)
+                        - Hide concrete details
+                        - Focus on core features or attributes
+                        - Interface or model to interact with abstractions
+                        - Design decisions
+                    </textarea>
+                </section>
+
+                <!-- Slide 4: Advantages & Use-Cases -->
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-cubes"></i> Abstraction in Operating System
+
+                        > The job of the operating system is to create good abstractions and then implement
+                            and manage the abstract objects thus created. [Abstractions] are one of the keys to understanding operating systems.
+
+                        <img src="/images/7-abstraction-jooq/moderoperatingsystem.png" alt="Layered architecture" style="width: 60%;"/>
+                        Andrew Tanenbaum & Herbert Bos (2014). <i>Modern Operating Systems (Fourth edition)</i>
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-cubes"></i> Abstraction in Programming language
+
+                        Layers of abstraction in the Java ecosystem:
+
+                         <img src="/images/7-abstraction-jooq/jvm.png" alt="Layered architecture" style="width: 40%;"/>
+
+                        https://www.javatpoint.com/java-bytecode
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-cubes"></i> Leaky abstraction
+                        The law of leaky abstractions as formulated by Joel Spolsky:
+                        > All non-trivial abstractions, to some degree, are leaky.
+
+                        > Abstractions fail. Sometimes a little, sometimes a lot. There’s leakage. Things go wrong. It happens all over the place when you have abstractions.
+                        [...] One reason the law of leaky abstractions is problematic is that it means that abstractions do not really simplify our lives as much as they were meant to.
+
+                        Joel Spolsky (2002) [The Law of Leaky Abstractions](https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/)
+
+                        Notes:
+
+                        A
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-cubes"></i> Leaky abstraction, Loop unrolling
+
+                        Optimization of programming language control flow to gain performance thanks to the compiled machine instructions.
+
+                        <img src="/images/7-abstraction-jooq/loopunrolling.png" alt="Layered architecture" style="width: 40%;"/>
+
+                        https://en.wikipedia.org/wiki/Loop_unrolling
+
+                        There are other types of [loop optimization](https://en.wikipedia.org/wiki/Loop_optimization). Many other kinds of optimizations can be applied directly by a
+                        compiler. See for example the GCC compiler which bundles optimizations in packages `-O(1|2|3)`: https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html
+                    </textarea>
+                </section>
+            </section>
+
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fa-solid fa-file-code"></i> Hibernate & Schema Management</h2>
+                </section>
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-file-code"></i> Hibernate Schema Generation
+
+                        |  mode | purpose | reproducible with data retained |
+                        |--------|------|------------------------------|
+                        | drop-and-create    | first drop the schema and then export tables, sequences, and constraints           |  <i class="fa-regular fa-circle-xmark"></i> |
+                        | create             | export tables, sequences, and constraints, without attempting to drop them first    |    <i class="fa-regular fa-circle-xmark"></i>  |
+                        | create-drop        | drop the schema and recreate it on SessionFactory startup. Additionally, drop the schema on SessionFactory shutdown  | <i class="fa-regular fa-circle-xmark"></i>  |
+                        | drop               | drop the schema on SessionFactory shutdown           | <i class="fa-regular fa-circle-xmark"></i> |
+                        | validate          | validate the database schema without changing it     | <i class="fa-regular fa-circle-check"></i> |
+                        | update             | only export what’s missing in the schema           | <i class="fa-regular fa-circle-question"></i> [1][2] |
+
+                        https://docs.jboss.org/hibernate/orm/6.3/introduction/html_single/Hibernate_Introduction.html
+
+                        [1] [Hibernate: hbm2ddl.auto=update in production?](https://stackoverflow.com/questions/221379/hibernate-hbm2ddl-auto-update-in-production)
+
+                        [2] [Hibernate User Guide](https://docs.jboss.org/hibernate/orm/6.3/userguide/html_single/Hibernate_User_Guide.html#best-practices) discourage using `update` in production
+
+                        > Although the automatic schema generation is very useful for testing and prototyping purposes, in a production environment, it’s much more flexible to manage the schema using incremental migration scripts.
+
+                        https://docs.jboss.org/hibernate/orm/6.3/userguide/html_single/Hibernate_User_Guide.html#schema-generation
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-file-code"></i> Greenfield Utopia
+                        The developer focus on code and lets the magic happens in the database.
+
+                        > Isn't the ORM supposed to abstract away the database from me?
+                        > </br>-- <cite>An anonymous developer, practitioner of code-(only)-first approach</cite>
+
+                        <img src="/images/7-abstraction-jooq/schema-utopia.png" alt="Layered architecture" style="width: 60%;"/>
+
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-file-code"></i> Greenfield Utopia, the hidden truth
+
+                        Input Java classes:
+
+                        ```
+                        @Entity
+                        public class Group {
+                          @Id
+                          Integer id;
+
+                          @OneToMany
+                          List<Element> elements;
+                        }
+
+                        @Entity
+                        public class Element {
+                          @Id
+                          Integer id;
+                        }
+                        ```
+
+                        Hibernate generated SQL DDL:
+                        ```sql
+                        create table "Element" (
+                            id integer not null,
+                            primary key (id)
+                        )
+                        create table "Group" (
+                            id integer not null,
+                            primary key (id)
+                        )
+                        create table "Group_Element" (
+                            Group_id integer not null,
+                            elements_id integer not null
+                        )
+                        alter table if exists "Group_Element"
+                            add constraint FKn34unw8qc9s7ldi1aac05ntdp
+                            foreign key (elements_id)
+                            references "Element"
+                        alter table if exists "Group_Element"
+                            add constraint FK911vp90bpbgp71nm2ea0emasw
+                            foreign key (Group_id)
+                            references "Group"
+                        ```
+
+                        * The associative table is unexpected for a one-to-many relation and likely to lead to performance issues.
+                        * The naming of foreign keys constraint are technical and debatable.
+
+                        [More annotations and code](https://vladmihalcea.com/the-best-way-to-map-a-onetomany-association-with-jpa-and-hibernate/) are required in Java classes to obtain a saner database schema.
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-file-code"></i> Greenfield Utopia - Evolution, forcing destiny
+                        * Forcing the abstraction of database as much as possible by using schema generation to drive the development of migrations.
+                        * Java classes remain the source of truth and a back and forth is done using schema generation to find the correct annotations and code to produce a manageable schema.
+                        * In worth cases the migrations becomes a bundle of generated, semi-generated and manually authored migrations.
+                        <img src="/images/7-abstraction-jooq/schema-utopia-evolution.png" alt="Layered architecture" style="width: 70%;"/>
+
+
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-file-code"></i> Labo1 Sakila
+                        * The database is the source of truth and the migrations are authored and under control.
+                        * The schema is designed according to the needs of the RDBMS system and with all its features and expressiveness (e.g. triggers, partitions, rules).
+                        * The initial migration could come from an early prototyping with schema generation as a seed migration, however this seed migration should be reviewed and not blindly applied.
+                        <img src="/images/7-abstraction-jooq/labo1-sakila.png" alt="Layered architecture" style="width: 70%;"/>
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-file-code"></i> Schema under control
+
+                        Schema generation is a useful tool in early phases, but at some point a breakaway will likely be required.
+
+                        The schema generation:
+                        * abstract away the database until it doesn't (e.g. performance issues, errors, data loss).
+                        * has to take decisions that might be unexpected, perform poorly or hard to comprehend from RDBMS perspective
+                        * the schema is not under control as it is applied dynamically at runtime.
+                        * the breakaway effort is correlated to the growth of the schema while it was not under control
+
+                        Hibernate User Guide recommends to put migrations under control:
+                        > Although Hibernate provides the update option for the hibernate.hbm2ddl.auto configuration property, this feature is not suitable for a production environment.
+
+                        > An automated schema migration tool (e.g. Flyway, Liquibase) allows you to use any database-specific DDL feature (e.g. Rules, Triggers, Partitioned Tables). Every migration should have an associated script, which is stored on the Version Control System, along with the application source code.
+
+                        > You should always use an automatic schema migration tool and have all the migration scripts stored in the Version Control System.
+
+                        https://docs.jboss.org/hibernate/orm/6.3/userguide/html_single/Hibernate_User_Guide.html#best-practices
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-file-code"></i> Conclusion
+                        ORMs are a non trivial abstraction and leak by design. They are often highly criticized because of misplaced expectations.
+                        Using an ORM abstraction doesn't remove the need to understand the database.
+
+                        >  if you are writing an application backed by a relational database you should damn well know how a relational database works.
+
+                        > they just want to deal with in-memory data-structures and let the ORM deal with the database. This way of thinking can work for small applications and loads, but it soon falls apart once the going gets tough
+
+                        >  Active Record [a Ruby On Rails ORM] is designed with that in mind, it takes care of boring stuff, but provides manholes so you can get down with the SQL when you have to.
+
+
+                        Martin Fowler 2012 <i>[ORMHate](https://martinfowler.com/bliki/OrmHate.html)</i>
+                    </textarea>
+                </section>
+            </section>
+
+            <section>
+                <section data-background="#333333">
+                    <h2> <i class="fa-solid fa-hockey-puck">d</i> jOOQ, embracing RDBMS and SQL </h2>
+                </section>
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hockey-puck"></i> A different or complementary approach
+                        jOOQ's Raison d'être:
+                        >  So far, there had been only few database abstraction frameworks or libraries, that truly respected SQL as a first class citizen among languages. Most frameworks, including the industry standards JPA, EJB, Hibernate, JDO, Criteria Query, and many others try to hide SQL itself, minimising its scope to things called JPQL, HQL, JDOQL and various other inferior query languages jOOQ has come to fill this gap.
+                        >
+                        > SQL was never meant to be abstracted. To be confined in the narrow boundaries of heavy mappers, hiding the beauty and simplicity of relational data. SQL was never meant to be object-oriented. SQL was never meant to be anything other than... SQL!
+                        >
+                        > -- <cite>https://www.jooq.org/doc/3.18/manual-single-page/#preface</cite>
+
+
+                        >  Client applications come and go. They used to be written in Delphi. Then PHP. Then Java. Now Kotlin. Soon TypeScript/Rust/Go/Whatever? But your database stays. It will survive your client application, and as such, jOOQ understands that your database must come first.
+                        >
+                        > Obviously, there exist other ways to think about business logic and databases. But jOOQ was designed for the database first model.
+                        >
+                        > -- <cite>https://www.jooq.org/doc/3.18/manual-single-page/#coming-from-jpa</cite>
+
+
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hockey-puck"></i> Adding jOOQ alongside Hibernate ORM, Labo1 example
+
+                        There is no conflict between Hibernate ORM and jOOQ, both can coexist.
+
+                        ```
+                        ./mvnw quarkus:add-extension -Dextensions="io.quarkiverse.jooq:quarkus-jooq"
+                        ```
+
+                        Add the generation of jOOQ classes during build.
+
+                        `pom.xml`
+                        ```xml
+                        <build>
+                            <plugins>
+                                 <plugin>
+                                    <groupId>org.jooq</groupId>
+                                    <artifactId>jooq-codegen-maven</artifactId>
+                                    <version>3.18.7</version>
+                                    <executions>
+                                      <execution>
+                                        <id>jooq-codegen</id>
+                                        <phase>generate-sources</phase>
+                                        <goals>
+                                          <goal>generate</goal>
+                                        </goals>
+                                      </execution>
+                                    </executions>
+                                    <configuration>
+                                      <jdbc>
+                                        <url>jdbc:postgresql://localhost:55432/postgres</url>
+                                        <user>postgres</user>
+                                        <password>postgres</password>
+                                        <schema>public</schema>
+                                      </jdbc>
+                                      <generator>
+                                        <database>
+                                          <name>org.jooq.meta.postgres.PostgresDatabase</name>
+                                          <includes>.*</includes>
+                                          <inputSchema>public</inputSchema>
+                                          <outputSchema>public</outputSchema>
+                                        </database>
+                                        <target>
+                                          <packageName>ch.heigvd.amt.jooq</packageName>
+                                          <directory>${project.build.sourceDirectory}</directory>
+                                        </target>
+                                      </generator>
+                                    </configuration>
+                                  </plugin>
+                            </plugins>
+                        </build>
+                        ```
+
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hockey-puck"></i> jOOQ
+
+                        <img src="/images/7-abstraction-jooq/jooq.png" alt="Layered architecture" style="width: 80%;"/>
+
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hockey-puck"></i> jOOQ
+
+                        SQL:
+                        ```sql
+                        SELECT actor.first_name, actor.last_name, count(film) as nbFilms
+                        FROM actor
+                        JOIN film_actor ON actor.actor_id = film_actor.actor_id
+                        JOIN film ON film_actor.film_id = film.film_id
+                        WHERE film.rating = 'PG'
+                        GROUP BY actor.actor_id
+                        ORDER BY nbFilms desc, actor.first_name, actor.last_name, actor.actor_id
+                        ```
+
+                        Type-safe and compilation safe query with JPA Criteria API:
+                        ```java
+                        public List<ActorInPGRating> actorInPGRatings_CriteriaMetaModel() {
+                            CriteriaBuilder cb = em.getCriteriaBuilder();
+                            CriteriaQuery<ActorInPGRating> cq = cb.createQuery(ActorInPGRating.class);
+                            Root<Film> film = cq.from(Film.class);
+                            var actor = film.join(Film_.actors);
+                            var nbFilms = cb.count(film);
+                            cq.multiselect(actor.get(Actor_.firstName), actor.get(Actor_.lastName), nbFilms);
+                            cq.where(cb.equal(film.get(Film_.rating), Film.MpaaRating.PG));
+                            cq.groupBy(actor.get(Actor_.id));
+                            cq.orderBy(List.of(cb.desc(nbFilms), cb.asc(actor.get(Actor_.firstName)), cb.asc(actor.get(Actor_.lastName)), cb.asc(actor.get(Actor_.id))));
+                            return em.createQuery(cq).getResultList();
+                        }
+                        ```
+
+                        Type-safe and compilation safe query with jOOQ:
+                        ```java
+                        public List<ActorInPGRating> actorInPGRatings_Jooq() {
+                            return dsl
+                                .select(ACTOR.FIRST_NAME, ACTOR.LAST_NAME, DSL.count(FILM.FILM_ID))
+                                .from(ACTOR)
+                                .join(FILM_ACTOR).on(ACTOR.ACTOR_ID.eq(FILM_ACTOR.ACTOR_ID))
+                                .join(FILM).on(FILM_ACTOR.FILM_ID.eq(FILM.FILM_ID))
+                                .where(FILM.RATING.eq(MpaaRating.PG))
+                                .groupBy(ACTOR.ACTOR_ID)
+                                .orderBy(DSL.count(ACTOR.ACTOR_ID).desc(), ACTOR.FIRST_NAME, ACTOR.LAST_NAME, ACTOR.ACTOR_ID)
+                                .fetchInto(ActorInPGRating.class);
+                        }
+                        ```
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hockey-puck"></i> CRUD through UpdatableRecord
+
+                        * jOOQ facilitates CRUD using a specific API involving `org.jooq.UpdatableRecord` types.
+                        * jOOQ's code generator will generate `org.jooq.UpdatableRecord` implementations for every table that has a primary key.
+
+                        ```
+                        //non-jooq imports omitted
+                        import static ch.heigvd.amt.jooq.Tables.*;
+                        import org.jooq.DSLContext;
+
+                        @QuarkusTest
+                        class ActorsInPGJooqTest {
+
+                          @Inject
+                          DSLContext dsl;
+
+                          void testWriteActorJooq() {
+                            var actor = dsl.newRecord(ACTOR);
+                            actor.setFirstName("john");
+                            actor.setLastName("doe");
+                            actor.store();
+                            assertNotNull(actor.getActorId(), "Actor ID should not be null");
+                          }
+
+                          @Test
+                          @TestTransaction
+                          void testEditActorJooq() {
+                            var actor = dsl.fetchOne(ACTOR, ACTOR.ACTOR_ID.eq(1));
+                            assertNotEquals("john", actor.getFirstName());
+                            assertNotEquals("doe", actor.getLastName());
+                            actor.setFirstName("john");
+                            actor.setLastName("doe");
+                            actor.store();
+                            var actorV2 = dsl.fetchOne(ACTOR, ACTOR.ACTOR_ID.eq(1));
+                            assertEquals("john", actorV2.getFirstName());
+                            assertEquals("doe", actorV2.getLastName());
+                          }
+                        }
+                        ```
+
+                    </textarea>
+                </section>
+
+
+
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hockey-puck"></i> Where should live the code generated?
+
+
+
+                        https://www.jooq.org/doc/latest/manual/code-generation/codegen-version-control/
+
+                    </textarea>
+                </section>
+            </section>
+
+            <section>
+                <h2><i class="fas fa-hand-paper"></i> Questions?</h2>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/markdown/markdown.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.js"></script>
+    <script src="./script.js" type="module"></script>
+
+</body>
+
+</html>
