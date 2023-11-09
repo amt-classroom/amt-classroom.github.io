@@ -68,7 +68,7 @@
                 </section>
 
                 <!-- Slide 4: Advantages & Use-Cases -->
-                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-cubes"></i> Abstraction in Operating System
 
@@ -99,11 +99,13 @@
                         ## <i class="fa-solid fa-cubes"></i> Leaky abstraction
                         The law of leaky abstractions as formulated by Joel Spolsky:
                         > All non-trivial abstractions, to some degree, are leaky.
-
+                        >
+                        >
                         > Abstractions fail. Sometimes a little, sometimes a lot. There’s leakage. Things go wrong. It happens all over the place when you have abstractions.
                         [...] One reason the law of leaky abstractions is problematic is that it means that abstractions do not really simplify our lives as much as they were meant to.
+                        > </br> --<cite>Joel Spolsky (2002) [The Law of Leaky Abstractions](https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/)</cite>
 
-                        Joel Spolsky (2002) [The Law of Leaky Abstractions](https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/)
+
 
                         Notes:
 
@@ -151,9 +153,9 @@
 
                         [2] [Hibernate User Guide](https://docs.jboss.org/hibernate/orm/6.3/userguide/html_single/Hibernate_User_Guide.html#best-practices) discourage using `update` in production
 
-                        > Although the automatic schema generation is very useful for testing and prototyping purposes, in a production environment, it’s much more flexible to manage the schema using incremental migration scripts.
-
-                        https://docs.jboss.org/hibernate/orm/6.3/userguide/html_single/Hibernate_User_Guide.html#schema-generation
+                        > Although the automatic schema generation is very useful for testing and prototyping purposes, in a production environment,
+                        > it’s much more flexible to manage the schema using incremental migration scripts.
+                        > </br>-- https://docs.jboss.org/hibernate/orm/6.3/userguide/html_single/Hibernate_User_Guide.html#schema-generation
                     </textarea>
                 </section>
                 <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
@@ -164,16 +166,14 @@
                         > Isn't the ORM supposed to abstract away the database from me?
                         > </br>-- <cite>An anonymous developer, practitioner of code-(only)-first approach</cite>
 
-                        <img src="/images/7-abstraction-jooq/schema-utopia.png" alt="Layered architecture" style="width: 60%;"/>
+                        <img src="/images/7-abstraction-jooq/schema-utopia.png" alt="Layered architecture" style="width: 50%;"/>
 
                     </textarea>
                 </section>
-                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.4em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-file-code"></i> Greenfield Utopia, the hidden truth
-
                         Input Java classes:
-
                         ```
                         @Entity
                         public class Group {
@@ -227,10 +227,7 @@
                         * Forcing the abstraction of database as much as possible by using schema generation to drive the development of migrations.
                         * Java classes remain the source of truth and a back and forth is done using schema generation to find the correct annotations and code to produce a manageable schema.
                         * In worth cases the migrations becomes a bundle of generated, semi-generated and manually authored migrations.
-                        <img src="/images/7-abstraction-jooq/schema-utopia-evolution.png" alt="Layered architecture" style="width: 70%;"/>
-
-
-
+                        <img src="/images/7-abstraction-jooq/schema-utopia-evolution.png" alt="Layered architecture" style="width: 60%;"/>
                     </textarea>
                 </section>
 
@@ -240,7 +237,7 @@
                         * The database is the source of truth and the migrations are authored and under control.
                         * The schema is designed according to the needs of the RDBMS system and with all its features and expressiveness (e.g. triggers, partitions, rules).
                         * The initial migration could come from an early prototyping with schema generation as a seed migration, however this seed migration should be reviewed and not blindly applied.
-                        <img src="/images/7-abstraction-jooq/labo1-sakila.png" alt="Layered architecture" style="width: 70%;"/>
+                        <img src="/images/7-abstraction-jooq/labo1-sakila.png" alt="Layered architecture" style="width: 60%;"/>
 
                     </textarea>
                 </section>
@@ -259,30 +256,27 @@
 
                         Hibernate User Guide recommends to put migrations under control:
                         > Although Hibernate provides the update option for the hibernate.hbm2ddl.auto configuration property, this feature is not suitable for a production environment.
-
+                        > </br>[...]</br>
                         > An automated schema migration tool (e.g. Flyway, Liquibase) allows you to use any database-specific DDL feature (e.g. Rules, Triggers, Partitioned Tables). Every migration should have an associated script, which is stored on the Version Control System, along with the application source code.
-
+                        > </br>[...]</br>
                         > You should always use an automatic schema migration tool and have all the migration scripts stored in the Version Control System.
-
-                        https://docs.jboss.org/hibernate/orm/6.3/userguide/html_single/Hibernate_User_Guide.html#best-practices
+                        > </br> -- https://docs.jboss.org/hibernate/orm/6.3/userguide/html_single/Hibernate_User_Guide.html#best-practices
 
                     </textarea>
                 </section>
 
-                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-file-code"></i> Conclusion
                         ORMs are a non trivial abstraction and leak by design. They are often highly criticized because of misplaced expectations.
                         Using an ORM abstraction doesn't remove the need to understand the database.
 
                         >  if you are writing an application backed by a relational database you should damn well know how a relational database works.
-
+                        > </br>[...]</br>
                         > they just want to deal with in-memory data-structures and let the ORM deal with the database. This way of thinking can work for small applications and loads, but it soon falls apart once the going gets tough
-
+                        > </br>[...]</br>
                         >  Active Record [a Ruby On Rails ORM] is designed with that in mind, it takes care of boring stuff, but provides manholes so you can get down with the SQL when you have to.
-
-
-                        Martin Fowler 2012 <i>[ORMHate](https://martinfowler.com/bliki/OrmHate.html)</i>
+                        > </br> --<cite>Martin Fowler 2012 [ORMHate](https://martinfowler.com/bliki/OrmHate.html)<cite>
                     </textarea>
                 </section>
             </section>
@@ -291,7 +285,7 @@
                 <section data-background="#333333">
                     <h2> <i class="fa-solid fa-hockey-puck">d</i> jOOQ, embracing RDBMS and SQL </h2>
                 </section>
-                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.4em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-hockey-puck"></i> A different or complementary approach
                         jOOQ's Raison d'être:
@@ -311,7 +305,7 @@
 
                     </textarea>
                 </section>
-                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.4em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-hockey-puck"></i> Adding jOOQ alongside Hibernate ORM, Labo1 example
 
@@ -473,12 +467,74 @@
 
                 <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-hockey-puck"></i> Where should live the code generated?
+                        ## <i class="fa-solid fa-hockey-puck"></i> When to generate code and where does it live?
+                        During the early phase of an application development, it can be useful to generate code always during build step, however
+                        this should be revisited as the project grows.
+                        There are some undeniable advantages of incorporating generated code as part of the code base:
+                        * Transparency
+                        * Track of changes
+                        * Learn the abstraction offered through the generated code
+                        * Manageable update of code generation tool
 
-
-
+                        More discussion of advantages of the different approach:
                         https://www.jooq.org/doc/latest/manual/code-generation/codegen-version-control/
 
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hockey-puck"></i> Upgrading the code generation tool
+                        When the generated code is not part of the codebase the only content in the change request is the version of the tool.
+
+                        <img src="/images/7-abstraction-jooq/upgrading-jooq.png" alt="Layered architecture" style="width: 90%;"/>
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hockey-puck"></i> Upgrading the code generation tool
+                        When the generated code is part of the codebase, it is possible to investigate the change done within the code generation itself.
+                        It asserts a greater control over the changes that occurs due to changes affecting the generated code. (e.g. SQL migrations, dependency upgrade).
+                        Any change not anticipated becomes obvious in the change request and can not be easily ignored.
+
+                         <img src="/images/7-abstraction-jooq/upgrading-jooq2.png" alt="Layered architecture" style="width: 90%;"/>
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hockey-puck"></i> Example discovering new features in abstraction
+                        <img src="/images/7-abstraction-jooq/discovering-new-features.png" alt="Layered architecture" style="width: 90%;"/>
+                    </textarea>
+                </section>
+
+
+            </section>
+
+            <section>
+                <section data-background="#333333">
+                    <h2> <i class="fa-solid fa-certificate"></i> Final words  </h2>
+                </section>
+
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-certificate"></i> Abstraction and generation, trust but verify
+                        Abstraction that generates code and schema are often mistrust, however they are ubiquitous to software developement.
+                        They come with various qualities and weaknesses.
+
+                        The decision making for abstractions choices is different according to each project's context. For example:
+                        * lifetime of the application (i.e.  a few months, several years)
+                        * existing and predominant skills of the contributors
+                        * domain complexity
+                        * abstraction relevance to expressed need
+
+
+                        When depending on a abstraction that generates code or schema becomes crucial:
+                        * place them under control
+                        * track the changes
+                        * learn and understand what and how it abstracts
+
+                        Borrowing a concept used in cyber-security among others: [Trust, but verify](https://en.wikipedia.org/wiki/Trust,_but_verify)
                     </textarea>
                 </section>
             </section>
