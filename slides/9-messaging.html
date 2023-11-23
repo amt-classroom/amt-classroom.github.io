@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>Messaging</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/white.css"id="theme">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/html.min.js"></script>
+
+    
+    <script src="/fontawesome-6.4.2/js/all.min.js"></script>
+    <link rel="stylesheet" href="./style.css">
+
+    <script src="print.js"></script>
+
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- Title and outline -->
+            <section data-background="#333333">
+                <h2>AMT</h2>
+                <h1>Messaging</h1>
+                <p>Bertil Chapuis</p>      
+            </section>
+            <section data-markdown>
+                <textarea data-template>
+                    ## <i class="fas fa-tasks"></i> Overview of Today's Class
+                    - What is messaging and why do we need it?
+                    - Messaging in Java (JMS)
+                    - Messaging concepts (Queues, Topics, Messages, Request/Response)
+                    - Reliability and Delivery Guarantees
+
+                </textarea>
+            </section>
+
+            <!-- Jakarta Messaging -->
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fas fa-envelope"></i> Messaging</h2>
+                </section>
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-envelope"></i> What is messaging?
+
+                        <img src="/images/messaging.png" alt="Messaging" style="width: 100%;">
+
+                        Notes:
+
+                        Messaging is a method of communication between software components or applications.
+
+                        Each client connects to a message broker that provides the messaging service.
+                        
+                        Once the connection established the messaging system looks like a peer-to-peer facility: A messaging client can send messages to, and receive messages from, any other client. 
+                    
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-envelope"></i> Why do we need messaging?
+
+                        - Interoperability between different languages and platforms
+                        - Decoupling of components and applications
+                        - Asynchronous communication and processing
+                        - High scalability and availability
+                        - Load balancing and failover
+                        - Etc.
+
+                        Notes:
+                    
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-envelope"></i> Jakarta Messaging
+
+                        [Jakarta Messaging (JMS)](https://jakarta.ee/specifications/messaging/) is a Java API that allows applications to create, send, receive, and read messages.
+
+                        JMS has been standardized early on:
+                        - JMS 1.0 in 1998
+                        - JMS 1.1 in 2002
+                        - JMS 2.0 in 2013
+                        - JMS 2.1 in 2017
+                        - JMS 3.0 in 2020
+                        - JMS 3.1 in 2022
+
+                        It demonstrate how important messaging is in complex systems and applications.
+
+                        Notes:
+                    
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+
+                        <img src="/images/jms-simplified-api.png" alt="JMS API" style="width: 100%;">
+
+                        Notes:
+
+                        The **JMS API** hides the complexity of the messaging system.
+
+                        A lot of message broker (runtime) implement the JMS API (specification).
+
+                        The **Connection Factory** is used to create a connection (old API) or a context (new API) to the message broker.
+
+                        The **Context** is a factory for creating destinations, producers, consumers, messages, etc.
+
+                        **Destinations** are queues or topics.
+
+                        **Producers** send messages to a destination.
+
+                        **Consumers** receive messages from a destination.
+
+                        **Messages** are the data exchanged between producers and consumers.
+
+                        source: https://jakarta.ee/specifications/messaging/3.1/jakarta-messaging-spec-3.1
+                    
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+
+                        <img src="/images/queue-model.png" alt="Queue Model" style="width: 100%;">
+
+                        Notes:
+
+                        The **queue model** is the simplest messaging model. It is based on the point-to-point (PTP) communication paradigm.
+
+                        A **queue** is a **destination** where one or more **producers** send messages to and one or more **consumers** receive messages from.
+
+                        A **message** sent to a queue is received and processed by one consumer only.
+
+                        This model is follow and forget: the producer sends a message and forgets about it. The consumer receives the message and processes it. The producer and consumer are decoupled.
+
+                        **Queues** are used for asynchronous processing, load balancing, failover, etc.
+
+                        For instance, a queue can be used to send emails. The producer sends an email to the queue and a consumer sends the email to the recipient.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+
+                        <img src="/images/topic-model.png" alt="Queue Model" style="width: 100%;">
+
+                        Notes:
+
+                        The **Topic model** is based on the publish/subscribe communication paradigm.
+
+                        A **topic** is a **destination** where one or more **producers** send messages to and one or more **consumers** receive messages from.
+
+                        A **message** sent to a topic is received and processed by all consumers.
+
+                        This model is follow and forget: the producer sends a message and forgets about it. The consumer receives the message and processes it. The producer and consumer are decoupled.
+
+                        **Topics** are used for broadcasting, event notification, etc.
+
+                        For instance, a topic can be used to represent the price of a stock. The producer sends the price of the stock to the topic and all consumers receive the price of the stock.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        <img src="/images/request-response-model.png" alt="Queue Model" style="width: 100%;">
+
+                        Notes:
+
+                        The **Request/Response model** is based on the point-to-point (PTP) communication paradigm.
+
+                        However, the producer needs to wait for the response from the consumer and fire and forget is not suitable.
+                        
+                        To solve this problem:
+                        - The **producer** sends a message to a queue, initialize a temporary queue, include the temporary queue in the message, and wait for the response on the temporary queue.
+                        - The **consumer** receives the message, processes it, and sends the response to the temporary queue.
+                        - The **producer** receives the response and processes it.
+
+                        **Request/Response** is often used for long asynchronous processing tasks (e.g. batch processing, report generation, etc.) where the producer needs to know when the processing is done and the result is available.
+
+                        For instance, booking a travel is a long asynchronous processing task: the booking system needs to check the availability of the flight, the availability of the seats, the availability of the hotel, etc. before confirming the booking.
+                    
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-envelope"></i> Message Types
+
+                        JMS defines different [types](https://docs.oracle.com/javaee%2F7%2Fapi%2F%2F/javax/jms/Message.html) of messages:
+                        - **TextMessage** contains a string
+                        - **BytesMessage** contains a byte array
+                        - **ObjectMessage** contains a serializable Java object
+                        - **MapMessage** contains a set of name-value pairs
+                        - **StreamMessage** contains a stream of Java primitive values
+                
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-envelope"></i> Message Brokers
+
+                        A message broker is a software that implements the messaging system.
+                        - [Apache ActiveMQ](https://activemq.apache.org/)
+                        - [Apache Artemis](https://activemq.apache.org/artemis/)
+                        - [Apache Kafka](https://kafka.apache.org/)
+                        - [RabbitMQ](https://www.rabbitmq.com/)
+                        - [Amazon SQS](https://aws.amazon.com/sqs/)
+                        - [Azure Service Bus](https://azure.microsoft.com/en-us/services/service-bus/)
+                        - [Google Cloud Pub/Sub](https://cloud.google.com/pubsub)
+                        - Etc.
+
+                        Notes:
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-envelope"></i> Ordering guarantees
+
+                        Depending on the broker, you get different ordering guarantees.
+                        - **Out-of-order** - The messages are not ordered.
+                        - **FIFO** - The first message in is the first message out.
+                        - **LIFO** - The last message in is the first message out.
+                        - **Priority** - The messages are ordered by priority.
+                        - Etc.
+
+                        Notes:
+                        You should not make any assumption about the guarantees provided by the broker. 
+                        Always check the documentation of the broker to know what guarantees are provided.
+
+                
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-envelope"></i> Delivery guarantees
+
+                        Depending on the broker, you get different delivery guarantees.
+                        - **At most once** - The message is delivered at most once, but it may not be delivered.
+                        - **At least once** - The message is always delivered, but it may be delivered multiple times.
+                        - **Exactly once** - The message is always delivered once and only once.
+                        - Etc.
+
+                        Notes:
+                        You should not make any assumption about the guarantees provided by the broker. 
+                        Always check the documentation of the broker to know what guarantees are provided.
+
+                
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-envelope"></i> Other guarantees
+
+                        - **Persistent** - The message is stored on disk and is not lost if the broker crashes.
+                        - **Transactional** - The message is only delivered if the transaction is committed.
+                        - **Failover** - The messages are replicated across multiple machines.
+                        - **Scalability** - The messages are distributed across multiple machines.
+                        - Etc.
+
+                        Notes:
+                        You should not make any assumption about the guarantees provided by the broker. 
+                        Always check the documentation of the broker to know what guarantees are provided.
+
+                
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        <img src="/images/delivery-guarantees-producer.png" style="width: 100%;">
+
+                        Notes:
+
+                        The message broker can use persistent storage to store the messages on disk and provide at least once delivery guarantee.
+
+                        Here, the producer sends a message to the broker and the broker stores the message on disk. The message is not lost if the broker crashes.
+
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        <img src="/images/delivery-guarantees-consumer.png" style="width: 100%;">
+
+                        Notes:
+
+                        Similarly, the consumer handles the message and sends and acknowledgement to the broker, which deletes the message from disk. The message is not lost if the broker crashes.
+                
+                    </textarea>
+                </section>
+
+
+            </section>
+
+            <section>
+                <h2><i class="fas fa-hand-paper"></i> Questions?</h2>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/markdown/markdown.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.js"></script>
+    <script src="./script.js" type="module"></script>
+
+</body>
+
+</html>
