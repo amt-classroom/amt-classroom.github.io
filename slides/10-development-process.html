@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>Messaging</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/white.css"id="theme">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/html.min.js"></script>
+
+    
+    <script src="/fontawesome-6.4.2/js/all.min.js"></script>
+    <link rel="stylesheet" href="./style.css">
+
+    <script src="print.js"></script>
+
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- Title and outline -->
+            <section data-background="#333333">
+                <h2>AMT</h2>
+                <h1>Development process</h1>
+                <p>Bertil Chapuis</p>      
+            </section>
+            <section data-markdown>
+                <textarea data-template>
+                    ## <i class="fas fa-tasks"></i> Overview of Today's Class
+                    
+                    - Guided exercise on the development process
+
+                </textarea>
+            </section>
+
+            <!-- Jakarta Messaging -->
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fas fa-hand-paper"></i> Development process</h2>
+                </section>
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hand-paper"></i> User stories and mockups
+
+                        We want to build a simple service that probes the availability of websites.
+
+                        As a user, I want to be able to:
+                        - Consult the home page of the application
+                        - Consult the list of probes
+                        - Consult the status of a probe
+                        - Register a new probe
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        <img src="/images/uptime-1.png" alt="Uptime" style="width: 100%;">
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        <img src="/images/uptime-2.png" alt="Uptime" style="width: 100%;">
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        <img src="/images/uptime-3.png" alt="Uptime" style="width: 100%;">
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        <img src="/images/uptime-4.png" alt="Uptime" style="width: 100%;">
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        <img src="/images/uptime-architecture.png" alt="Uptime" style="width: 60%;">
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hand-paper"></i> Project setup
+
+                        The idea is to create a quarkus project from scratch.
+
+                        ```
+                        quarkus create app ch.heigvd.amt:example-uptime
+                        ```
+
+                        Extensions should be progressively added to the project.
+
+                        ```
+                        quarkus add-extension quarkus-resteasy
+                        ```
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hand-paper"></i> Data model
+
+                        Our data model is composed of two entities:
+                        - Probe:
+                            - url
+                        - Status:
+                            - id
+                            - probe
+                            - isUp
+                            - timestamp
+                            - duration
+
+                        The classes corresponding to these entities should be created and committed to the repository.
+
+                        The hibernate and postgresql extensions should be added to the project.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hand-paper"></i> Service layer
+
+                        The service layer can be implemented using test-driven development (TDD):
+                        - Write a failing test
+                        - Implement the code to make the test pass
+                        - Refactor the code
+
+                        The ProbeService could be decomposed in following methods:
+                        - List<Probe> listProbes()
+                        - Probe createProbeIfNotExists(@Valid Probe probe)
+                        - Status getLastStatus(String url)
+                        - List<Status> getStatusList(String url, int count)
+                        - Status executeProbe(Probe probe)
+                        - Status computeStatus(Probe probe)
+                    
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hand-paper"></i> Presentation layer
+
+                        The dev mode of quarkus is very useful to test the presentation layer manually.
+                        It enables to hot reload the code and to test the application in a browser.
+
+                        Once the result is satisfying, one can write a test to verify that the code works as expected and prevent regressions.
+                    
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hand-paper"></i> Messaging
+
+                        The ProbeProducer and ProbeConsumer classes use the ProbeService to execute probes and store the results in the database.
+
+                        This kind of code is not easy to test. It is fine to use a manual test to verify that everything work as expected.
+                    
+                    </textarea>
+                </section>
+                
+            </section>
+
+            <section>
+                <h2><i class="fas fa-hand-paper"></i> Questions?</h2>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/markdown/markdown.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.js"></script>
+    <script src="./script.js" type="module"></script>
+
+</body>
+
+</html>
