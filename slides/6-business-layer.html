@@ -122,7 +122,7 @@
                         - **Read uncommitted:** A transaction may read data that is still uncommitted by other transactions.
                         - **Read committed:** A transaction can only read data that has been committed by other transactions.
                         - **Repeatable read:** A transaction can only read data that has been committed and will see a consistent snapshot of the data for the duration of the transaction.
-                        - **Serializable (highest level):** A transaction can only read data that has been committed, and it will see a consistent snapshot of the data for the duration of the transaction.
+                        - **Serializable (highest level):** Transactions are completely isolated from each others transactions, as if they were executed serially, one after the other.
                     
                         Notes:
                         Other isolation levels are possible, but they are not defined in the JDBC API.
