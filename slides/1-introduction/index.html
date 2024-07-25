@@ -8,16 +8,16 @@
 
 	<title>Introduction</title>
 
-    <link rel="stylesheet" href="../node_modules/reveal.js/dist/reveal.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="../node_modules/reveal.js/dist/theme/white.css" crossorigin="anonymous" id="theme">
-    <script src="../node_modules/reveal.js/dist/reveal.js"></script>
-    <script src="../node_modules/reveal.js/plugin/markdown/markdown.js"></script>
-    <script src="../node_modules/reveal.js/plugin/highlight/highlight.js"></script>
-    <script src="../node_modules/reveal.js/plugin/notes/notes.js"></script>
-    <script src="../node_modules/reveal.js/plugin/search/search.js"></script>
-    <script src="./script.js" type="module"></script>
-    <link rel="stylesheet" href="../css/solarized-light.css" />
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="/node_modules/reveal.js/dist/reveal.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="/node_modules/reveal.js/dist/theme/white.css" crossorigin="anonymous" id="theme">
+    <script src="/node_modules/reveal.js/dist/reveal.js"></script>
+    <script src="/node_modules/reveal.js/plugin/markdown/markdown.js"></script>
+    <script src="/node_modules/reveal.js/plugin/highlight/highlight.js"></script>
+    <script src="/node_modules/reveal.js/plugin/notes/notes.js"></script>
+    <script src="/node_modules/reveal.js/plugin/search/search.js"></script>
+    <script src="/slides/script.js" type="module"></script>
+    <link rel="stylesheet" href="/css/solarized-light.css" />
+    <link rel="stylesheet" href="/slides/style.css">
 
     <script src="/fontawesome-6.4.2/js/all.min.js"></script>
 </head>
@@ -60,20 +60,45 @@
                     <textarea data-template>
                         ## <i class="fas fa-sitemap"></i> Definition
                         
-                        The **multitier** architecture,also refered to as **n-tier** or **layered** architecture, is a common architectural style for the design of modern applications.
+                        The **multitier** architecture, also referred to as **n-tier** or **layered** architecture, is a common architectural style for the design of modern applications.
                         
                         It is based on the idea of dividing an application into layers, each of which is responsible for a specific set of tasks.
                         
                         The most common implementation of the multitier architecture is the **three-tier** architecture (presentation, business, and data).
                     </textarea>
                 </section>
+                <section data-markdown style="font-size: 0.5em;">
+                    <textarea data-template>
+                        ## Layers pattern
+                        
+                        The Layers Pattern, also known as the Layered Architecture Pattern, is a design approach used in software development to structure programs into distinct layers, 
+                        each with a specific role and responsibility. This pattern promotes separation of concerns, making it easier to manage and maintain applications.
+
+                        This pattern has been as well employed for network development and a prime example is the OSI model:
+                        <img src="./images/osi7layers.png" alt="Layered architecture" style="width: 60%;"/>
+                        <div  style="font-size: 0.5em;text-align: center;"><a href="https://www.cloudflare.com/learning/ddos/glossary/open-systems-interconnection-model-osi/">Cloudflare OSI Model</a></div>
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;">
+                    <textarea data-template>
+                        ## Layer and tier
+                        **Layers** are logical divisions that separates different concerns or functionalities. Focuses on organizing the code and improving maintainability and separation of concerns.
+
+                        **Tiers** are physical divisions of an application across multiple machines. Focuses on distributing the application’s components to improve security, performance, scalability, and fault tolerance.
+                        </div>                        
+                    </textarea>
+                </section>
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template>
                         ## <i class="fas fa-sitemap"></i> Conway's law
 
-                        *Any organization that designs a system (defined broadly) will produce a design whose structure is a copy of the organization's communication structure.*
+                        > Any organization that designs a system (defined broadly) will produce a design whose structure is a copy of the organization's communication structure.
+                    
+                        <div  style="font-size: 0.4em;">Melvin E. Conway, <i>How Do Committees Invent?</i>, April 1968</div>
 
                         Notes:
+
+                        http://www.melconway.com/Home/pdf/committees.pdf
 
                         In a development team, it is common to find:
                         - front-end developers
@@ -88,9 +113,9 @@
                 </section>
                 <section data-markdown style="font-size: 0.8em; text-align: center;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        ### Multitier architecture
+                        ### Layered architecture
 
-                        <img src="/images/layered-architecture-1.png" alt="Layered architecture" style="width: 60%;"/>
+                        <img src="./images/layered-architecture-1.png" alt="Layered architecture" style="width: 60%;"/>
                         
                         Notes:
 
@@ -109,9 +134,9 @@
                 </section>
                 <section data-markdown style="font-size: 0.8em; text-align: center;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        ### Two deployment units
+                        ### Two-tier layered architecture
 
-                        <img src="/images/layered-architecture-2.png" alt="Layered architecture" style="width: 60%;"/>
+                        <img src="./images/layered-architecture-2.png" alt="Layered architecture" style="width: 60%;"/>
                         
                         Notes:
                         
@@ -122,9 +147,9 @@
                 </section>
                 <section data-markdown style="font-size: 0.8em; text-align: center;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        ### Three deployment units
+                        ### Three-tier layered architecture
 
-                        <img src="/images/layered-architecture-3.png" alt="Layered architecture" style="width: 60%;"/>
+                        <img src="./images/layered-architecture-3.png" alt="Layered architecture" style="width: 60%;"/>
 
                         Notes:
 
@@ -139,7 +164,7 @@
                     <textarea data-template data-separator-notes="^Notes:">
                         ### Layer isolation
 
-                        <img src="/images/layered-architecture-4.png" alt="Layered architecture" style="width: 60%;"/>
+                        <img src="./images/layered-architecture-4.png" alt="Layered architecture" style="width: 60%;"/>
                         
                         Notes:
 
@@ -171,7 +196,7 @@
                     <textarea data-template data-separator-notes="^Notes:">
                         ### A recipe for spaghetti code
 
-                        <img src="/images/layered-architecture-5.png" alt="Layered architecture" style="width: 60%;"/>
+                        <img src="./images/layered-architecture-5.png" alt="Layered architecture" style="width: 60%;"/>
                         
                         Notes:
 
@@ -181,7 +206,7 @@
 
                         **Tight coupling** between layers makes the application **harder to maintain** and **evolve**.
 
-                        This is a recipe for **spaghetti code** 🍝 turning the application into a **big ball of mud** 💩.
+                        This is a recipe for **spaghetti code** 🍝 turning the application into a **big ball of mud** 🧶.
                     </textarea>
                 </section>
 
@@ -189,7 +214,7 @@
                     <textarea data-template data-separator-notes="^Notes:">
                         ### An increasing complexity
 
-                        <img src="/images/layered-architecture-6.png" alt="Layered architecture" style="width: 60%;"/>
+                        <img src="./images/layered-architecture-6.png" alt="Layered architecture" style="width: 60%;"/>
                         
                         Notes:
 
@@ -207,7 +232,7 @@
                     <textarea data-template data-separator-notes="^Notes:">
                         ### Reducing complexity with a new layer
 
-                        <img src="/images/layered-architecture-7.png" alt="Layered architecture" style="width: 60%;"/>
+                        <img src="./images/layered-architecture-7.png" alt="Layered architecture" style="width: 60%;"/>
                         
                         Notes:
 
@@ -232,7 +257,7 @@
                     <textarea data-template data-separator-notes="^Notes:">
                         ### An outdated architecture?
 
-                        The **multitier architecture** is often associated with pejorative terms such as **monolith**, **big ball of mud** 💩, or **spaghetti code** 🍝.
+                        The **multitier architecture** is often associated with pejorative terms such as **monolith**, **big ball of mud** 🧶, or **spaghetti code** 🍝.
 
                         The **microservices architecture** is often presented as the solution 💡 to all the problems of the multitier architecture.
 
@@ -241,9 +266,22 @@
                     </textarea>
                 </section>
 
+                <section data-markdown style="font-size: 0.7em;">
+                    <textarea data-template data-separator-notes="^Notes:">
+                        ### Big ball of mud
+
+                        Each dot on the perimeter of the circle represents a class, and each line represents connections between the classes.
+
+                        <img src="./images/fosa_0901.png" alt="Big ball of mud" style="width: 35%;"/>
+
+                        <div  style="font-size: 0.5em;text-align: center;">Mark Richards, Neal Ford,  <i>Fundamentals of Software Architecture</i></div>
+
+                    </textarea>
+                </section>
+
                 <section data-markdown style="font-size: 0.8em; text-align: center;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        <img src="/images/monolith-vs-microservices.jpeg" alt="Monolith vs microservices" style="width: 100%;"/>
+                        <img src="./images/monolith-vs-microservices.jpeg" alt="Monolith vs microservices" style="width: 100%;"/>
                         
                         https://twitter.com/ddprrt/status/1425418538257428488
                     
@@ -310,7 +348,7 @@
 
                 <section data-markdown style="font-size: 0.8em; text-align: center;">
                     <textarea data-template>
-                        <img src="/images/mvc-2.png" alt="Model-View-Controller" style="width: 80%;"/>
+                        <img src="./images/mvc-2.png" alt="Model-View-Controller" style="width: 80%;"/>
                         
                         Notes:
 
@@ -328,7 +366,7 @@
 
                 <section data-markdown style="font-size: 0.8em; text-align: center;">
                     <textarea data-template>
-                        <img src="/images/mvc-1.png" alt="Model-View-Controller" style="width: 80%;"/>
+                        <img src="./images/mvc-1.png" alt="Model-View-Controller" style="width: 80%;"/>
                         
                         Notes:
 
@@ -339,7 +377,7 @@
 
                 <section data-markdown style="font-size: 0.8em; text-align: center;">
                     <textarea data-template>
-                        <img src="/images/mvc-3.png" alt="Model-View-Controller" style="width: 80%;"/>
+                        <img src="./images/mvc-3.png" alt="Model-View-Controller" style="width: 80%;"/>
                         
                         Notes:
 
@@ -443,13 +481,13 @@
                     <textarea data-template data-separator-notes="^Notes:">
                         ## <i class="fas fa-sitemap"></i> Specifications
 
-                        <img src="/images/jakarta.png" alt="Jakarta EE" style="width: 25%; margin-left: 0;"/>
+                        <img src="./images/jakarta.png" alt="Jakarta EE" style="width: 25%; margin-left: 0;"/>
 
                         **Jakarta EE** (formerly known as Java EE) is a set of specifications for the development of **multitier applications** in Java.
 
-                        <img src="/images/microprofile.png" alt="MicroProfile" style="width: 40%; margin-left: 0;"/>
+                        <img src="./images/microprofile.png" alt="MicroProfile" style="width: 40%; margin-left: 0;"/>
 
-                        **MicroProfile** is a set of specifications overlapping with Jackarta EE, but with a focus on **microservices** and **cloud-native** applications.
+                        **MicroProfile** is a set of specifications overlapping with Jakarta EE, but with a focus on **microservices** and **cloud-native** applications.
 
                         Notes:
 
@@ -479,7 +517,7 @@
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
 
-                        <img src="/images/jakarta-ee-10.jpeg" alt="Jakarta EE" style="width: 100%;"/>
+                        <img src="./images/jakarta-ee-10.jpeg" alt="Jakarta EE" style="width: 100%;"/>
 
                         Notes:
 
@@ -524,7 +562,7 @@
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        <img src="/images/jetbrains-survey-1.png" alt="JetBrains survey" style="width: 60%;"/>
+                        <img src="./images/jetbrains-survey-1.png" alt="JetBrains survey" style="width: 60%;"/>
                         Notes:
                         Source: [Jetbrains Survey 2022](https://www.jetbrains.com/lp/devecosystem-2022/java/)
                     </textarea>
@@ -532,7 +570,7 @@
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        <img src="/images/jetbrains-survey-5.png" alt="JetBrains survey" style="width: 100%;"/>
+                        <img src="./images/jetbrains-survey-5.png" alt="JetBrains survey" style="width: 100%;"/>
                         Notes:
                         Source: [Jetbrains Survey 2022](https://www.jetbrains.com/lp/devecosystem-2022/java/)
                     </textarea>
@@ -540,7 +578,7 @@
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        <img src="/images/jetbrains-survey-4.png" alt="JetBrains survey" style="width: 100%;"/>
+                        <img src="./images/jetbrains-survey-4.png" alt="JetBrains survey" style="width: 100%;"/>
                         Notes:
                         Source: [Jetbrains Survey 2022](https://www.jetbrains.com/lp/devecosystem-2022/java/)
                     </textarea>
@@ -548,7 +586,7 @@
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        <img src="/images/jetbrains-survey-6.png" alt="JetBrains survey" style="width: 100%;"/>
+                        <img src="./images/jetbrains-survey-6.png" alt="JetBrains survey" style="width: 100%;"/>
                         Notes:
                         Source: [Jetbrains Survey 2022](https://www.jetbrains.com/lp/devecosystem-2022/java/)
                     </textarea>
@@ -556,7 +594,7 @@
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        <img src="/images/jetbrains-survey-7.png" alt="JetBrains survey" style="width: 100%;"/>
+                        <img src="./images/jetbrains-survey-7.png" alt="JetBrains survey" style="width: 100%;"/>
                         Notes:
                         Source: [Jetbrains Survey 2022](https://www.jetbrains.com/lp/devecosystem-2022/java/)
                     </textarea>
@@ -580,7 +618,7 @@
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        <img src="/images/jetbrains-survey-3.png" alt="JetBrains survey" style="width: 100%;"/>
+                        <img src="./images/jetbrains-survey-3.png" alt="JetBrains survey" style="width: 100%;"/>
                         Notes:
                         Source: [Jetbrains Survey 2022](https://www.jetbrains.com/lp/devecosystem-2022/java/)
                     </textarea>
@@ -589,7 +627,7 @@
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        <img src="/images/jetbrains-survey-2.png" alt="JetBrains survey" style="width: 100%;"/>
+                        <img src="./images/jetbrains-survey-2.png" alt="JetBrains survey" style="width: 100%;"/>
                         Notes:
                         Source: [Jetbrains Survey 2022](https://www.jetbrains.com/lp/devecosystem-2022/java/)
                     </textarea>
@@ -614,7 +652,7 @@
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        <img src="/images/jetbrains-survey-8.png" alt="JetBrains survey" style="width: 100%;"/>
+                        <img src="./images/jetbrains-survey-8.png" alt="JetBrains survey" style="width: 100%;"/>
                         Notes:
                         Source: [Jetbrains Survey 2022](https://www.jetbrains.com/lp/devecosystem-2022/java/)
                     </textarea>
@@ -622,31 +660,31 @@
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        <img src="/images/jobs-jobup.png" alt="JetBrains survey" style="width: 100%;"/>
+                        <img src="./images/jobs-jobup.png" alt="JetBrains survey" style="width: 100%;"/>
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        <img src="/images/jobs-google.png" alt="JetBrains survey" style="width: 100%;"/>
+                        <img src="./images/jobs-google.png" alt="JetBrains survey" style="width: 100%;"/>
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        <img src="/images/jobs-apple.png" alt="JetBrains survey" style="width: 100%;"/>
+                        <img src="./images/jobs-apple.png" alt="JetBrains survey" style="width: 100%;"/>
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        <img src="/images/jobs-amazon.png" alt="JetBrains survey" style="width: 100%;"/>
+                        <img src="./images/jobs-amazon.png" alt="JetBrains survey" style="width: 100%;"/>
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        <img src="/images/jobs-meta.png" alt="JetBrains survey" style="width: 100%;"/>
+                        <img src="./images/jobs-meta.png" alt="JetBrains survey" style="width: 100%;"/>
                     </textarea>
                 </section>
 
@@ -671,6 +709,7 @@
                         - Runtime annotations
                         - Compile-time annotations
 
+
                     </textarea>
                 </section>
 
@@ -685,20 +724,25 @@
                         - Dynamically create objects
                         - Dynamically invoke methods
                         - Dynamically access fields
+                        - Code generation
 
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-
                         ```java
                         import java.lang.reflect.*;
 
+                        // Instantiate an object
                         Class<?> clazz = Class.forName("com.example.MyClass");
                         Object object = clazz.newInstance();
+
+                        // Invoke a method of the object
                         Method method = clazz.getMethod("myMethod");
                         method.invoke(object);
+
+                        // Set an object's field with a given value
                         Field field = clazz.getField("myField");
                         field.set(object, "myValue");
                         ```
@@ -725,10 +769,8 @@
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-
+                        A simple interface and its implementation.
                         ```java
-                        import java.lang.reflect.*;
-
                         interface MyInterface {
                             void myMethod();
                         }
@@ -743,10 +785,13 @@
                     </textarea>
                 </section>
 
-                <section data-markdown style="font-size: 0.8em;">
+                <section data-markdown style="font-size: 0.7em;">
                     <textarea data-template data-separator-notes="^Notes:">
-
                         ```java
+                        import java.lang.reflect.*;
+
+                        // Assuming here MyInterface and MyInterfaceImpl definitions
+
                         public class MyInvocationHandler implements InvocationHandler {
                             private final Object target;
         
@@ -761,7 +806,9 @@
                                 System.out.println("After method call");
                                 return result;
                             }
-        
+                        }
+
+                        public class App {
                             public static void main(String[] args) {
                                 MyInterface object = new MyInterfaceImpl();
                                 MyInvocationHandler handler = new MyInvocationHandler(object);
@@ -797,7 +844,7 @@
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-
+                        Processing annotations at runtime of application.
                         ```java
                         import java.lang.annotation.*;
 
@@ -836,12 +883,17 @@
 
                         Both the compile-time annotations and the annotation processor must be compiled and added to the classpath of the compiler.
 
+                        Notes:
+                        Examples of compile-time annotations improving startup of Java applications:
+                        * https://dagger.dev/ (dependency injection)
+                        * https://projectlombok.org/ (generation of boilerplate code)
+                        * https://mapstruct.org/ (generate mappers)
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-
+                        Implementation stub of compile-time annotations processor.
                         ```java
                         import javax.annotation.processing.*;
                         import javax.lang.model.SourceVersion;
