@@ -1,0 +1,14 @@
+{
+  "name": "amt-classroom.github.io",
+  "version": "1.0.0",
+  "description": "## Développement des slides",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "reveal.js": "^5.1.0"
+  }
+}

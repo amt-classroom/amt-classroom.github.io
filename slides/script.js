@@ -1,4 +1,3 @@
-
 let EvalJavaScript = {
     id: "eval",
     init: (deck) => {
@@ -70,8 +69,8 @@ Reveal.initialize({
     parallaxBackgroundHorizontal: null,
     parallaxBackgroundVertical: null,
     display: 'block',
-    plugins: [RevealMarkdown, RevealHighlight, EvalJavaScript, RevealNotes],
-    showNotes: true,
+    plugins: [RevealMarkdown, RevealHighlight, RevealSearch, EvalJavaScript, RevealNotes],
+    showNotes: false,
     markdown: {
         smartypants: true
     },
@@ -86,7 +85,7 @@ Reveal.on("slidechanged", slideChanged)
 Reveal.configure({
     keyboard: {
         72 /* H */: () => {
-            Reveal.configure({showNotes: false})
+            Reveal.toggleHelp()
         }
     }
 })
