@@ -8,16 +8,16 @@
 
 	<title>Accessing data</title>
 
-    <link rel="stylesheet" href="../node_modules/reveal.js/dist/reveal.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="../node_modules/reveal.js/dist/theme/white.css" crossorigin="anonymous" id="theme">
-    <script src="../node_modules/reveal.js/dist/reveal.js"></script>
-    <script src="../node_modules/reveal.js/plugin/markdown/markdown.js"></script>
-    <script src="../node_modules/reveal.js/plugin/highlight/highlight.js"></script>
-    <script src="../node_modules/reveal.js/plugin/notes/notes.js"></script>
-    <script src="../node_modules/reveal.js/plugin/search/search.js"></script>
-    <script src="./script.js" type="module"></script>
-    <link rel="stylesheet" href="../css/solarized-light.css" />
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="/node_modules/reveal.js/dist/reveal.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="/node_modules/reveal.js/dist/theme/white.css" crossorigin="anonymous" id="theme">
+    <script src="/node_modules/reveal.js/dist/reveal.js"></script>
+    <script src="/node_modules/reveal.js/plugin/markdown/markdown.js"></script>
+    <script src="/node_modules/reveal.js/plugin/highlight/highlight.js"></script>
+    <script src="/node_modules/reveal.js/plugin/notes/notes.js"></script>
+    <script src="/node_modules/reveal.js/plugin/search/search.js"></script>
+    <script src="/slides/script.js" type="module"></script>
+    <link rel="stylesheet" href="/css/solarized-light.css" />
+    <link rel="stylesheet" href="/slides/style.css">
 
     <script src="/fontawesome-6.4.2/js/all.min.js"></script>
 </head>
@@ -37,8 +37,8 @@
                     ## <i class="fas fa-tasks"></i> Overview of Today's Class
                     - Manipulating data
                     - Querying databases
-                    - Migrating databases
                     - Object relational impedance mismatch
+                    - Migrating databases
                 </textarea>
             </section>
 
@@ -51,7 +51,7 @@
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> Manipulating data
 
-                        Let's condider the following model:
+                        Let's consider the following model:
                         - Person(id, first_name, last_name)
                         - Order(id, person_id, date)
                         - OrderLine(id, order_id, item_id, quantity)
@@ -158,7 +158,7 @@
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> Generated schema
 
-                        <img src="/images/generated-schema.png" alt="Generated schema" style="width: 80%;">
+                        <img src="./images/generated-schema.png" alt="Generated schema" style="width: 80%;">
 
                         Notes:
 
@@ -170,25 +170,50 @@
                         
                     </textarea>
                 </section>
+                <section data-markdown style="font-size: 0.4em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Why join tables are used in the generated schema?
+                        In summary the relationship in JPA have an owning side that controls the relation, the annotation `@OneToMany` alone (i.e without a reverse `@ManyToOne`) creates an unidirectional relationship. Since the owning side doesn't specify more information, the default mapping apply. In order to specify a relationship with foreign key in the non-owning side, more information must be given to JPA.
+
+                        **Jakarta Persistence
+ 3.1, [2.11.5.1. Unidirectional OneToMany Relationships](https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1#a764):**
+                        
+                        <i class="fa-solid fa-quote-left"></i> 
+                        The following mapping defaults apply:
+                        * Entity A is mapped to a table named A.
+                        * Entity B is mapped to a table named B.
+                        * There is a join table that is named A_B (owner name first). This join table has two foreign key columns. One foreign key column refers to table A [...] The other foreign key column refers to table B [...] 
+                        <i class="fa-solid fa-quote-right"></i> 
+                        
+                        **Jakarta Persistence
+ 3.1, [2.10. Entity Relationships](https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1#a516):**
+
+                        <i class="fa-solid fa-quote-left"></i>
+                        The mapping of unidirectional one-to-many relationships by means of foreign key mappings. The JoinColumn annotation or corresponding XML element must be used to specify such non-default mappings.
+                        <i class="fa-solid fa-quote-right"></i> 
+                        
+                        
+                    </textarea>
+                </section>
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> Always tell the ORM what to do!
 
-                        In the Person class: 
+                        In the `Person` class: 
                         ```java
                         @OneToMany
                         @JoinColumn(name = "person_id", referencedColumnName = "id")
                         private List<Order> orders;
                         ```
 
-                        In the Order class:
+                        In the `Order` class:
                         ```java
                         @OneToMany
                         @JoinColumn(name = "order_id", referencedColumnName = "id")
                         private List<OrderLine> orderLines;
                         ```
 
-                        In the OrderLine class:
+                        In the `OrderLine` class:
                         ```java
                         @ManyToOne
                         @JoinColumn(name = "item_id", referencedColumnName = "id")
@@ -201,8 +226,45 @@
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> Improved generated schema
 
-                        <img src="/images/generated-schema-improved.png" alt="Generated schema" style="width: 50%;">
+                        <img src="./images/generated-schema-improved.png" alt="Generated schema" style="width: 40%;">
                         
+                        
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.4em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Entity Instance’s Life Cycle
+                        **Jakarta Persistence
+                        3.1, [3.2. Entity Instance’s Life Cycle](https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1#a1929):**
+                        
+
+                        A **new** entity instance has no persistent identity, and is not yet associated with a persistence context.
+                        ```java
+                        var p = new Person("John", "Doe");
+                        ```
+
+                        A **managed** entity instance is an instance with a persistent identity that is currently associated with a persistence context.
+                        ```java
+                        var p = new Person("John", "Doe");
+                        em.persist(p);
+                        ```
+                        ```java
+                        var p = em.find(Person.class, 1L);
+                        ```
+
+                        A **detached entity** instance is an instance with a persistent identity that is not (or no longer) associated with a persistence context.
+                        A detached entity results from transaction commit if a transaction-scoped persistence context is used; from transaction rollback; from detaching the entity from the persistence context; from clearing the persistence context; from closing an entity manager.
+                        ```java
+                        var p = em.find(Person.class, 1L);
+                        em.detach(p);
+                        ```
+
+                        A **removed** entity instance is an instance with a persistent identity, associated with a persistence context, that will be removed from the database upon transaction commit.
+                        ```java
+                        var p = em.find(Person.class, 1L);
+                        em.remove(p);
+                        ```
                     </textarea>
                 </section>
 
@@ -210,7 +272,7 @@
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> Create
 
-                        In this example, the entity manager is used to create a new person.
+                        In this example, the entity manager is used to persist a new person.
 
                         ```java
                         // Getting the entity manager
@@ -231,12 +293,11 @@
 
                     </textarea>
                 </section>
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.4em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fas fa-database"></i> Update operation
+                        ## <i class="fas fa-database"></i> Update and removal operation
 
                         In this example, the entity manager is used to find a person and update it.
-
                         ```java
                         // Getting the entity manager
                         EntityManager em = ...;
@@ -244,56 +305,36 @@
                         // Finding a person
                         Person person = em.find(Person.class, 1L);
 
-                        // Updating the person
+                        // Updating the person through its managed entity
                         person.setFirstName("John");
                         person.setLastName("Smith");
-                        em.merge(person);
+
+                        // The person instance being managed since it is returned by the EntityManager, it will be synchronized to the database by the JPA implementation
                         ```
-                    </textarea>
-                </section>
 
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
-                    <textarea data-template>
-                        ## <i class="fas fa-database"></i> Lazy and eager loading
-
-                        By default, JPA will **lazily load** the relationships of an entity.
-
-                        - In other words, when loading an entity, JPA will not load its relationships. When accessing a relationship, JPA will load the relationship on demand.
-
-                        In some cases, you may want to **eagerly load** the relationships of an entity.
-
-                        - In other words, when loading an entity, JPA will load its relationships. This can be useful when you know that you will need the relationships.
-
-                    </textarea>
-                </section>
-
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
-                    <textarea data-template>
-                        ## <i class="fas fa-database"></i> Eager loading
-
-                        Eager loading can be enabled on a relationship using the @ManyToOne(fetch = FetchType.EAGER) annotation.
-
+                        In this example, the entity manager is used to find a person and remove it.
                         ```java
-                        @Entity(name = "orders")
-                        public class Order {
-                        
-                            // ...
-                        
-                            @OneToMany(fetch = FetchType.EAGER)
-                            @JoinColumn(name = "order_id", referencedColumnName = "id")
-                            private List<OrderLine> orderLines;
+                        // Getting the entity manager
+                        EntityManager em = ...;
 
-                            // ...
-                        }
-                        ````
+                        // Finding a person
+                        Person person = em.find(Person.class, 1L);
 
-                        In this case, when loading an order, JPA will also load the person relationship.
+                        // Removal of the entity
+                        em.remove(person);
 
-                        Observe the effect of lazy and eager loading in the logs.
+                        // The person instance being managed since it is returned by the EntityManager, it will be synchronized to the database by the JPA implementation
+                        ```
 
-                        What could possibly go wrong if you always use eager loading?
+                        **Jakarta Persistence
+ 3.1, [3.2.4. Synchronization to the Databases](https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1#a1955):** 
 
-                        
+                        <i class="fa-solid fa-quote-left"></i>The state of persistent entities is synchronized to the database at transaction commit. This synchronization involves writing to the database any updates to persistent entities and their relationships. [...] The persistence provider runtime is permitted to perform synchronization to the database at other times as well when a transaction is active and the persistence context is joined to the transaction. The flush method can be used by the application to force synchronization. [...]
+                        <i class="fa-solid fa-quote-right"></i>
+
+                        <i class="fa-solid fa-circle-exclamation"></i> To better understand **when** and **what** happens during the synchronization:
+                        1. activates the logging of SQL queries `quarkus.hibernate-orm.log.sql=true`
+                        2. use the debugger with breakpoints and execute step-by-step.
                     </textarea>
                 </section>
 
@@ -330,22 +371,34 @@
                     </textarea>
                 </section>
 
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> Batch with JPA
 
-                        By default quarkus will flush and clear the persistence context after each transaction and changing this behavior is out of scope for this class.
+                        By default, Hibernate does not use JDBC batching capabilities. However it is possible to enable it globally or per session.
 
-                        However, JPA offers a way to flush and clear the persistence context manually.
+                        Hibernate ORM User Guide 6.5, [13.1. JDBC batching](https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html#batch-jdbcbatch)
 
+                        <i class="fa-solid fa-quote-left"></i> 
+                        `hibernate.jdbc.batch_size`:
+                        Controls the maximum number of statements Hibernate will batch together before asking the driver to execute the batch. Zero or a negative number disables this feature.<i class="fa-solid fa-quote-right"></i> 
+                        </p>
+
+                        Quarkus corresponding configuration: 
+                        [ `quarkus.hibernate-orm.jdbc.statement-batch-size`](https://quarkus.io/guides/hibernate-orm#quarkus-hibernate-orm_quarkus-hibernate-orm-jdbc-statement-batch-size
+                        )
+
+                        Anti-pattern of filling the persistent context within a transaction leading to a memory leak that coud result to out of memory errors:
                         ```java
-                        EntityManager em;
-                        em.persist(new Person("John", "Doe"));
-                        em.persist(new Person("Jane", "Doe"));
-                        em.flush();
-                        em.clear();
-                        ```
+                        EntityManager entityManager = ...;
 
+                        for (int i = 0; i < 100_000; i++) {
+                            Person Person = new Person(String.format("Jon %d", i), String.format("Doe %d", i));
+                            entityManager.persist(Person);
+                        }
+                        ```
+                        Remember that the persistent context can be manually flushed through `EntityManager.flush()`, which triggers a database synchronization and `EntityManager.clear()` can be used to control the size of the persistent context.
+                        
                     </textarea>
                 </section>
 
@@ -419,7 +472,7 @@
 
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## Jackarta JPQL
+                        ## Jakarta JPQL
 
                         JPQL is a query language that is very similar to SQL Native.
                         The main difference is that it is used to query entities and not tables.
@@ -445,9 +498,9 @@
                 </section>
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## Jackarta Named Queries
+                        ## Jakarta Named Queries
 
-                        Named queries are a way to define queries in the entity class.
+                        Named queries are a way to define JPQL queries in the entity class.
 
                         ```java
                         @Entity(name = "persons")
@@ -523,6 +576,59 @@
                         Note that the Criteria Metamodel is generated at compile time from the entities.
                         The main advantage of the Criteria Metamodel is that it is **type** and **refactoring safe**.
 
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Lazy and eager loading
+
+                        By default, JPA will **lazily load** the relationships of an entity.
+
+                        - In other words, when loading an entity, JPA will not load its relationships. When accessing a relationship, JPA will load the relationship on demand.
+
+                        In some cases, you may want to **eagerly load** the relationships of an entity.
+
+                        - In other words, when loading an entity, JPA will load its relationships. This can be useful when you know that you will need the relationships.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Eager loading
+
+                        Eager loading can be enabled on a relationship using the @ManyToOne(fetch = FetchType.EAGER) annotation.
+
+                        ```java
+                        @Entity(name = "orders")
+                        public class Order {
+                        
+                            // ...
+                        
+                            @OneToMany(fetch = FetchType.EAGER)
+                            @JoinColumn(name = "order_id", referencedColumnName = "id")
+                            private List<OrderLine> orderLines;
+
+                            // ...
+                        }
+                        ````
+
+                        In this case, when loading an order, JPA will also load the person relationship.
+
+                        Observe the effect of lazy and eager loading in the logs.
+
+                        What could possibly go wrong if you always use eager loading?
+
+                        
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> TODO EntityGraph
+
+                        
                     </textarea>
                 </section>
 
@@ -618,117 +724,8 @@
                 </section>
             </section>
 
-            <!-- Migrating databases -->
-            <section>
-                <section data-background="#333333">
-                    <h2><i class="fas fa-database"></i> Migrating databases </h2>
-                </section>
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
-                    <textarea data-template>
-                        ## <i class="fas fa-database"></i> Migrating databases
-
-                        When **developing** an application, the database schema will evolve over time.
-                        - **Without production data**, it is easy to **drop and recreate** the database from scratch.
-
-                        Once the application is in **production**, the database schema will continue to evolve.
-                        - **With production data**, evolution requires **migrations**.
-
-                        **Migration tools** address this problem by allowing to evolve the database schema while keeping the data.
-                        
-                    </textarea>
-                </section>
-
-                <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
-                    <textarea data-template>
-                        <img src="/images/deployment-and-migration-process.svg" alt="Deployment and migration process" style="width: 90%;">
-
-                        Notes:
-                        source: https://teamplify.com/blog/zero-downtime-DB-migrations/
-
-                        This figure illustrates a deployment and migration process orchestrated by a CI/CD pipeline.
-
-                        The CI/CD pipeline will:
-                        - Run the database migration scripts
-                        - Progresively deploy the new version of the application
-
-                        This process allows to deploy a new version of the application without downtime.
-                        However, some inconsistencies may occur during the deployment.
-                        
-                        **Can you spot them?**
-
-
-
-
-                    </textarea>
-                </section>
-
-
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
-                    <textarea data-template>
-                        ## <i class="fas fa-database"></i> Flyway
-
-                        Flyway is a database migration tool that is very easy to use.
-
-                        You can add Flyway to your Quarkus project by adding the following dependency:
-
-                        ```
-                        <dependency>
-                            <groupId>io.quarkus</groupId>
-                            <artifactId>quarkus-flyway</artifactId>
-                        </dependency>
-
-                        ```
-
-                        Then, you can add your migration scripts in the src/main/resources/db/migration folder.
-
-                        ```
-                        src/main/resources/db/migration/V1__create_person_table.sql
-                        src/main/resources/db/migration/V2__create_order_table.sql
-                        src/main/resources/db/migration/V3__create_order_line_table.sql
-                        src/main/resources/db/migration/V4__create_item_table.sql
-                        ```
-
-                        Flyway will automatically execute these scripts in the correct order and track which scripts have already been executed.
-
-                    </textarea>
-                </section>
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
-                    <textarea data-template>
-                        ## <i class="fas fa-database"></i> Be careful with migrations
-
-                        When using migration tools, you should be **extremely careful**:
-                        - **Backup your database** before running a migration script.
-                        - **Test your migration** scripts on a dump of your production database before running them on the production database.
-                        - **Do not** **modify**, **delete**, **rename**, or **change** a migration script that has already been executed.
-
-                        If you do any of these things, you will probably **break the migration process**.
-                       
-                        **Forward thinking** is key when writing migration scripts.
-
-                    </textarea>
-                </section>
-
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
-                    <textarea data-template>
-                        ## <i class="fas fa-database"></i> What about rollbacks?
-
-                        Sadly, the rollback feature of Flyway is part of the commercial version.
-
-                        However, even if opensource alternatives exists (e.g. [Liquibase](https://docs.liquibase.com/home.html)) the **rollback feature is not a silver bullets**. 
-                        
-                        - For instance, after dropping a table or a column, the data is lost forever and cannot be recovered.
-                        
-                        Again, **forward thinking** is crucial when writing migration scripts.
-
-                        - For instance, if a migration script deletes data, it is a good idea to first mark the data as deprecated, and then delete it in a later migration script.
-
-                    </textarea>
-                </section>
-
-            </section>
-
-            <!-- Object relational impedance mismatch -->
-            <section>
+             <!-- Object relational impedance mismatch -->
+             <section>
                 <section data-background="#333333">
                     <h2><i class="fas fa-database"></i> <br> Object relational <br> impedance mismatch </h2>
                 </section>
@@ -738,7 +735,10 @@
                         
                         The object relational impedance mismatch is the difference between the object model and the relational model.
 
-                        <img src="/images/object-relational-impedance-mismatch.png" alt="Object relational impedance mismatch" style="width: 60%;">
+                        <img src="./images/object-relational-impedance-mismatch.png" alt="Object relational impedance mismatch" style="width: 50%;">
+
+                        <span style="font-size: 0.3em;">Source https://martinfowler.com/bliki/OrmHate.html</span>
+                        
 
                         Notes:
                         The object model has its roots in the graph theory.
@@ -750,7 +750,7 @@
 
                     </textarea>
                 </section>
-                <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> Object relational impedance mismatch
 
@@ -770,7 +770,7 @@
                         - Aggregations
                         - etc.
 
-                        These diferences are hard to reconcile, and result in a so called impedance mismatch.
+                        These differences are hard to reconcile, and result in a so called impedance mismatch.
 
 
                     </textarea>
@@ -807,6 +807,182 @@
 
             </section>
 
+            <!-- Migrating databases -->
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fas fa-database"></i> Migrating databases </h2>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Migrating databases
+
+                        When **developing** an application, the database schema will evolve over time.
+                        - **Without production data**, it is easy to **drop and recreate** the database from scratch.
+
+                        Once the application is in **production**, the database schema will continue to evolve.
+                        - **With production data**, evolution requires **migrations**.
+
+                        **Migration tools** address this problem by allowing to evolve the database schema while keeping the data.
+                        
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        <img src="./images/deployment-and-migration-process.svg" alt="Deployment and migration process" style="width: 90%;">
+
+                        Notes:
+                        source: https://teamplify.com/blog/zero-downtime-DB-migrations/
+
+                        This figure illustrates a deployment and migration process orchestrated by a CI/CD pipeline.
+
+                        The CI/CD pipeline will:
+                        - Run the database migration scripts
+                        - Progressively deploy the new version of the application
+
+                        This process allows to deploy a new version of the application without downtime.
+                        However, some inconsistencies may occur during the deployment.
+                        
+                        **Can you spot them?**
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Flyway
+
+                        Flyway is a database migration tool that is very easy to use.
+
+                        You can add Flyway to your Quarkus project by adding the following dependency:
+
+                        ```
+                        <dependency>
+                            <groupId>io.quarkus</groupId>
+                            <artifactId>quarkus-flyway</artifactId>
+                        </dependency>
+
+                        ```
+
+                        Then, you can add your migration scripts in the `src/main/resources/db/migration` folder.
+
+                        ```
+                        src/main/resources/db/migration/V1__create_person_table.sql
+                        src/main/resources/db/migration/V2__create_order_table.sql
+                        src/main/resources/db/migration/V3__create_order_line_table.sql
+                        src/main/resources/db/migration/V4__create_item_table.sql
+                        ```
+
+                        Flyway will automatically execute these scripts in the correct order and track which scripts have already been executed.
+
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Be careful with migrations
+
+                        When using migration tools, you should be **extremely careful**:
+                        - **Backup your database** before running a migration script.
+                        - **Test your migration** scripts on a dump of your production database before running them on the production database.
+                        - **Do not** **modify**, **delete**, **rename**, or **change** a migration script that has already been executed.
+
+                        If you do any of these things, you will probably **break the migration process**.
+                       
+                        **Forward thinking** is key when writing migration scripts.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> What about rollbacks?
+
+                        Sadly, the rollback feature of Flyway is part of the commercial version.
+
+                        However, even if opensource alternatives exists (e.g. [Liquibase](https://docs.liquibase.com/home.html)) the **rollback feature is not a silver bullet**. 
+                        
+                        - For instance, after dropping a table or a column, the data is lost forever and cannot be recovered.
+                        
+                        Again, **forward thinking** is crucial when writing migration scripts.
+
+                        - For instance, if a migration script deletes data, it is a good idea to first mark the data as deprecated, and then delete it in a later migration script.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Database refactoring
+                        Introducing changes to schemas can be split into two main categories:
+                        * Backward compatible changes with the code base
+                        * Backward-incompatible changes with the code base
+
+                        Backward compatible changes are trivial to introduce as they can be introduced decoupled of changes within the code base. 
+                        Backward-incompatible changes are non-trivial to apply as it will require to synchronize with changes to the code base and their respective deployments.
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Database refactoring - Backward-incompatible, Downtime 
+                        When service downtime is accepted, it is possible to introduce breaking change by coupling change sets together and align their deployments.
+                        In a nutshell:
+                        - Shutdown all instances of application vX, so that nothing is reading or writing to the database schema vY.
+                        - Deploy application vX+1 and migration scripts representing the database schema vY+1 that introduces the breaking change; vX+1 and vY+1 are compatible together.
+                        - Application vX+1 and database schema vY+1 are operational.
+
+                        Putting aside the requirement for service downtime, this approach demands greater care to ensure the compatibility of the two sets of changes in code and database schema; and their coupled deployment.
+                        This approach is rendered more error-prone and difficult (if not impossible) when the database is used by more than one application. Moreover deployment automation should then factor in this behavior and not conflict with non coupled deployment. **It is a pattern that could be used for prototype application but that won't be reliable for productive application.**
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Database refactoring - Backward-incompatible, expand and contract
+
+                        Expand and contract is a pattern to break backward-incompatible changes into a chain of backward-compatible changes through three distinctive phases. The changes in code and database schema are decoupled so that they can be developed, tested and deployed separately.
+                        * **Expand**, introduce backward-compatible changes that implements the refactoring in the database schema.
+                        * **Migrate**, introduce code changes that are moving to the newly capabilities of the refactored database schema.
+                        * **Contract** (i.e. to reduce to smaller size), consolidation by removing or cleaning-up any non-essential changes introduced in the expand phase to support the migration phase that are not used by the code anymore.
+
+                        <img src="./images/expand-contract.png" alt="Generated schema" style="width: 30%;">
+
+                        Building Evolutionary Architectures, 2017, Neal Ford, Rebecca Parsons, Patrick Kua
+
+                        This pattern is not limited to database refactoring and can be applied in others contexts. See https://martinfowler.com/bliki/ParallelChange.html
+                        
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Database refactoring - Backward-incompatible, expand and contract
+
+                        Example: Merge two or more tables into a single table. 
+                        <img src="./images/merge-two-tables.png" alt="Generated schema" style="width: 50%;">
+                        https://databaserefactoring.com/MergeTables.html
+
+                        Refactoring Databases: Evolutionary Database Design, 2006, Scott W. Ambler, Pramod J. Sadalage
+                        
+                        
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-database"></i> Database refactoring - Backward-incompatible, expand and contract
+
+                        Example: Rename an existing table Using View
+                        <img src="./images/rename-table-view.png" alt="Generated schema" style="width: 50%;">
+                        https://databaserefactoring.com/RenameTable.html
+
+                        Refactoring Databases: Evolutionary Database Design, 2006, Scott W. Ambler, Pramod J. Sadalage
+                        
+                        
+                    </textarea>
+                </section>
+
+            </section>
             <section>
                 <h2><i class="fas fa-hand-paper"></i> Questions?</h2>
             </section>

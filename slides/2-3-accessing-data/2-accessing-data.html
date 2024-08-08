@@ -8,16 +8,16 @@
 
 	<title>Accessing data</title>
 
-    <link rel="stylesheet" href="../node_modules/reveal.js/dist/reveal.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="../node_modules/reveal.js/dist/theme/white.css" crossorigin="anonymous" id="theme">
-    <script src="../node_modules/reveal.js/dist/reveal.js"></script>
-    <script src="../node_modules/reveal.js/plugin/markdown/markdown.js"></script>
-    <script src="../node_modules/reveal.js/plugin/highlight/highlight.js"></script>
-    <script src="../node_modules/reveal.js/plugin/notes/notes.js"></script>
-    <script src="../node_modules/reveal.js/plugin/search/search.js"></script>
-    <script src="./script.js" type="module"></script>
-    <link rel="stylesheet" href="../css/solarized-light.css" />
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="/node_modules/reveal.js/dist/reveal.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="/node_modules/reveal.js/dist/theme/white.css" crossorigin="anonymous" id="theme">
+    <script src="/node_modules/reveal.js/dist/reveal.js"></script>
+    <script src="/node_modules/reveal.js/plugin/markdown/markdown.js"></script>
+    <script src="/node_modules/reveal.js/plugin/highlight/highlight.js"></script>
+    <script src="/node_modules/reveal.js/plugin/notes/notes.js"></script>
+    <script src="/node_modules/reveal.js/plugin/search/search.js"></script>
+    <script src="/slides/script.js" type="module"></script>
+    <link rel="stylesheet" href="/css/solarized-light.css" />
+    <link rel="stylesheet" href="/slides/style.css">
 
     <script src="/fontawesome-6.4.2/js/all.min.js"></script>
 </head>
@@ -51,7 +51,7 @@
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> Data tier
 
-                        <img src="/images/layered-architecture-1.png" alt="Layered architecture">
+                        <img src="./images/layered-architecture-1.png" alt="Layered architecture">
                         
                         Notes:
                        
@@ -69,7 +69,7 @@
 
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fas fa-database"></i> Object-oriented programming (POO)
+                        ## <i class="fas fa-database"></i> Object-oriented programming (OOP)
 
                         Object-oriented programming is often used to implement the persistence layer.
 
@@ -103,11 +103,11 @@
 
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fas fa-database"></i> POO vs BDR
+                        ## <i class="fas fa-database"></i> OOP vs BDR
 
-                        People familiar with object-oriented programming often prefer to design their classes first, and then generate the database.
+                        People familiar with object-oriented programming often prefer to design their classes first, and then infer the database based on the classes definitions. This is referred as "Code first".
 
-                        People familiar with relational database often prefer to design their database first, and then generate the code to access it.
+                        People familiar with relational database often prefer to design their database first, and then infer the OOP code to access it. This is referred as "Database first".
 
                         Who is right?
 
@@ -259,7 +259,7 @@
 
                         Opening and closing connections is a costly operation. Therefore, it is better to reuse connections when possible.
 
-                        A **connection pool** is a cache of database connections that can be reused when future requests to the database are required.
+                        A **connection pool** is a cache of database connections that can are kept alive and can be reused when future requests to the database are required.
 
                     </textarea>
                 </section>
@@ -267,7 +267,7 @@
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
 
-                        <img src="/images/connection-pool.png" alt="Connection pool">
+                        <img src="./images/connection-pool.png" alt="Connection pool">
 
 
                         Notes:
@@ -290,7 +290,8 @@
 
                         ## <i class="fas fa-database"></i> Connection Pooling
 
-                        HikariCP and Apache DBCP are two popular connection pooling libraries.
+                        [HikariCP](https://github.com/brettwooldridge/HikariCP) and [Apache DBCP](https://commons.apache.org/proper/commons-dbcp/) are two popular connection pooling libraries.
+                        Quarkus integrates with [Agroal](https://agroal.github.io/docs.html) for connection pooling (originally developed as part of WildFly by RedHat)
 
                         ```java
                         // Create a data source
@@ -307,31 +308,11 @@
                         
                         Can you think of a situation where the use of a connection pool could lead to a deadlock?
 
-                    </textarea>
-                </section>
-
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
-                    <textarea data-template>
-
-                        ## <i class="fas fa-database"></i> Connection Pooling
-
-                        HikariCP and Apache DBCP are two popular connection pooling libraries.
-
-                        ```java
-                        // Create a data source
-                        HikariConfig config = new HikariConfig();
-                        config.setJdbcUrl("jdbc:postgresql://localhost:5432/postgres");
-                        config.setUsername("postgres");
-                        config.setPassword("postgres");
-                        config.setMaximumPoolSize(10);
                         
-                        DataSource dataSource = new HikariDataSource(config);
-                        ```
+                        Notes:
+                        TODO @Bertil, clarify whether a database deadlock or a deadlock to acquire connection in the pool + write answer in this note
 
-                        Connection pooling does not solve all the problems. 
-                        
-                        Can you think of a situation where the use of a connection pool could lead to a deadlock?
-
+                        Why Quarkus integrated with Agroal instead of a more popular alternative is that it related to RedHat and the WildFly Application Server. https://x.com/jtgreene/status/1224412010097586177
                     </textarea>
                 </section>
             </section>
@@ -356,23 +337,24 @@
                     </textarea>
                 </section>
 
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fas fa-database"></i> Plain Old Java Objects (POJO) and Java Beans
+                        ## <i class="fas fa-database"></i> Plain Old Java Objects (POJO) and JavaBeans
                         
                         A **plain old Java object (POJO)** is an ordinary Java object that does not follow some specialized conventions.
 
-                        By contrast, a **Java Bean** is a Java class that follows some conventions:
+                        By contrast, a class complying with **JavaBeans** is a Java class that follows some conventions:
                         - It has a public default constructor.
                         - It has private fields.
                         - It has public getter and setter methods for the fields.
                         - It implements the Serializable interface.
 
-                        Java beans are easy to manipulate using reflection and, therefore, are extensively used by frameworks.
-                        The persistence layer is often implemented using Java beans.
+                        JavaBeans are easy to manipulate using reflection and, therefore, are extensively used by frameworks.
+                        The persistence layer is often implemented using JavaBeans specification, or inspired by it with some of these constraints relaxed.
 
-                        On a case by case basis, some of these constraints may be relaxed.
-
+                        <span style="font-size: 0.5em;">Reference: 
+                        https://docs.oracle.com/en/java/javase/21/docs/api/java.desktop/java/beans/package-summary.html 
+                        </span>
                     </textarea>
                 </section>
 
@@ -382,7 +364,9 @@
                         
                         A **JPA entity** is a Java class that represents an entity type in the database.
 
-                        It is often a Java bean that is annotated with the **@Entity** annotation. The serialization requirement is often relaxed by the JPA runtime.
+                        It is similar to a class following JavaBeans conventions and annotated with the **@Entity** annotation. The requirement to implements `Serializable` is only required in specifics cases by JPA.
+
+                        <span style="font-size: 0.5em;">Details about JPA Entity specification and relationship with JavaBeans: https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1#a18 </span>
 
                         ```java
                         @Entity
@@ -405,13 +389,20 @@
                     </textarea>
                 </section>
 
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.4em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> Entity Manager
                         
-                        The **entity manager** allows to interact with the database using **JPA entities**.
+                        The **entity manager** is the interface to manage **JPA entities**: creation, persistence and removal.
 
-                        It is often injected in the service layer using the **@Inject** annotation (more about this in a future class).
+                        **Jakarta Persistence
+ 3.1, [3.1. EntityManager](https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1#a1062):**
+
+                        <i class="fa-solid fa-quote-left"></i>
+                        An EntityManager instance is associated with a persistence context. A **persistence context** is a set of entity instances in which for any persistent entity identity there is a unique entity instance. Within the persistence context, the **entity instances and their lifecycle are managed**. The EntityManager interface defines the methods that are used to interact with the persistence context.
+                        <i class="fa-solid fa-quote-right"></i>
+
+                        It is often injected using the **@Inject** annotation (more about injection in a future class).
 
                         ```java
                         @ApplicationScoped
@@ -436,7 +427,7 @@
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> Entity Annotations
                         
-                        Mapping the entity to the database is done using annotations, such as:
+                        In order to be persisted to the underlying data store, annotations are used within entities to map to the relational data:
                         
                         - `@Entity` to mark the class as an entity.
                         - `@Id` to mark the primary key.
@@ -446,20 +437,19 @@
                         - `@GeneratedValue` to generate the primary key.
                         - `@Enumerated` to map an enum to a column.
                         - `@Embeddable` and `@Embedded` to map an embedded object to a column.
-                        - etc.
 
                         Notes:
 
                         The extent of the possibilities offered by JPA is beyond the scope of this class.
                         However, you should be aware that it is possible to map almost anything to a database using JPA.
                         
-                        When developping an application, you should keep the specifiaction (JPA) and the documentation of the runtime (Hibernate) at hand.
+                        When developing an application, you should keep the specification (JPA) and the documentation of the runtime (Hibernate) at hand.
 
                         
                     </textarea>
                 </section>
 
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fas fa-hand-paper"></i> Learn more about JPA and Hibernate
                         
@@ -473,10 +463,11 @@
 
                         Then, read the documentation of the annotation, create a small example, see what happens in the database and present your findings to the class.
                         
-                        **Jackarta Persistence (JPA) documentation:**
+                        **Jakarta Persistence (JPA) documentation:**
+                        * Home page: https://jakarta.ee/specifications/persistence/3.1/
+                        * PDF: https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.pdf
+                        * HTML: https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1
                         
-                        https://jakarta.ee/specifications/persistence/3.1/
-
                         **Hibernate documentation:**
 
                         https://hibernate.org/orm/releases/6.3/
