@@ -70,7 +70,7 @@ Reveal.initialize({
     parallaxBackgroundVertical: null,
     display: 'block',
     plugins: [RevealMarkdown, RevealHighlight, RevealSearch, EvalJavaScript, RevealNotes],
-    showNotes: false,
+    showNotes: true,
     markdown: {
         smartypants: true
     },
