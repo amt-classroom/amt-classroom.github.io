@@ -44,8 +44,18 @@
                     - Runtime annotations
                     - Compile-time annotations
 
-                    Today, we will explore these features in detail and see how they can be used in practice.
+                </textarea>
+            </section>
 
+            <section data-markdown>
+                <textarea data-template>
+                    ## <i class="fas fa-tasks"></i> Motivations
+
+                    The job of a framework developer is to provide the best tools to help developers build applications.
+
+                    Meta programming is of great help to provide such tools and framework developers often rely on advanced Java features to implement them and improve the developer experience.
+
+                    Today we will get a glimpse of some of these features.
                 </textarea>
             </section>
 
@@ -61,9 +71,9 @@
                         Class loaders are responsible for loading classes into the JVM at runtime.
 
                         The main class loaders are:
-                        - Bootstrap class loader: Loads classes from the JVM's core library ($JAVA_HOME/lib/)
-                        - Extension class loader: Loads classes from the JVM's extension library ($JAVA_HOME/lib/ext/)
-                        - Application class loader: Loads classes from the classpath (.)
+                        - **Bootstrap class loader:** Loads classes from the JVM's core library (`$JAVA_HOME/lib/`)
+                        - **Extension class loader:** Loads classes from the JVM's extension library (`$JAVA_HOME/lib/ext/`)
+                        - **Application class loader:** Loads classes from the classpath (`.`)
 
                         When a class is not found by the application class loader, the class loader will recursively delegate the loading of the class to the parent class loader until the bootstrap class loader is reached.
 
@@ -80,43 +90,84 @@
 
                         ```java
                         System.out.println(MyClass.class.getClassLoader()); // AppClassLoader (application class loader)
-                       System.out.println(DriverManager.class.getClassLoader()); // PlatformClassLoader (extension class loader)
-                       System.out.println(String.class.getClassLoader()); // null (bootstrap class loader)
-                       ```
+                        System.out.println(DriverManager.class.getClassLoader()); // PlatformClassLoader (extension class loader)
+                        System.out.println(String.class.getClassLoader()); // null (bootstrap class loader)
+                        ```
 
-                       Examining the delegation chain in a stack trace:
+                        Examining the delegation chain in a stack trace:
 
-                       ```java
-                       Class<?> clazz = Class.forName("ch.heigvd.amt.MyClass");
-                       ```
+                        ```java
+                        Class<?> clazz = Class.forName("ch.heigvd.amt.MyClass");
+                        ```
 
-                       ```
-                       Exception in thread "main" java.lang.ClassNotFoundException: com.example.MyClass
-                       at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641)
-                       at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
-                       at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:520)
-                       at java.base/java.lang.Class.forName0(Native Method)
-                       at java.base/java.lang.Class.forName(Class.java:375)
-                       at Main.main(Main.java:6)
-                       ```
+                        ```
+                        Exception in thread "main" java.lang.ClassNotFoundException: com.example.MyClass
+                        at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641)
+                        at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
+                        at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:520)
+                        at java.base/java.lang.Class.forName0(Native Method)
+                        at java.base/java.lang.Class.forName(Class.java:375)
+                        at Main.main(Main.java:6)
+                        ```
 
                     </textarea>
                 </section>
+
+
+                <section data-markdown style="font-size: 0.8em;">
+                    <textarea data-template data-separator-notes="^Notes:">
+                        ## Custom class loaders?
+
+                        Custom class loaders can be useful in various scenarios:
+                        - Loading classes from non-standard sources (e.g., a network location)
+                        - Implementing class reloading (e.g., for hot-swapping code)
+                        - Implementing class transformation (e.g., for bytecode manipulation)
+                        - etc.
+
+                        Some examples spotted in the wild:
+                        - **Spring boot** uses them to reload classes when the application is [restarted](https://github.com/spring-projects/spring-boot/blob/2dbf7d9c255a7f9f7a736a92e5d72c6d229489b7/spring-boot-project/spring-boot-devtools/src/main/java/org/springframework/boot/devtools/restart/classloader/RestartClassLoader.java#L38).
+                        - **Quarkus** uses them for [hot-reload](https://quarkus.io/guides/class-loading-reference) in dev mode.
+                        - **OSGi frameworks** use them to manage modularity and versioning of Java applications.
+
+                    </textarea>
+                </section>
+
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
                         ## Creating a custom class loader
 
+                        To create a custom class loader, you can extend the `ClassLoader` class and override the `findClass` method.
+
+                        ```java
+                        public class CustomClassLoader extends ClassLoader {
+
+                            public CustomClassLoader(ClassLoader parent) {
+                                super(parent);
+                            }
+
+                            @Override
+                            protected Class<?> findClass(String name) throws ClassNotFoundException {
+                                // Load the class from a custom source
+                                System.out.println("Trying to load class with custom class loader: " + name);
+                        
+                                // If the class is not found, delegate to the parent class loader
+                                return super.findClass(name);
+                            }
+
+                            public static void main(String[] args) throws Exception {
+                                // Create a new CustomClassLoader with the system class loader as its parent
+                                CustomClassLoader customClassLoader = new CustomClassLoader(ClassLoader.getSystemClassLoader());
+                        
+                                // Load the class using the custom class loader
+                                Class<?> clazz = customClassLoader.loadClass("java.sql.DriverManager");
+                            }
+
+                        }
+                        ```
+                        
                     </textarea>
                 </section>
-
-                <section data-markdown style="font-size: 0.8em;">
-                    <textarea data-template data-separator-notes="^Notes:">
-                        ## Creating a custom delegation chain
-
-                    </textarea>
-                </section>
-
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
@@ -139,7 +190,11 @@
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        ## Custom class loaders
+                        ## For more fun
+                        
+                        Check out the [`UrlClassLoader`](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URLClassLoader.html) of the standard library to load classes from URLs.
+
+                        Check out the [`example-classloader`](https://github.com/amt-classroom/example-classloader) repository to see how a class loader can compile java files on the fly with the Java compiler API or generate classes dynamically with the new ClassFile API (Java 23 required).
 
                     </textarea>
                 </section>
@@ -205,7 +260,8 @@
                         ```
 
                         Consult the Java documentation for more information:
-                        https://docs.oracle.com/javase/7/docs/api/java/lang/reflect/package-summary.html
+                        https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/reflect/package-summary.html
+
                     </textarea>
                 </section>
 
@@ -215,9 +271,7 @@
 
                         While it provides great flexibility, reflection can also break some of the core principles of object-oriented programming:
 
-                        - Encapsulation: Reflection allows access to private fields and methods, which can violate encapsulation.
-                        - Inheritance: Reflection can bypass the normal inheritance hierarchy, leading to potential issues with method resolution.
-                        - Polymorphism: Reflection can make the behavior of methods unpredictable, as it does not follow the usual method resolution order.
+                        For instance, reflection can be used to break encapsulation by accessing private fields and methods.
 
                         Therefore, these features should be used with caution.
 
@@ -243,7 +297,6 @@
                         - Implement caching
                         - Implement transactions
                         - Implement security checks
-
 
                     </textarea>
                 </section>
@@ -384,6 +437,7 @@
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
                         Implementation stub of compile-time annotations processor.
+
                         ```java
                         import javax.annotation.processing.*;
                         import javax.lang.model.SourceVersion;
@@ -403,8 +457,6 @@
                         ```
                     </textarea>
                 </section>
-
-
             </section>
 
             <section>
