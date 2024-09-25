@@ -30,7 +30,7 @@
             <section data-background="#333333">
                 <h2>AMT</h2>
                 <h1>Advanced Java features</h1>
-                <p>Bertil Chapuis</p>
+                <p>Bertil Chapuis, Dorian Gambin</p>
             </section>
             <section data-markdown>
                 <textarea data-template>
@@ -64,7 +64,7 @@
                 <section data-background="#333333">
                     <h2><i class="fas fa-sitemap"></i> Class loaders</h2>
                 </section>
-                <section data-markdown style="font-size: 0.8em;">
+                <section data-markdown style="font-size: 0.6em;">
                     <textarea data-template data-separator-notes="^Notes:">
                         ## Class loaders
 
@@ -72,13 +72,15 @@
 
                         The main class loaders are:
                         - **Bootstrap class loader:** Loads classes from the JVM's core library (`$JAVA_HOME/lib/`)
-                        - **Extension class loader:** Loads classes from the JVM's extension library (`$JAVA_HOME/lib/ext/`)
-                        - **Application class loader:** Loads classes from the classpath (`.`)
+                        - **Platform class loader:** Loads classes from the JVM that are platform specific. Before JDK 9 it was known as Extension class loader. ([JEP 261](https://openjdk.org/jeps/261#Class-loaders))
+                        - **System class loader:** also called application class loader, loads classes from the classpath (`.`)
 
                         When a class is not found by the application class loader, the class loader will recursively delegate the loading of the class to the parent class loader until the bootstrap class loader is reached.
 
                         If the class is not found through the entire delegation chain, the class loader will throw a `ClassNotFoundException`.
 
+                        [Java 21 built-in class loaders](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/ClassLoader.html#builtinLoaders)
+                    
                     </textarea>
                 </section>
 
