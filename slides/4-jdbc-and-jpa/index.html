@@ -141,8 +141,9 @@
                         A JDBC **connection** is a **session** with a specific database that allows to execute SQL queries and retrieve the results.
 
                         ```java
-                        // Load the postgresql driver
-                        Class.forName("org.postgresql.Driver");
+                        // The driver will be loaded through Java Service Provider, 
+                        // as long as the driver’s jar file is on the classpath
+                        // See: https://jdbc.postgresql.org/documentation/use/#loading-the-driver
 
                         // Connect to the database
                         Connection connection = DriverManager.getConnection(
@@ -162,7 +163,6 @@
                             System.out.println(resultSet.getInt(1));
                         }
                         ```
-
                     </textarea>
                 </section>
 
@@ -173,18 +173,16 @@
                         A JDBC **data source** is a factory for JDBC connections and the preferred way to connect to a database.
 
                         ```java
-                        // Load the postgresql driver
-                        Class.forName("org.postgresql.Driver");
-
                         // Create a data source
-                        DataSource dataSource = new PGSimpleDataSource();
-                        dataSource.setServerName("localhost");
-                        dataSource.setPortNumber(5432);
-                        dataSource.setDatabaseName("postgres");
-                        dataSource.setUser("postgres");
-                        dataSource.setPassword("postgres");
-
+                        PGSimpleDataSource pgSimpleDataSource = new PGSimpleDataSource();
+                        pgSimpleDataSource.setServerName("localhost");
+                        pgSimpleDataSource.setPortNumber(5432);
+                        pgSimpleDataSource.setDatabaseName("postgres");
+                        pgSimpleDataSource.setUser("postgres");
+                        pgSimpleDataSource.setPassword("postgres");
+                
                         // Connect to the database
+                        DataSource dataSource = pgSimpleDataSource;
                         Connection connection = dataSource.getConnection();
 
                         // ...
@@ -197,7 +195,7 @@
                     <textarea data-template>
                         ## <i class="fas fa-hand-paper"></i> Try it yourself
 
-                        Start a postgresql database using docker:
+                        Start a PostgreSQL database using docker:
 
                         ```bash
                         docker run --rm --name postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres
@@ -209,11 +207,11 @@
                         <dependency>
                             <groupId>org.postgresql</groupId>
                             <artifactId>postgresql</artifactId>
-                            <version>42.6.0</version>
+                            <version>42.7.4</version>
                         </dependency>
                         ```
 
-                        Create a java program that connects to the database and executes a query.
+                        Create a Java program that connects to the database and executes a query.
 
                         Try to open as many connections as possible and see what happens.
 
@@ -231,7 +229,7 @@
 
                         ```java
                         // Create a data source
-                        DataSource dataSource = new PGSimpleDataSource();
+                        PGSimpleDataSource dataSource = new PGSimpleDataSource();
                         
                         // ...
 
@@ -245,6 +243,9 @@
                                 System.out.println(resultSet.getInt(1));
                             }
                         }
+                        catch (SQLException e) {
+                            // ...
+                        }
                         ```
                     </textarea>
                 </section>
@@ -255,7 +256,7 @@
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> Connection Pooling
                         
-                        Many applications need to handle a large number of concurrent users that exeed the capacity of the database in terms of connections.
+                        Many applications need to handle a large number of concurrent users that exceed the capacity of the database in terms of connections.
 
                         Opening and closing connections is a costly operation. Therefore, it is better to reuse connections when possible.
 
@@ -310,7 +311,7 @@
 
                         
                         Notes:
-                        TODO @Bertil, clarify whether a database deadlock or a deadlock to acquire connection in the pool + write answer in this note
+                        Pool starvation due to connection leak leading to deadlock on the shared resources (i.e the connections)
 
                         Why Quarkus integrated with Agroal instead of a more popular alternative is that it related to RedHat and the WildFly Application Server. https://x.com/jtgreene/status/1224412010097586177
                     </textarea>
@@ -476,9 +477,6 @@
                 </section>
 
             </section>
-
-
-
 
             <section>
                 <h2><i class="fas fa-hand-paper"></i> Questions?</h2>
