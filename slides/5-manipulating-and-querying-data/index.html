@@ -30,7 +30,7 @@
             <section data-background="#333333">
                 <h2>AMT</h2>
                 <h1>Manipulating and querying data</h1>
-                <p>Bertil Chapuis</p>      
+                <p>Bertil Chapuis, Dorian Gambin</p>
             </section>
             <section data-markdown>
                 <textarea data-template>
@@ -376,7 +376,7 @@
 
                         By default, Hibernate does not use JDBC batching capabilities. However it is possible to enable it globally or per session.
 
-                        Hibernate ORM User Guide 6.5, [13.1. JDBC batching](https://docs.jboss.org/hibernate/orm/6.5/userguide/html_single/Hibernate_User_Guide.html#batch-jdbcbatch)
+                        Hibernate ORM User Guide 6.6, [13.1. JDBC batching](https://docs.jboss.org/hibernate/orm/6.6/userguide/html_single/Hibernate_User_Guide.html#batch-jdbcbatch)
 
                         <i class="fa-solid fa-quote-left"></i> 
                         `hibernate.jdbc.batch_size`:
@@ -434,10 +434,10 @@
                         Beyond the CRUD operations, we often need to perform complex queries on our data.
 
                         - SQL
-                        - Jakarta JPQL
-                        - Named queries
-                        - Jakarta Criteria API
-                        - Jakarta Criteria Metamodel
+                        - JPA JPQL
+                        - JPA Named queries
+                        - JPA Criteria API
+                        - JPA Criteria with JPA Metamodel
                         
                     </textarea>
                 </section>
@@ -625,9 +625,32 @@
 
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fas fa-database"></i> TODO EntityGraph
+                        ## <i class="fas fa-database"></i> JPA EntityGraph
 
-                        
+                        EntityGraph is an alternative to define a graph blueprint for fetching attributes and related entities. It allows you to specify which relationships should be fetched when loading an entity, it can dynamically applied to a retrieval
+                        made by the EntityManager.
+
+                        ```java
+                        // Inside your repository or service class
+                        public Actor getActorWithMovies(EntityManager entityManager, Long actorId) {
+                            // Create an EntityGraph for the Actor entity
+                            EntityGraph<Actor> entityGraph = entityManager.createEntityGraph(Actor.class);
+                            
+                            // Use the JPA Metamodel to refer to the "movies" attribute and add it to the fetch plan
+                            entityGraph.addAttributeNodes(Actor_.movies);
+
+                            // Use the EntityGraph when fetching the Actor
+                            Map<String, Object> properties = new HashMap<>();
+                            properties.put("javax.persistence.fetchgraph", entityGraph);
+
+                            return entityManager.find(Actor.class, actorId, properties);
+                        }
+                        ```
+
+                        EntityGraphes can be declared as well using annotations, through `@NamedEntityGraph`.
+
+                        Reference: [Jakarta 3.1, 3.7.4. Use of Entity Graphs in find and query operations](https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1#a2814)
+
                     </textarea>
                 </section>
 
