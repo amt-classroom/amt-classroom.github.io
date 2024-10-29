@@ -30,7 +30,7 @@
             <section data-background="#333333">
                 <h2>AMT</h2>
                 <h1>Transactions and validation</h1>
-                <p>Bertil Chapuis</p>      
+                <p>Bertil Chapuis, Dorian Gambin</p>
             </section>
             <section data-markdown>
                 <textarea data-template>
@@ -67,7 +67,7 @@
                         
                         A transaction is a sequence of operations that is executed as a single unit of work.
 
-                        JDBC and JPA both support transactions.
+                        JDBC and Jakarta EE both support transactions.
                     
                     </textarea>
                 </section>
@@ -87,6 +87,39 @@
                         }
                         ```
 
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Transactions and Jakarta EE
+
+                        ```java
+                        import jakarta.enterprise.context.ApplicationScoped;
+                        import jakarta.inject.Inject;
+                        import jakarta.persistence.EntityManager;
+                        import jakarta.transaction.Transactional;
+
+                        @ApplicationScoped
+                        public class ProductService {
+
+                            @Inject
+                            EntityManager entityManager;
+                        
+                            @Transactional
+                            public void updatePrice(Long productId, Double newPrice) {
+                                Product product = entityManager.find(Product.class, productId);
+                                if (product != null) {
+                                    product.setPrice(newPrice);
+                                }
+                            }
+                        }
+                        ```
+
+                        Provided by Jakarta Transactions specification. 
+                        In Quarkus, the JTA implementation used is Narayana: https://quarkus.io/guides/transaction
+
+                        Reference: https://jakarta.ee/specifications/transactions/2.0/jakarta-transactions-spec-2.0#transactional-annotation
                     </textarea>
                 </section>
 
@@ -378,9 +411,14 @@
 
                         Validation is the process of checking whether a given input is valid.
 
-                        Jakarta Bean Validation is a specification that defines a metadata model and API for JavaBean validation.
+                        Jakarta Bean Validation (or simply Jakarta Validation) is a specification that defines a metadata model and API for JavaBean validation.
 
+                        https://jakarta.ee/specifications/bean-validation/
+                        
                         Hibernate Validator is the reference implementation of the Jakarta Bean Validation specification.
+
+                        
+                        https://hibernate.org/validator/ 
                     
                     </textarea>
                 </section>
@@ -435,6 +473,25 @@
                             }
                         }
                         ```
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+
+                        ## <i class="fa-solid fa-diagram-project"></i> Jakarta Persistence and Jakarta Validation relationship
+
+                        Jakarta Persistence utilizes Jakarta Validation for JPA entities. However for the validation to trigger the entity instance must be "passed through" the EntityManager during 
+                        its lifecycle.
+
+                        https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1#a2366
+
+                        When using Hibernate ORM, simply adding the dependency to Hibernate Validator should enable automatic validation based on Jakarta Validation API usage in JPA entities.
+
+                        References:
+                        * https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1#a2366
+                        * https://jakarta.ee/specifications/bean-validation/3.0/jakarta-bean-validation-spec-3.0#integration
+                        * https://docs.jboss.org/hibernate/validator/8.0/reference/en-US/html_single/#validator-integration 
                     </textarea>
                 </section>
 
