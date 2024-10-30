@@ -307,7 +307,29 @@
                         
                     </textarea>
                 </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Deadlock
+                        
+                        A deadlock in an RDBMS occurs when two or more transactions are stuck waiting 
+                        indefinitely for resources held by each other, causing each transaction to block the others 
+                        from proceeding. This circular dependency prevents any of the transactions involved from completing unless one is terminated or rolled back by the database system.
+                        
+                        Handling deadlocks can be achieved by implementing error handling and retry logic for transaction failures and by monitoring the database to detect deadlocked transactions.
+                        
+                        Some deadlocks situation might be counter-intuitive and specific to a RDBMS implementation. 
+                        For example in MySQL concurrent transactions with "INSERT" statements can lead to a deadlock.
+
+                        > InnoDB uses automatic row-level locking. You can get deadlocks even in the case of 
+                        transactions that just insert or delete a single row. That is because these operations
+                        are not really “atomic”; they automatically set locks on the (possibly several) index records of the row inserted or deleted. 
+
+                        Source: https://dev.mysql.com/doc/refman/8.4/en/innodb-deadlocks-handling.html
+                    </textarea>
+                </section>
             </section>
+
 
             <section>
                 <section data-background="#333333">
