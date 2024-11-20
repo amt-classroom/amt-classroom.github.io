@@ -197,9 +197,12 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-hand-paper"></i> Exercise
 
-                        Try to identify how the DIP is applied in the `java.sql` package (JDBC).
+                        Try to identify how the DIP approach is applied by the `java.sql` package (JDBC).
 
-                        Identify the main abstraction, the high-level modules and the low-level modules.
+                        Identify the main abstraction, the high-level modules (i.e, abstractions) and the low-level 
+                        modules (i.e, implementations).
+                        A Quarkus project of the course with a database as a dev service can be use, since it will contain 
+                        both kind of modules.
  
                     </textarea>
                 </section>
@@ -376,6 +379,30 @@
                         However, the scope of the term IoC is much broader than dependency injection, as the flow of the program is not limited to dependency instantiation and injection.
 
                         For instance, some MVC frameworks use IoC at the level of the HTTP router. They control the flow of the program based on the url and on routing conventions.
+                        
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hand-paper"></i> Jakarta, IoC and DIP
+
+                        The main specification is Jakarta Contexts and Dependency Injection (CDI).
+                        
+                        https://jakarta.ee/specifications/cdi/4.0/jakarta-cdi-spec-4.0 
+
+                        However the annotations, such as `jakarta.inject.Inject` or `jakarta.inject.Qualifier`, are defined by Jakarta Dependency Injection.
+                        
+                        https://jakarta.ee/specifications/dependency-injection/2.0/
+
+                        In Quarkus, the dependency injection is provided by Quarkus ArC.
+
+                        * https://quarkus.io/blog/quarkus-dependency-injection/
+                        * https://quarkus.io/guides/cdi
+                        * https://quarkus.io/guides/cdi-reference
+
+                        Browse the above references and identify why RedHat, which is the main developer of Quarkus and
+                        the reference implementation of Jakarta CDI implementation (i.e, [Weld](http://weld.cdi-spec.org/)), decided
+                        to develop Quarkus ArC.
                         
                     </textarea>
                 </section>
