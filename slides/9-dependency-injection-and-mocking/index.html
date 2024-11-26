@@ -4,9 +4,9 @@
 <head>
 
     <meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-	<title>Dependency injection and mocking</title>
+    <title>Dependency injection and mocking</title>
 
     <link rel="stylesheet" href="/node_modules/reveal.js/dist/reveal.css" crossorigin="anonymous">
     <link rel="stylesheet" href="/node_modules/reveal.js/dist/theme/white.css" crossorigin="anonymous" id="theme">
@@ -31,7 +31,7 @@
             <section data-background="#333333">
                 <h2>AMT</h2>
                 <h1>Dependency injection and mocking</h1>
-                <p>Bertil Chapuis</p>      
+                <p>Bertil Chapuis</p>
             </section>
             <section data-markdown>
                 <textarea data-template>
@@ -457,22 +457,134 @@
 
             <section>
                 <section data-background="#333333">
-                    <h2><i class="fa-solid fa-vial-circle-check"></i> Mocking</h2>
+                    <h2><i class="fa-solid fa-vial-circle-check"></i> Testing with Stubs and Mocks</h2>
                 </section>
-                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-vial-circle-check"></i> Mocking
-
-                        Mocking is a technique used to test a class in isolation.
-
-                        It is used to replace the dependencies of a class with mock objects.
-
-                        Mock objects are objects that simulate the behavior of the dependencies.
-
-                        Mocking is used to test the behavior of a class without testing the behavior of its dependencies.
-
+                        ## <i class="fa-solid fa-book-open"></i> Key Concepts and Definitions
+                
+                        - The **Class Under Test** is the primary class being tested. 
+                        - A **Dependency** is a class that the class under test relies on for its functionality.
+                        - **Unit tests** are written to verify the **behavior** and **interactions** of the class under test with its dependencies.
+                        - A **Stub** is a simplified dependency replacement that returns controlled values for testing the **behavior** of the class under test in isolation.
+                        - A **Mock** is a sophisticated dependency replacement that enables the verification of the **interactions** between the class under test and its dependencies.
+                        - The **AAA Pattern** is a common structure for writing unit tests:
+                          - **Arrange**: Set up the necessary objects and state.
+                          - **Act**: Invoke the method or functionality to be tested.
+                          - **Assert**: Verify the outcome matches the expectations.
+                
                     </textarea>
                 </section>
+
+                <section data-markdown style="font-size: 1em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-vial-circle-check"></i> Stubbing
+
+                        **Stubbing** is a technique used to replace an abstract or concrete dependency with a **stub**.
+                
+                        A **stub** is a simple implementation of a dependency that returns predefined values.
+                
+                        Stubbing is used to isolate the **behavior** of a class under test by controlling its dependencies.
+                
+                        When testing, focus on verifying the **behavior of the class**, not the stub.
+                  
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-vial-circle-check"></i> Stubbing
+
+                        The following code snippet illustrates the use of a stub to test the behavior of a class in **isolation**.
+
+                        ```java
+                        public class GreetingService {
+                            private final HelloService helloService;
+                            public GreetingService(HelloService helloService) {
+                                this.helloService = helloService;
+                            }
+                            public String generateGreeting(String name) {
+                                return helloService.sayHello() + ", " + name + "!";
+                            }
+                        }
+
+                        @Test
+                        public void testGreetingService() {
+                            HelloService helloService = Mockito.mock(HelloService.class);
+                            Mockito.when(helloService.sayHello()).thenReturn("Hello");
+                            GreetingService greetingService = new GreetingService(helloService);
+                            String result = greetingService.generateGreeting("John");
+                            assertEquals("Hello, John!", result);
+                        }
+                        ```
+
+                        This example tests the **behavior of the `GreetingService`** class in isolation by stubbing the `HelloService` dependency.
+                  
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 1em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                            ## <i class="fa-solid fa-vial-circle-check"></i> Mocking
+    
+                            **Mocking** is a technique used to replace an abstract or concrete dependency with a **mock**.
+
+                            A **mock** is a more advanced implementation of a dependency that allows verification of interactions.
+                    
+                            Mocking is used to test the **interactions** between a class and its dependencies, ensuring the class behaves as expected when working with them.
+                    
+                            Focus on the **class under test** and validate its communication with dependencies through mocks.                    
+    
+                        </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                            ## <i class="fa-solid fa-vial-circle-check"></i> Mocking
+
+                            The following code snippet illustrates the use of a mock to test the interactions between a class and its dependencies with JUnit and Mockito.
+
+                            ```java
+                            public class NotificationService {
+                                private final EmailSender emailSender;
+                                public NotificationService(EmailSender emailSender) {
+                                    this.emailSender = emailSender;
+                                }
+                                public void sendWelcomeEmail(String email) {
+                                    emailSender.sendEmail(email, "Welcome", "Thank you for signing up!");
+                                }
+                            }
+
+                            @Test
+                            public void testNotificationServiceInteractions() {
+                                EmailSender emailSender = Mockito.mock(EmailSender.class);
+                                NotificationService notificationService = new NotificationService(emailSender);
+                                notificationService.sendWelcomeEmail("user@example.com");
+                                Mockito.verify(emailSender).sendEmail(
+                                    "user@example.com", 
+                                    "Welcome", 
+                                    "Thank you for signing up!"
+                                );
+                            }
+                            ```
+
+                            This test verifies that the `NotificationService` class correctly interacts with the mocked `EmailSender` dependency.
+    
+                        </textarea>
+                </section>
+
+
+                <section data-markdown style="font-size: 1em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hand-paper"></i> Mockito
+
+                        Mockito is a popular mocking framework for Java that simplifies the creation of mocks and the verification of interactions.
+
+                        Checkout the [Mockito documentation](https://site.mockito.org/), the [Baeldung Mockito Series](https://www.baeldung.com/mockito-series), and the [Mockito example](https://github.com/amt-classroom/example-mockito) for more information.
+                  
+                    </textarea>
+                </section>
+
             </section>
 
             <section>
@@ -516,8 +628,6 @@
 
                         Checkout the [solution](https://github.com/amt-classroom/example-cdi) on GitHub.
 
-                        
-
                     </textarea>
                 </section>
             </section>
@@ -529,4 +639,5 @@
         </div>
     </div>
 </body>
+
 </html>
