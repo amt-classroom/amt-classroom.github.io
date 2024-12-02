@@ -31,7 +31,7 @@
             <section data-background="#333333">
                 <h2>AMT</h2>
                 <h1>Messaging</h1>
-                <p>Bertil Chapuis</p>      
+                <p>Bertil Chapuis, Dorian Gambin</p>      
             </section>
             <section data-markdown>
                 <textarea data-template>
@@ -158,7 +158,7 @@
 
                         A **message** sent to a queue is received and processed by one consumer only.
 
-                        This model is follow and forget: the producer sends a message and forgets about it. The consumer receives the message and processes it. The producer and consumer are decoupled.
+                        This model is fire-and-forget: the producer sends a message and forgets about it. The consumer receives the message and processes it. The producer and consumer are decoupled.
 
                         **Queues** are used for asynchronous processing, load balancing, failover, etc.
 
@@ -178,9 +178,9 @@
 
                         A **topic** is a **destination** where one or more **producers** send messages to and one or more **consumers** receive messages from.
 
-                        A **message** sent to a topic is received and processed by all consumers.
+                        A **message** sent to a topic is received and processed by one or more consumers.
 
-                        This model is follow and forget: the producer sends a message and forgets about it. The consumer receives the message and processes it. The producer and consumer are decoupled.
+                        This model is fire-and-forget: the producer sends a message and forgets about it. The consumer receives the message and processes it. The producer and consumer are decoupled.
 
                         **Topics** are used for broadcasting, event notification, etc.
 
@@ -215,7 +215,7 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-envelope"></i> Message Types
 
-                        JMS defines different [types](https://docs.oracle.com/javaee%2F7%2Fapi%2F%2F/javax/jms/Message.html) of messages:
+                        JMS defines different [types](https://jakarta.ee/specifications/messaging/3.1/jakarta-messaging-spec-3.1#jakarta-messaging-message-body) of messages:
                         - **TextMessage** contains a string
                         - **BytesMessage** contains a byte array
                         - **ObjectMessage** contains a serializable Java object
@@ -237,7 +237,6 @@
                         - [Amazon SQS](https://aws.amazon.com/sqs/)
                         - [Azure Service Bus](https://azure.microsoft.com/en-us/services/service-bus/)
                         - [Google Cloud Pub/Sub](https://cloud.google.com/pubsub)
-                        - Etc.
 
                         Notes:
 
@@ -253,7 +252,6 @@
                         - **FIFO** - The first message in is the first message out.
                         - **LIFO** - The last message in is the first message out.
                         - **Priority** - The messages are ordered by priority.
-                        - Etc.
 
                         Notes:
                         You should not make any assumption about the guarantees provided by the broker. 
@@ -271,12 +269,17 @@
                         - **At most once** - The message is delivered at most once, but it may not be delivered.
                         - **At least once** - The message is always delivered, but it may be delivered multiple times.
                         - **Exactly once** - The message is always delivered once and only once.
-                        - Etc.
+                        
 
                         Notes:
                         You should not make any assumption about the guarantees provided by the broker. 
-                        Always check the documentation of the broker to know what guarantees are provided.
+                        Always check the documentation of the broker to know what guarantees are provided and from which perspective (i.e., producer or consumer).
 
+                        References:
+                        * https://kafka.apache.org/documentation/#semantics
+                        * https://www.rabbitmq.com/docs/reliability#confirms 
+                        * https://activemq.apache.org/components/artemis/documentation/2.37.0/send-guarantees.html#guarantees-of-sends-and-commits 
+                    
                 
                     </textarea>
                 </section>
@@ -289,7 +292,6 @@
                         - **Transactional** - The message is only delivered if the transaction is committed.
                         - **Failover** - The messages are replicated across multiple machines.
                         - **Scalability** - The messages are distributed across multiple machines.
-                        - Etc.
 
                         Notes:
                         You should not make any assumption about the guarantees provided by the broker. 
@@ -320,6 +322,28 @@
                         Notes:
 
                         Similarly, the consumer handles the message and sends and acknowledgement to the broker, which deletes the message from disk. The message is not lost if the broker crashes.
+                
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-envelope"></i> Disk persistence
+                        In some rare cases, either the operating system or database software, can have bugs on the persistence path and lead to data loss.
+                        Some systems (e.g. distributed ones) might by design choose not to fully guarantee that data is on disk before acknowledgement.
+
+                        Read the following and discuss in class:
+                        * https://lwn.net/Articles/752063/ 
+                        * https://jack-vanlightly.com/blog/2023/4/24/why-apache-kafka-doesnt-need-fsync-to-be-safe
+
+                        In most cases a hard requirement for persistence will lead to increased latency to get the expected strong guarantee.
+                        For example: https://www.rabbitmq.com/docs/confirms#publisher-confirms-latency
+                        > basic.ack for a persistent message routed to a durable queue will be sent after persisting the message to disk. The RabbitMQ message store persists messages to disk in batches after an interval (a few hundred milliseconds) to minimise the number of fsync(2) calls, or when a queue is idle.
+                        > This means that under a constant load, latency for basic.ack can reach a few hundred milliseconds.
+
+                        Notes:
+
+                       
                 
                     </textarea>
                 </section>
