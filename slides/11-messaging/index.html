@@ -107,6 +107,8 @@
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
 
+                        ## <i class="fa-solid fa-envelope"></i> JMS API
+
                         <img src="/images/jms-simplified-api.png" alt="JMS API" style="width: 100%;">
 
                         Notes:
@@ -145,9 +147,28 @@
                     </textarea>
                 </section>
 
+
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
+                        ## <i class="fa-solid fa-envelope"></i> Connection Factory 
 
+                        The **connection factory** is used to create a connection to the message broker.
+
+                        ```java
+                        var connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
+                        ```
+
+                        In practice, you rarely create the connection factory directly. You use a dependency injection framework to inject the connection factory.
+
+                        ```java
+                        @Inject
+                        ConnectionFactory connectionFactory;
+                        ```
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
                         <img src="/images/queue-model.png" alt="Queue Model" style="width: 100%;">
 
                         Notes:
@@ -170,6 +191,54 @@
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
 
+                        ## <i class="fa-solid fa-envelope"></i> Queue Producer
+
+                        Use the connection factory to create a context, create a queue, create a producer, create a message, and send the message to the queue.
+
+
+                        ```java
+                        var context = connectionFactory.createContext()) {
+
+                        // Create the queue and the producer
+                        var queue = context.createQueue("queue");
+                        var producer = context.createProducer();
+            
+                        // Create the message
+                        var message = context.createTextMessage();
+                        message.setText(text);
+            
+                        // Send the message
+                        producer.send(queue, message);
+                        ```
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+
+                        ## <i class="fa-solid fa-envelope"></i> Queue Consumer
+
+                        Use the connection factory to create a context, create a queue, create a consumer, and handle the message asynchronously.
+
+                        ```java
+                        var context = connectionFactory.createContext();
+                        var queue = context.createQueue("queue");
+                        var consumer = context.createConsumer(queue);
+                
+                        // Handle the message asynchronously
+                        consumer.setMessageListener(message -> {
+                            // Handle the message
+                        });
+                        ```
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+
+                        ## <i class="fa-solid fa-envelope"></i> Topic
+
                         <img src="/images/topic-model.png" alt="Queue Model" style="width: 100%;">
 
                         Notes:
@@ -191,6 +260,79 @@
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
+
+                        ## <i class="fa-solid fa-envelope"></i> Topic Producer
+
+                        Use the connection factory to create a context, create a topic, create a producer, create a message, and send the message to the topic.
+
+                        ```java
+                        var context = connectionFactory.createContext()) {
+
+                        // Create the topic and the producer
+                        var topic = context.createTopic("topic");
+                        var producer = context.createProducer();
+            
+                        // Create the message
+                        var message = context.createTextMessage();
+                        message.setText(text);
+            
+                        // Send the message
+                        producer.send(topic, message);
+                        ```
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+
+                        ## <i class="fa-solid fa-envelope"></i> Topic Consumer
+
+                        Use the connection factory to create a context, create a topic, create a consumer, and handle the message asynchronously.
+
+                        ```java
+                        // Create a JMS context
+                        var context = connectionFactory.createContext();
+                        var topic = context.createTopic("topic");
+                        var consumer = context.createConsumer(topic);
+
+                        // Handle the message asynchronously
+                        consumer.setMessageListener(message -> {
+                            // Handle the message
+                        });
+                        ```
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-envelope"></i> Durable subscriptions
+                        
+                        Until now, we need to have a consumer connected to the topic to receive the message.
+                        However, in some cases, we want to receive the message even if the consumer is not connected.
+
+                        To solve this problem, we can create a durable subscription.
+                        A durable subscription is a subscription that survives a consumer disconnection.
+
+                        To create a durable subscription, the consumer needs to provide a client ID and a subscription name.
+
+                        ```java
+                        var context = connectionFactory.createContext();
+                        var topic = context.createTopic("topic");
+                        var consumer = context.createDurableConsumer(topic, "subscription", "clientID");
+                        ```
+
+                        Notes:
+                        
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+
+                        ## <i class="fa-solid fa-envelope"></i> Request/Response
+
                         <img src="/images/request-response-model.png" alt="Queue Model" style="width: 100%;">
 
                         Notes:
@@ -213,6 +355,74 @@
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
+
+                        ## <i class="fa-solid fa-envelope"></i> Send a request and wait for the response
+
+                        Use the connection factory to create a context, create a topic, create a consumer, and handle the message asynchronously.
+
+                        ```java
+                        // Create the queue and the producer
+                        var requestQueue = context.createQueue("request");
+                        var requestProducer = context.createProducer();
+            
+                        // Create the request
+                        var requestMessage = context.createTextMessage();
+                        requestMessage.setText(name);
+            
+                        // Create the response queue and set it as the reply-to destination
+                        var responseQueue = context.createTemporaryQueue();
+                        requestMessage.setJMSReplyTo(responseQueue);
+            
+                        // Send the request
+                        requestProducer.send(requestQueue, requestMessage);
+            
+                        // Block and wait for the response
+                        var responseConsumer = context.createConsumer(responseQueue);
+                        var responseMessage = responseConsumer.receive(10000L);
+                        if (responseMessage instanceof TextMessage textMessage) {
+                            response = textMessage.getText();
+                        }
+                        ```
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+
+                        ## <i class="fa-solid fa-envelope"></i> Handle a request and send the response
+
+                        Use the connection factory to create a context, create a queue, create a consumer, and handle the message asynchronously.
+
+                        ```java
+                        var context = connectionFactory.createContext();
+                        var requestQueue = context.createQueue("request");
+                        var messageConsumer = context.createConsumer(requestQueue);
+
+                        // Handle the request asynchronously
+                        messageConsumer.setMessageListener(message -> {
+                            try {
+                                if (message instanceof TextMessage textMessage) {
+                                    // Create the response
+                                    var responseText = "Hello " + textMessage.getText() + "!";
+                                    var responseMessage = context.createTextMessage(responseText);
+
+                                    // Send the response to the destination specified in the request
+                                    var responseDestination = message.getJMSReplyTo();
+                                    var responseProducer = context.createProducer();
+                                    responseProducer.send(responseDestination, responseMessage);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                        ```
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
                         ## <i class="fa-solid fa-envelope"></i> Message Types
 
                         JMS defines different [types](https://jakarta.ee/specifications/messaging/3.1/jakarta-messaging-spec-3.1#jakarta-messaging-message-body) of messages:
@@ -225,20 +435,107 @@
                     </textarea>
                 </section>
 
+
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-envelope"></i> Message Brokers
+                        ## <i class="fa-solid fa-envelope"></i> Message Properties and Selectors
 
-                        A message broker is a software that implements the messaging system.
-                        - [Apache ActiveMQ](https://activemq.apache.org/)
-                        - [Apache Artemis](https://activemq.apache.org/artemis/)
-                        - [Apache Kafka](https://kafka.apache.org/)
-                        - [RabbitMQ](https://www.rabbitmq.com/)
-                        - [Amazon SQS](https://aws.amazon.com/sqs/)
-                        - [Azure Service Bus](https://azure.microsoft.com/en-us/services/service-bus/)
-                        - [Google Cloud Pub/Sub](https://cloud.google.com/pubsub)
+                        **Message Properties** allow producers to attach metadata to messages using key-value pairs. 
 
-                        Notes:
+                        ```java
+                        var producer = context.createProducer();
+                        var message = context.createTextMessage("Hello, World!");
+                        message.setStringProperty("type", "order");
+                        message.setIntProperty("amount", 100);
+                        producer.send(queue, message);
+                        ```
+
+                        On the consumer side, this metadata can be used in **Message Selectors** to filter messages based on their properties.
+
+                        ```java
+                        var consumer = context.createConsumer(queue, "type = 'order' AND amount > 100");
+                        ```
+
+                        This SQL-like expression syntax allows for rich filtering capabilities.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-envelope"></i> Message Acknowledgement
+
+                        **Message acknowledgements (ACK)** are used to ensure that the message is processed and not lost. JMS provides different **acknowledgement modes**:
+                        
+                        - **AUTO_ACKNOWLEDGE**: The session automatically acknowledges the receipt of a message once the consumer has received it. This is the simplest mode but may not be suitable for all scenarios.
+                        - **CLIENT_ACKNOWLEDGE**: The client explicitly acknowledges the message by calling the `acknowledge` method on the received message. This gives the client more control but requires additional code to handle acknowledgements.
+                        - **SESSION_TRANSACTED**: Messages are acknowledged as part of a transaction. This mode ensures that a group of messages are processed atomically, either all are acknowledged or none are.
+                        - **DUPS_OK_ACKNOWLEDGE**: The session lazily acknowledges the delivery of messages. This mode reduces the overhead of message delivery but allows for the possibility of duplicate messages if the consumer crashes.
+                        
+                        Choosing the right acknowledgement mode depends on the specific requirements of your application, such as the need for reliability, performance, and complexity of implementation.
+                        
+                
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+
+                        ## <i class="fa-solid fa-envelope"></i> Client Acknowledge
+
+                        Use the `CLIENT_ACKNOWLEDGE` mode to explicitly acknowledge the message.
+
+                        ```java
+                        // Create a JMS context
+                        var context = connectionFactory.createContext(Session.CLIENT_ACKNOWLEDGE);
+                        var queue = context.createQueue("queue");
+                        var consumer = context.createConsumer(queue);
+
+                        // Handle the message asynchronously
+                        consumer.setMessageListener(message -> {
+                            try {
+                                // Process the message
+                            } catch (Exception e) {
+                                // Handle the error
+                            } finally {
+                                // Acknowledge the message
+                                message.acknowledge();
+                            }
+                        });
+                        ```
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+
+                        ## <i class="fa-solid fa-envelope"></i> Session Transacted
+
+                        Use the `SESSION_TRANSACTED` mode to process a group of messages atomically.
+
+                        ```java
+                        // Create a JMS context with transacted session
+                        var context = connectionFactory.createContext(Session.SESSION_TRANSACTED);
+                        var queue = context.createQueue("queue");
+                        var producer = context.createProducer();
+                        var consumer = context.createConsumer(queue);
+
+                        try {
+                            // Send a message
+                            var message = context.createTextMessage("Hello, World!");
+                            producer.send(queue, message);
+
+                            // Receive and process the message
+                            var receivedMessage = consumer.receive();
+
+                            // Commit the transaction
+                            context.commit();
+                        } catch (Exception e) {
+                            // Rollback the transaction in case of an error
+                            context.rollback();
+                        }
+                        ```
 
                     </textarea>
                 </section>
@@ -348,8 +645,6 @@
                 
                     </textarea>
                 </section>
-
-
             </section>
 
             <section>
