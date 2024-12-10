@@ -300,13 +300,13 @@
                                 <td>Constant</td>
                                 <td><img src="./images/cpu_real_usage_flat.png" style="margin: unset; width: 50%;"></td>
                                 <td><img src="./images/cpu_real_counter_flat.png" style="margin: unset; width: 50%;"></td>
-                                <td>U = ΔB/ΔT = 25%</td>
+                                <td>U = ΔB/ΔT = <b>25%</b></td>
                             </tr>
                             <tr>
                                 <td>Burst</td>
                                 <td><img src="./images/cpu_real_usage_burst.png" style="margin: unset; width: 50%;"></td>
                                 <td> <img src="./images/cpu_real_counter_burst.png" style="margin: unset; width: 50%;"></td>
-                                <td>U = ΔB/ΔT = 25%</td>
+                                <td>U = ΔB/ΔT = <b>25%</b></td>
                             </tr>
                         </table>
                     </textarea>
@@ -417,17 +417,19 @@
 
                         Source: Java project at HEIG-VD/IICT
                         </div>
+                    </textarea>
+                </section>
 
-                        Notes: 
-                        The whole file content is loaded in memory, this method was called per user request, such as several users requesting large files were saturating the memory (i.e jvm heap)
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-landmark"></i> The critical 3%, a memory usage example
+                        The whole file content is loaded in memory, this method was called per user request, such as several users requesting large files were saturating the memory (i.e jvm heap).
                         This case could be argued to be a programming error instead of a performance issue. From the side of performance the high memory usage is relevant.
                         A better solution would be to refactor the code to use buffering and `InputStream/OutputStream` implementation.
                         See: https://github.com/apache/commons-codec/blob/rel/commons-codec-1.17.1/src/main/java/org/apache/commons/codec/binary/Base64OutputStream.java
                     
                     </textarea>
                 </section>
-
-
 
                 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
@@ -449,9 +451,181 @@
                     </textarea>
                 </section>
 
+            </section>
+
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fa-solid fa-gauge"></i> Observability</h2>
+                </section>
+
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-hand-paper"></i> Hands on!
+                        ## <i class="fa-solid fa-gauge"></i> Definition
+                        Observability in software engineering refers to the ability to understand the internal state of a system by analyzing the outputs it produces, such as **metrics**, **logs** and **traces**. It enables developers and operators to diagnose issues, monitor performance, and predict potential problems without direct access to the system's internal workings.
+
+                        * **Metrics** are numerical measurements that indicate a system's performance or health.
+                        * **Logs** are timestamped textual records of events or messages. They can be structured or unstructured.
+                        * **Traces** are detailed records of the execution path or flow of a request as it moves through different components
+                        
+                    </textarea>
+                </section>
+
+            
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-chart-line"></i> Metrics
+
+                        Metrics are typically used to create visualizations that provide insights into the system's performance and behavior. Additionally, alerts can be configured based on metrics to notify users when specific conditions or thresholds are met.
+
+                        <img src="./images/grafana-metrics.png" alt="Traces and spans" style="width: 55%;">
+                        <div style="text-align: center; font-size: 12px;"> 
+                        
+                        Source: https://grafana.com/docs/grafana-cloud/introduction/metrics-and-visualizations/
+                        </div>
+                        
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-list"></i> Logs
+
+                        **Logs** are timestamped, records of discrete events that occur in a system. They provide detailed information about specific points in time, often including contextual data such as error messages, user actions, or system events. A **log level** (e.g, WARN, INFO, FATAL) is a classification that indicates the severity or importance of a log message. It helps prioritize and filter logs based on their significance.
+
+                        **Structured logging** is a logging practice where log messages are recorded in a structured and machine-readable format, typically as key-value pairs or JSON objects.
+                        Mapped Diagnostic Context (MDC), is a feature provided by logging frameworks (such as SLF4J) that allows developers to include contextual information in their log messages. When structured logging is combined with MDC, logs become more detailed and contextual, making them easier to query and analyze.
+
+                        <img src="./images/log-struct.png" alt="Traces and spans" style="width: 45%;">
+
+                        
+                        
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-share-nodes"></i> Traces
+
+                        Traces are a "path" representation of a single request as it propagates through a system. A trace is composed of a tree-like structure of spans, which are the building blocks of the trace. Spans are timed event or work unit within the path of the request.
+                        <img src="./images/traces-spans.png" alt="Traces and spans" style="width: 45%;">
+                        
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.35em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-share-nodes"></i> Traces
+                        Textual representation of a trace's spans. Note the hierarchy definition through `spanId` and `parentSpanId`, the start and end timestamps.
+                        ```
+                        {
+                            ...
+                            "spans": [
+                                {
+                                    "traceId": "9a5efb254b63a57aa9992fc9455acc22",
+                                    "spanId": "9b8459fb74c5a633",
+                                    "parentSpanId": "caf1835eda3fafcf",
+                                    "name": "INSERT quarkus.Person",
+                                    "kind": "SPAN_KIND_CLIENT",
+                                    "startTimeUnixNano": 1733832773655515100,
+                                    "endTimeUnixNano": 1733832773660500000,
+                                    "attributes": [
+                                        {
+                                            "key": "db.system",
+                                            "value": {
+                                                "stringValue": "postgresql"
+                                            }
+                                        },
+                                        {
+                                            "key": "db.statement",
+                                            "value": {
+                                                "stringValue": "insert into Person (firstName,lastName) values (?,?)"
+                                            }
+                                        }
+                                        ...
+                                    ],
+                                    "droppedAttributesCount": 0,
+                                    "droppedEventsCount": 0,
+                                    "droppedLinksCount": 0,
+                                    "status": {
+                                        "code": 0,
+                                        "message": ""
+                                    }
+                                },
+                                {
+                                    "traceId": "9a5efb254b63a57aa9992fc9455acc22",
+                                    "spanId": "caf1835eda3fafcf",
+                                    "parentSpanId": "0000000000000000",
+                                    "name": "POST /hello/person",
+                                    "kind": "SPAN_KIND_SERVER",
+                                    "startTimeUnixNano": 1733832773651633000,
+                                    "endTimeUnixNano": 1733832773664476700,
+                                    "attributes": [
+                                        {
+                                            "key": "http.route",
+                                            "value": {
+                                                "stringValue": "/hello/person"
+                                            }
+                                        },
+                                        {
+                                            "key": "http.request.method",
+                                            "value": {
+                                                "stringValue": "POST"
+                                            }
+                                        },
+                                        ...
+                                    ],
+                                    "droppedAttributesCount": 0,
+                                    "droppedEventsCount": 0,
+                                    "droppedLinksCount": 0,
+                                    "status": {
+                                        "code": 0,
+                                        "message": ""
+                                    }
+                                }
+                            ]
+                        }
+                    ```
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-gauge"></i> OpenTelemetry
+                        
+                        <i class="fa-solid fa-quote-left"></i>
+                        OpenTelemetry, also known as OTel, is a vendor-neutral open source Observability framework for instrumenting, generating, collecting, and exporting telemetry data.
+                        <i class="fa-solid fa-quote-right"></i>
+
+                        [Documentation | OpenTelemetry](https://opentelemetry.io/docs/)
+
+                        OpenTelemetry aims to provide a stable standard and protocol so that different implementations work together seamlessly, preventing vendor lock-in.
+                        A collection of libraries, SDKs and tools are as well provided.
+                        The project is part of  Cloud Native Computing Foundation ([CNCF](https://www.cncf.io/)). 
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-gauge"></i> OpenTelemetry
+                        
+                        <img src="./images/otel-arch.png" alt="Traces and spans" style="width: 55%;">
+
+                        <div align="center" style="font-size: 12px;"> 
+                        
+                        Source: https://opentelemetry.io/docs/
+                        </div>
+                    </textarea>
+                </section>
+
+            </section>
+
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fa-solid fa-hand-paper"></i> Hands-on</h2>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hand-paper"></i> Hands-on!
 
                         Checkout the following repository on GitHub and optimize the application:
 
@@ -466,9 +640,17 @@
                     </textarea>
                 </section>
 
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hand-paper"></i> Hands-on!
 
+                        Checkout the following repository on GitHub and follow the instructions in `README`:
+
+                        https://github.com/amt-classroom/example-opentelemetry
+
+                    </textarea>
+                </section>
             </section>
-
             <section>
                 <h2><i class="fas fa-hand-paper"></i> Questions?</h2>
             </section>
