@@ -172,7 +172,7 @@
                 <section data-markdown style="font-size: 0.4em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> Why join tables are used in the generated schema?
-                        In summary the relationship in JPA have an owning side that controls the relation, the annotation `@OneToMany` alone (i.e without a reverse `@ManyToOne`) creates an unidirectional relationship. Since the owning side doesn't specify more information, the default mapping apply. In order to specify a relationship with foreign key in the non-owning side, more information must be given to JPA.
+                        In summary the relationships in JPA have an owning side that controls the relation, the annotation `@OneToMany` alone (i.e without a reverse `@ManyToOne`) creates an unidirectional relationship. Since the owning side doesn't specify more information, the default mapping applies. In order to specify a relationship with foreign key in the non-owning side, more information must be given to JPA.
 
                         **Jakarta Persistence
  3.1, [2.11.5.1. Unidirectional OneToMany Relationships](https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1#a764):**
@@ -328,11 +328,11 @@
                         **Jakarta Persistence
  3.1, [3.2.4. Synchronization to the Databases](https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1#a1955):** 
 
-                        <i class="fa-solid fa-quote-left"></i>The state of persistent entities is synchronized to the database at transaction commit. This synchronization involves writing to the database any updates to persistent entities and their relationships. [...] The persistence provider runtime is permitted to perform synchronization to the database at other times as well when a transaction is active and the persistence context is joined to the transaction. The flush method can be used by the application to force synchronization. [...]
+                        <i class="fa-solid fa-quote-left"></i>The state of persistent entities is synchronized to the database upon transaction commit. This synchronization involves writing to the database any updates to persistent entities and their relationships. [...] The persistence provider runtime is permitted to perform synchronization on the database at other times as well as when a transaction is active and the persistence context is joined to the transaction. The flush method can be used by the application to force synchronization. [...]
                         <i class="fa-solid fa-quote-right"></i>
 
                         <i class="fa-solid fa-circle-exclamation"></i> To better understand **when** and **what** happens during the synchronization:
-                        1. activates the logging of SQL queries `quarkus.hibernate-orm.log.sql=true`
+                        1. activate the logging of SQL queries `quarkus.hibernate-orm.log.sql=true`
                         2. use the debugger with breakpoints and execute step-by-step.
                     </textarea>
                 </section>
@@ -387,7 +387,7 @@
                         [ `quarkus.hibernate-orm.jdbc.statement-batch-size`](https://quarkus.io/guides/hibernate-orm#quarkus-hibernate-orm_quarkus-hibernate-orm-jdbc-statement-batch-size
                         )
 
-                        Anti-pattern of filling the persistent context within a transaction leading to a memory leak that coud result to out of memory errors:
+                        Anti-pattern of filling the persistent context within a transaction leading to a memory leak that coud result in out of memory errors:
                         ```java
                         EntityManager entityManager = ...;
 
@@ -447,7 +447,7 @@
 
                         SQL remains the most powerful way to query your database.
 
-                        Lots of database offer specific features that are not part of the standard (e.g. JSON, XML, ...).
+                        Lots of databases offer specific features that are not part of the standard (e.g. JSON, XML, ...).
 
                         ```SQL
                         var query = """
@@ -552,7 +552,7 @@
                     <textarea data-template>
                         ##  Jakarta Criteria Metamodel
 
-                        The Criteria Metamodel is another way to build queries programatically.
+                        The Criteria Metamodel is another way to build queries programmatically.
                         Here is the same query as before, but using the Criteria Metamodel.
 
                         ```java       
@@ -647,7 +647,7 @@
                         }
                         ```
 
-                        EntityGraphes can be declared as well using annotations, through `@NamedEntityGraph`.
+                        EntityGraphes can also be declared using annotations, through `@NamedEntityGraph`.
 
                         Reference: [Jakarta 3.1, 3.7.4. Use of Entity Graphs in find and query operations](https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1#a2814)
 
@@ -706,14 +706,14 @@
                         - The actual cost of the operation (e.g. number of rows to read)
 
                         Some operations, like sequential scan, are very expensive and should be avoided.
-                        When joining tables, a sequential scan can result in the cartesian product of the tables.
+                        When joining tables, a sequential scan can result in the Cartesian product of the tables.
 
                         ```SQL
                         SELECT * FROM persons, orders WHERE persons.id = orders.person_id;
                         ```
 
                         Notes:
-                        Here, if the person table has 1'000 rows and the orders table has 10'000 rows, the **cartesian product** will have 10'000'000 rows.           
+                        Here, if the person table has 1'000 rows and the orders table has 10'000 rows, the **Cartesian product** will have 10'000'000 rows.           
                         Without an index, the database will have to read all the rows of table1 and table2 to find the matching rows.
                     </textarea>
                 </section>
@@ -763,9 +763,9 @@
                         
 
                         Notes:
-                        The object model has its roots in the graph theory.
+                        The object model has its roots in graph theory.
 
-                        The relational model has its roots in the set theory and the predicate logic.
+                        The relational model has its roots in set theory and the predicate logic.
 
                         source of the image: https://martinfowler.com/bliki/OrmHate.html
 
