@@ -181,7 +181,7 @@
 
                         - It is now possible to replace the **low-level module** with another implementation without also changing the **high-level module**.
 
-                        Here, the dependencies are set programatically via the constructor or a setter. 
+                        Here, the dependencies are set programmatically via the constructor or a setter. 
                         It is not very practical when the graph of dependencies is large and complex.
  
                     </textarea>
@@ -238,10 +238,10 @@
                         ## <i class="fa-solid fa-diagram-project"></i> Constructor injection
 
                         ```java
-                        // The Application correspond to the client.
+                        // The Application corresponds to the client.
                         class Application {
 
-                            // The Logger correspond to the service.
+                            // The Logger corresponds to the service.
                             private Logger logger;
 
                             // The dependency to the service is injected via a constructor.
@@ -253,7 +253,7 @@
 
                         Notes:
 
-                        This approach allows to inject the dependency when the object is created.
+                        This approach allows you to inject the dependency when the object is created.
 
                     </textarea>
                 </section>
@@ -263,10 +263,10 @@
                         ## <i class="fa-solid fa-diagram-project"></i> Setter injection
 
                         ```java
-                        // The Application correspond to the client.
+                        // The Application corresponds to the client.
                         class Application {
 
-                            // The Logger correspond to the service.
+                            // The Logger corresponds to the service.
                             private Logger logger;
 
                             // The dependency to the service is injected via a setter.
@@ -278,9 +278,9 @@
 
                         Notes:
 
-                        This approach allows to inject the dependency after the object has been created.
+                        This approach allows you to inject the dependency after the object has been created.
 
-                        It also allows to change the dependency at runtime.
+                        It also allows you to change the dependency at runtime.
 
                     </textarea>
                 </section>
@@ -329,7 +329,7 @@
                         ## <i class="fa-solid fa-diagram-project"></i> Interface injection in the real world
 
                         ```java
-                        // The Application correspond to the client.
+                        // The Application corresponds to the client.
                         class Application {
 
                             // The annotation acts as an interface and makes the injector aware of the dependency.
@@ -377,7 +377,7 @@
 
                         However, the scope of the term IoC is much broader than dependency injection, as the flow of the program is not limited to dependency instantiation and injection.
 
-                        For instance, some MVC frameworks use IoC at the level of the HTTP router. They control the flow of the program based on the url and on routing conventions.
+                        For instance, some MVC frameworks use IoC at the level of the HTTP router. They control the flow of the program based on the url and routing conventions.
                         
                     </textarea>
                 </section>
@@ -400,7 +400,7 @@
                         * https://quarkus.io/guides/cdi-reference
 
                         Browse the above references and identify why RedHat, which is the main developer of Quarkus and
-                        the reference implementation of Jakarta CDI implementation (i.e, [Weld](http://weld.cdi-spec.org/)), decided
+                        the reference implementation of Jakarta CDI (i.e, [Weld](http://weld.cdi-spec.org/)), decided
                         to develop Quarkus ArC.
                         
                     </textarea>
