@@ -61,7 +61,7 @@
 
                         Each client connects to a message broker that provides the messaging service.
                         
-                        Once the connection established the messaging system looks like a peer-to-peer facility: A messaging client can send messages to, and receive messages from, any other client. 
+                        Once the connection established the messaging system looks like a peer-to-peer facility: A messaging client can send messages to, and receive messages from, any other client.
                     
 
                     </textarea>
@@ -115,7 +115,7 @@
 
                         The **JMS API** hides the complexity of the messaging system.
 
-                        A lot of message broker (runtime) implement the JMS API (specification).
+                        A lot of message brokers (runtimes) implement the JMS API (specification).
 
                         The **Connection Factory** is used to create a connection (old API) or a context (new API) to the message broker.
 
@@ -142,7 +142,7 @@
                         Checkout the following repository:
                         https://github.com/amt-classroom/example-messaging
 
-                        It demonstrate how to use the JMS API with different models (queue, topic, request/response).
+                        It demonstrates how to use the JMS API with different models (queue, topic, request/response).
 
                     </textarea>
                 </section>
@@ -218,7 +218,7 @@
 
                         ## <i class="fa-solid fa-envelope"></i> Queue Consumer
 
-                        Use the connection factory to create a context, create a queue, create a consumer, and handle the message asynchronously.
+                        Use the connection factory to create a context, create a queue, create a consumer and handle the message asynchronously.
 
                         ```java
                         var context = connectionFactory.createContext();
@@ -263,7 +263,7 @@
 
                         ## <i class="fa-solid fa-envelope"></i> Topic Producer
 
-                        Use the connection factory to create a context, create a topic, create a producer, create a message, and send the message to the topic.
+                        Use the connection factory to create a context, create a topic, create a producer, create a message and send the message to the topic.
 
                         ```java
                         var context = connectionFactory.createContext()) {
@@ -288,7 +288,7 @@
 
                         ## <i class="fa-solid fa-envelope"></i> Topic Consumer
 
-                        Use the connection factory to create a context, create a topic, create a consumer, and handle the message asynchronously.
+                        Use the connection factory to create a context, create a topic, create a consumer and handle the message asynchronously.
 
                         ```java
                         // Create a JMS context
@@ -342,8 +342,8 @@
                         However, the producer needs to wait for the response from the consumer and fire and forget is not suitable.
                         
                         To solve this problem:
-                        - The **producer** sends a message to a queue, initialize a temporary queue, include the temporary queue in the message, and wait for the response on the temporary queue.
-                        - The **consumer** receives the message, processes it, and sends the response to the temporary queue.
+                        - The **producer** sends a message to a queue, initialize a temporary queue, include the temporary queue in the message and wait for the response on the temporary queue.
+                        - The **consumer** receives the message, processes it and sends the response to the temporary queue.
                         - The **producer** receives the response and processes it.
 
                         **Request/Response** is often used for long asynchronous processing tasks (e.g. batch processing, report generation, etc.) where the producer needs to know when the processing is done and the result is available.
@@ -358,7 +358,7 @@
 
                         ## <i class="fa-solid fa-envelope"></i> Send a request and wait for the response
 
-                        Use the connection factory to create a context, create a topic, create a consumer, and handle the message asynchronously.
+                        Use the connection factory to create a context, create a topic, create a consumer and handle the message asynchronously.
 
                         ```java
                         // Create the queue and the producer
@@ -392,7 +392,7 @@
 
                         ## <i class="fa-solid fa-envelope"></i> Handle a request and send the response
 
-                        Use the connection factory to create a context, create a queue, create a consumer, and handle the message asynchronously.
+                        Use the connection factory to create a context, create a queue, create a consumer and handle the message asynchronously.
 
                         ```java
                         var context = connectionFactory.createContext();
@@ -569,7 +569,7 @@
                         
 
                         Notes:
-                        You should not make any assumption about the guarantees provided by the broker. 
+                        You should not make any assumptions about the guarantees provided by the broker. 
                         Always check the documentation of the broker to know what guarantees are provided and from which perspective (i.e., producer or consumer).
 
                         References:
@@ -591,7 +591,7 @@
                         - **Scalability** - The messages are distributed across multiple machines.
 
                         Notes:
-                        You should not make any assumption about the guarantees provided by the broker. 
+                        You should not make any assumptions about the guarantees provided by the broker.
                         Always check the documentation of the broker to know what guarantees are provided.
 
                 
