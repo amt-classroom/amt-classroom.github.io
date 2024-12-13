@@ -50,7 +50,7 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-cubes"></i> Abstraction
 
-                        Abstraction is a skill and process in computer science.
+                        Abstraction is a skill and a process in computer science.
                         
                         - Generalization (grouping, simplification, categorization)
                         - Hide concrete details
@@ -155,7 +155,7 @@
                 <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-file-code"></i> Greenfield Utopia
-                        The developer focus on code and lets the magic happens in the database.
+                        The developer focuses on code and lets the magic happen in the database.
 
                         > Isn't the ORM supposed to abstract away the database from me?
                         > </br>-- <cite>An anonymous developer, practitioner of code-(only)-first approach</cite>
@@ -210,7 +210,7 @@
                         ```
 
                         * The associative table is unexpected for a one-to-many relation and likely to lead to performance issues.
-                        * The naming of foreign keys constraint are technical and debatable.
+                        * The naming of foreign key constraints are technical and debatable.
 
                         [More annotations and code](https://vladmihalcea.com/the-best-way-to-map-a-onetomany-association-with-jpa-and-hibernate/) are required in Java classes to obtain a saner database schema.
                     </textarea>
@@ -218,9 +218,9 @@
                 <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-file-code"></i> Greenfield Utopia - Evolution, forcing destiny
-                        * Forcing the abstraction of database as much as possible by using schema generation to drive the development of migrations.
+                        * Forcing the abstraction of a database as much as possible by using schema generation to drive the development of migrations.
                         * Java classes remain the source of truth and a back and forth is done using schema generation to find the correct annotations and code to produce a manageable schema.
-                        * In worth cases the migrations becomes a bundle of generated, semi-generated and manually authored migrations.
+                        * In worse cases the migrations becomes a bundle of generated, semi-generated and manually authored migrations.
                         <img src="/images/7-abstraction-jooq/schema-utopia-evolution.png" alt="Layered architecture" style="width: 60%;"/>
                     </textarea>
                 </section>
@@ -244,7 +244,7 @@
 
                         The schema generation:
                         * abstract away the database until it doesn't (e.g. performance issues, errors, data loss).
-                        * has to take decisions that might be unexpected, perform poorly or hard to comprehend from RDBMS perspective
+                        * has to take decisions that might be unexpected, perform poorly or hard to comprehend from a RDBMS perspective
                         * the schema is not under control as it is applied dynamically at runtime.
                         * the breakaway effort is correlated to the growth of the schema while it was not under control
 
@@ -262,7 +262,7 @@
                 <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-file-code"></i> ORM abstraction
-                        ORMs are complex abstraction and leak by design. They are often highly criticized because of misplaced expectations.
+                        ORMs are complex abstractions and leak by design. They are often highly criticized because of misplaced expectations.
                         Using an ORM abstraction doesn't remove the need to understand the database.
 
                         >  if you are writing an application backed by a relational database you should damn well know how a relational database works.
@@ -276,17 +276,17 @@
                 <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-certificate"></i> Abstraction and generation, trust but verify
-                        Abstraction that generates code and schema are often mistrust, however they are ubiquitous to software developement.
+                        Abstractions that generate code and schemas are often mistrusted, however they are ubiquitous to software development.
                         They come with various qualities and weaknesses.
 
-                        The decision making for abstractions choices is different according to each project's context. For example:
+                        The decision making for abstraction choices is different according to each project's context. For example:
                         * lifetime of the application (i.e.  a few months, several years)
                         * existing and predominant skills of the contributors
                         * domain complexity
                         * abstraction relevance in meetings the expressed needs
 
 
-                        When depending on a abstraction that generates code or schema becomes crucial:
+                        When depending on a abstraction that generates code or schemas becomes crucial:
                         * place them under control
                         * track the changes
                         * learn and understand what and how it abstracts
@@ -312,7 +312,7 @@
                         Once the application is in **production**, the database schema will continue to evolve.
                         - **With production data**, evolution requires **migrations**.
 
-                        **Migration tools** address this problem by allowing to evolve the database schema while keeping the data.
+                        **Migration tools** address this problem by allowing you to evolve the database schema while keeping the data.
                         
                     </textarea>
                 </section>
@@ -330,7 +330,7 @@
                         - Run the database migration scripts
                         - Progressively deploy the new version of the application
 
-                        This process allows to deploy a new version of the application without downtime.
+                        This process allows you to deploy a new version of the application without downtime.
                         However, some inconsistencies may occur during the deployment.
                         
                         **Can you spot them?**
@@ -393,7 +393,7 @@
                         The undo feature of Flyway is part of the commercial version. However, even if opensource alternatives exists (e.g. [Liquibase](https://docs.liquibase.com/home.html)) the **rollback feature is not a silver bullet**. 
                         
                         - Destructive changes are non-trivial to inverse. For instance, after dropping a table or a column, the data is lost and cannot be recovered.
-                        - Expressing the inverse of a migration will often requires to manually create the "undo" migration script.
+                        - Expressing the inverse of a migration will often require you to manually create the "undo" migration script.
                         
                         Again, **forward thinking** is crucial when writing migration scripts. For instance, if a migration script deletes data, it is a good idea to first mark the data as deprecated, and then delete it in a later migration script.
 
@@ -411,7 +411,7 @@
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> PL/SQL SQL Procedure Language 
                         Some migrations require logic that goes beyond standard SQL statements. Most RDBMSs support a procedural language that enables the use of variables, control-flow, and error handling to implement complex procedures. For example PostgreSQL has PL/pgSQL and MySQL has a syntax close to PL/SQL. 
-                        If originally PL/SQL is tied to Oracle, then [SQL/PSM](https://en.wikipedia.org/wiki/SQL/PSM) specification was derived from it. However the term PL/SQL remains and is often used to refer to procedural feature of most RDBMS, even though that feature isn't exactly the PL/SQL language as found in Oracle products.
+                        If originally PL/SQL is tied to Oracle, then the [SQL/PSM](https://en.wikipedia.org/wiki/SQL/PSM) specification was derived from it. However the term PL/SQL remains and is often used to refer to a procedural feature of most RDBMS, even though that feature isn't exactly the PL/SQL language as found in Oracle products.
 
                         Here is an example of PL/pgSQL migration function:
                         ```pl/pgsql
@@ -466,7 +466,7 @@
                         When service downtime is acceptable, you can implement a breaking change by coordinating changes to both the application and database schema in a single deployment. The process is as follows:
 
                         - Shut down all instances of application version X, so no instances are reading from or writing to database schema version Y.
-                        - Deploy application version X+1 which run migration scripts to update the database to schema version Y+1, which is compatible with the new application version.
+                        - Deploy application version X+1 which runs migration scripts to update the database to schema version Y+1, which is compatible with the new application version.
                         - Application version X+1 and database schema version Y+1 are now up and running together.
 
                         While this approach requires downtime, it also requires careful planning to ensure that the new application and database versions are compatible and can be deployed together. This method becomes complex and error-prone when multiple applications use the same database, and deployment automation must handle this coordinated process. This method may work for prototype applications but isn’t reliable for production.
@@ -478,8 +478,8 @@
                         ## <i class="fas fa-database"></i> Database refactoring - Backward-incompatible, expand and contract
 
                         Expand and contract is a pattern to break backward-incompatible changes into a chain of backward-compatible changes through three distinctive phases. The changes in code and database schema are decoupled so that they can be developed, tested and deployed separately.
-                        * **Expand**, introduce backward-compatible changes that implements the refactoring in the database schema.
-                        * **Migrate**, introduce code changes that are moving to the newly capabilities of the refactored database schema.
+                        * **Expand**, introduce backward-compatible changes that implement the refactoring in the database schema.
+                        * **Migrate**, introduce code changes that are moving to the new capabilities of the refactored database schema.
                         * **Contract** (i.e. to reduce to smaller size), consolidation by removing or cleaning-up any non-essential changes introduced in the expand phase to support the migration phase that are not used by the code anymore.
 
                         <img src="./images/expand-contract.png" alt="Generated schema" style="width: 30%;">

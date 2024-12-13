@@ -35,7 +35,7 @@
             <section data-markdown>
                 <textarea data-template>
                     ## <i class="fas fa-tasks"></i> Overview of Today's Class
-                    - Multitier architecture
+                    - multi-tier architecture
                     - Model-View-Controller
                     - The Java Ecosystem
                 </textarea>
@@ -50,20 +50,20 @@
                 </textarea>
             </section>
 
-            <!-- Multitier architecture -->
+            <!-- multi-tier architecture -->
             <section>
                 <section data-background="#333333">
-                    <h2><i class="fas fa-sitemap"></i> Multitier architecture</h2>
+                    <h2><i class="fas fa-sitemap"></i> multi-tier architecture</h2>
                 </section>
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template>
                         ## <i class="fas fa-sitemap"></i> Definition
                         
-                        The **multitier** architecture, also referred to as **n-tier** or **layered** architecture, is a common architectural style for the design of modern applications.
+                        The **multi-tier** architecture, also referred to as **n-tier** or **layered** architecture, is a common architectural style for the design of modern applications.
                         
                         It is based on the idea of dividing an application into layers, each of which is responsible for a specific set of tasks.
                         
-                        The most common implementation of the multitier architecture is the **three-tier** architecture (presentation, business, and data).
+                        The most common implementation of the multi-tier architecture is the **three-tier** architecture (presentation, business, and data).
                     </textarea>
                 </section>
                 <section data-markdown style="font-size: 0.5em;">
@@ -73,7 +73,7 @@
                         The Layers Pattern, also known as the Layered Architecture Pattern, is a design approach used in software development to structure programs into distinct layers, 
                         each with a specific role and responsibility. This pattern promotes separation of concerns, making it easier to manage and maintain applications.
 
-                        This pattern has been as well employed for network development and a prime example is the OSI model:
+                        This pattern has also been employed for network development and a prime example is the OSI model:
                         <img src="./images/osi7layers.png" alt="Layered architecture" style="width: 60%;"/>
                         <div  style="font-size: 0.5em;text-align: center;"><a href="https://www.cloudflare.com/learning/ddos/glossary/open-systems-interconnection-model-osi/">Cloudflare OSI Model</a></div>
                     </textarea>
@@ -81,9 +81,9 @@
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template>
                         ## Layer and tier
-                        **Layers** are logical divisions that separates different concerns or functionalities. Focuses on organizing the code and improving maintainability and separation of concerns.
+                        **Layers** are logical divisions that separate different concerns or functionalities. They focus on organizing the code and improving maintainability and separation of concerns.
 
-                        **Tiers** are physical divisions of an application across multiple machines. Focuses on distributing the application’s components to improve security, performance, scalability, and fault tolerance.
+                        **Tiers** are physical divisions of an application across multiple machines. They focus on distributing the application’s components to improve security, performance, scalability, and fault tolerance.
                         </div>                        
                     </textarea>
                 </section>
@@ -104,7 +104,7 @@
                         - back-end developers
                         - database administrators
 
-                        These roles nicely map to the three layers of the multitier architecture:
+                        These roles map nicely to the three layers of the multi-tier architecture:
                         - presentation
                         - business
                         - data layers
@@ -118,7 +118,7 @@
                         
                         Notes:
 
-                        This figure depicts a multitier architecture with four layers grouped in a **single deployment unit**.
+                        This figure depicts a multi-tier architecture with four layers grouped in a **single deployment unit**.
 
                         - The **presentation layer** is responsible for the **user interface** (e.g. web, mobile).
 
@@ -139,9 +139,9 @@
                         
                         Notes:
                         
-                        This figure introduce a **second deployment unit** for the database.
+                        This figure introduces a **second deployment unit** for the database.
                                                 
-                        This is a common architecture for **multi-page web applications** developped with Django, Ruby on Rails, or Symfony.
+                        This is a common architecture for **multi-page web applications** developed with Django, Ruby on Rails, or Symfony.
                     </textarea>
                 </section>
                 <section data-markdown style="font-size: 0.8em; text-align: center;">
@@ -152,11 +152,11 @@
 
                         Notes:
 
-                        This figure introduce a **third deployment unit** for the presentation layer.
+                        This figure introduces a **third deployment unit** for the presentation layer.
 
-                        This is a common architecture for **single-page web applications** developped with Angular, React, or Vue.js.
+                        This is a common architecture for **single-page web applications** developed with Angular, React, or Vue.js.
 
-                        **Mobile applications** are also often developped with a similar architecture (e.g. Android, iOS, Flutter, etc.).
+                        **Mobile applications** are also often developed with a similar architecture (e.g. Android, iOS, Flutter, etc.).
                     </textarea>
                 </section>
                 <section data-markdown style="font-size: 0.8em; text-align: center;">
@@ -167,7 +167,7 @@
                         
                         Notes:
 
-                        In the **multitier architecture**, a layer can be **closed** or **open**.
+                        In the **multi-tier architecture**, a layer can be **closed** or **open**.
 
                         - A **closed layer** is a layer that can only be accessed by the layer above it.
 
@@ -178,10 +178,10 @@
                         It may be tempting to make all layers open.
                         For example, it is common to see the presentation layer accessing the database directly.
                         However, this is a bad practice because it breaks the separation of concerns.
-                        With **tighly coupled layers** changes will be more difficult to isolate and the application will be harder to maintain.
+                        With **tightly coupled layers** changes will be more difficult to isolate and the application will be harder to maintain.
 
                         Closed layers are often used to improve **separation of concerns** and **low coupling** between layers.
-                        The least coupled the layers are, the easier it is to maintain and evolve the application.
+                        The less coupled the layers are, the easier it is to maintain and evolve the application.
                         A change in a layer should theoretically only affect its siblings.
                         As a result, the result of a change should be predictable and easy to test.
 
@@ -221,7 +221,7 @@
 
                         This is a common problem in **monolithic applications**, and shared utility classes start to appear in the **business layer**.
 
-                        As they are allowed to, component in the **presentation layer** start to access these utility classes directly, weaking the **separation of concerns**.
+                        As they are allowed to, components in the **presentation layer** start to access these utility classes directly, weakening the **separation of concerns**.
 
                         And you know, creative front-end engineers 👨‍🎨 are not always the most disciplined developers 🤷‍♂️.
                     </textarea>
@@ -235,7 +235,7 @@
                         
                         Notes:
 
-                        This Figure address this issue by introducing a new **service layer** responsible for the **shared components**.
+                        This Figure addresses this issue by introducing a new **service layer** responsible for the **shared components**.
 
                         This **service layer** is **open**. As a result, the **business layer** can access both the **service layer** and the **persistence layer**.
 
@@ -247,7 +247,7 @@
 
                         In general, it is a good idea to start with a **small number of layers** and to **add layers** as the application grows.
 
-                        Notice, that the enforcement of these architecture principles solely relies on the **discipline** of the team.
+                        Notice, the enforcement of these architecture principles relies solely on the **discipline** of the team.
                     
                     </textarea>
                 </section>
@@ -256,11 +256,11 @@
                     <textarea data-template data-separator-notes="^Notes:">
                         ### An outdated architecture?
 
-                        The **multitier architecture** is often associated with pejorative terms such as **monolith**, **big ball of mud** 🧶, or **spaghetti code** 🍝.
+                        The **multi-tier architecture** is often associated with pejorative terms such as **monolith**, **big ball of mud** 🧶, or **spaghetti code** 🍝.
 
-                        The **microservices architecture** is often presented as the solution 💡 to all the problems of the multitier architecture.
+                        The **microservices architecture** is often presented as the solution 💡 to all the problems of the multi-tier architecture.
 
-                        However, a **microservice** is just a **small multitier application** and it is not a silver bullet to **architectural problems** 🏛️.
+                        However, a **microservice** is just a **small multi-tier application** and it is not a silver bullet to **architectural problems** 🏛️.
 
                     </textarea>
                 </section>
@@ -269,7 +269,7 @@
                     <textarea data-template data-separator-notes="^Notes:">
                         ### Big ball of mud
 
-                        Each dot on the perimeter of the circle represents a class, and each line represents connections between the classes.
+                        Each dot on the perimeter of the circle represents a class, and each line represents a connection between the classes.
 
                         <img src="./images/fosa_0901.png" alt="Big ball of mud" style="width: 35%;"/>
 
@@ -291,7 +291,7 @@
                     <textarea data-template>
                         ## <i class="fa-brands fa-amazon"></i> Case study: Amazon Video Streaming
                         
-                        Amazon Video Streaming sound like a good candidate for a microservice architecture.
+                        Amazon Video Streaming sounds like a good candidate for a microservice architecture.
 
                         Read the following article on the Amazon Engineering Blog to learn more about the architecture of the Monitoring Service of Amazon Video Streaming:
 
@@ -324,8 +324,8 @@
 
                         Originally, the MVC pattern was introduced by Trygve Reenskaug in 1979 to design graphical user interfaces (GUIs) in Smalltalk.
 
-                        The popularization of the MVC pattern in the context of web applications is often attributed to the WebObjects framework developped by NeXT in the 1990s.
-                        First developped in Objective-C, WebObjects was later ported to Java.
+                        The popularization of the MVC pattern in the context of web applications is often attributed to the WebObjects framework developed by NeXT in the 1990s.
+                        First developed in Objective-C, WebObjects was later ported to Java.
 
                         Many frameworks (e.g. Django, Ruby on Rails, Symfony, Spring, etc.) contributed to the popularization of this pattern.
 
@@ -351,7 +351,7 @@
                         
                         Notes:
 
-                        [Wikipedia](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) provide the following description of the interactions of the MVC pattern:
+                        [Wikipedia](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) provides the following description of the interactions of the MVC pattern:
 
                         *In addition to dividing the application into these components, the model–view–controller design defines the interactions between them.*
                         - *The model is responsible for managing the data of the application. It receives user input from the controller.*
@@ -369,7 +369,7 @@
                         
                         Notes:
 
-                        In this variant described by [GeeksForGeeks](https://www.geeksforgeeks.org/benefit-of-using-mvc/), the controller handles the user requests, manipulates the model, sends the data to the view, which renders the data to the user.
+                        In this variant described by [GeeksForGeeks](https://www.geeksforgeeks.org/benefit-of-using-mvc/), the controller handles the user requests, manipulates the model and sends the data to the view, which renders the data to the user.
 
                     </textarea>
                 </section>
@@ -419,7 +419,7 @@
                             └── ...
                         ```
 
-                        When the framework automatically bind the user request to the corresponding component, it is said to be **convention over configuration**.
+                        When the framework automatically binds the user request to the corresponding component, it is said to be **convention over configuration**.
 
                         Notes:
 
@@ -427,7 +427,7 @@
 
                         For instance, a convention may be used by a framework to automatically route a request to `/user/edit/1.html` to the `edit` method of the `UserController` class and render the result with the `edit` method of the `UserView` class.
                        
-                        At a first glance, it may seem like a good idea, however:
+                        At first glance, it may seem like a good idea, however:
                         - It can  be a source of confusion for developers who are not familiar with the framework.
                         - It can be difficult to customize the behavior of the framework when the convention does not fit the requirements of the application.
                         - It can be difficult to test the application in isolation, as the framework is tightly coupled to the application (e.g. calling the `edit` method of the `UserController` class may require to mock the `UserView` class).
@@ -439,7 +439,7 @@
                     <textarea data-template>
                         ## <i class="fa-brands fa-github"></i> Case study: GitHub
                         
-                        GitHub is a good example of a web application developped with Ruby on Rails,
+                        GitHub is a good example of a web application developed with Ruby on Rails,
                         which is a framework implementing the MVC pattern.
 
                         Read the following article on the GitHub Engineering Blog to learn more about the architecture of GitHub:
@@ -452,7 +452,7 @@
                 </section>
             </section>
 
-            <!-- Java for Multitier Applications -->
+            <!-- Java for multi-tier Applications -->
             <section>
                 <section data-background="#333333">
                     <h2><i class="fas fa-sitemap"></i> The Java Ecosystem</h2>
@@ -482,7 +482,7 @@
 
                         <img src="./images/jakarta.png" alt="Jakarta EE" style="width: 25%; margin-left: 0;"/>
 
-                        **Jakarta EE** (formerly known as Java EE) is a set of specifications for the development of **multitier applications** in Java.
+                        **Jakarta EE** (formerly known as Java EE) is a set of specifications for the development of **multi-tier applications** in Java.
 
                         <img src="./images/microprofile.png" alt="MicroProfile" style="width: 40%; margin-left: 0;"/>
 
@@ -507,7 +507,7 @@
 
                         As the Java name is a trademark of Oracle, the name of the specifications had to be changed as well as the name of the packages.
 
-                        Today, the specificaton efforts for Jakarta is alive and well.
+                        Today, the specification efforts for Jakarta are alive and well.
                         The MicroProfile initiative is very active and the Jakarta EE specifications are being updated.
    
                     </textarea>
@@ -520,7 +520,7 @@
 
                         Notes:
 
-                        The Jakarta EE 10 specifications covers a wide range of topics:
+                        The Jakarta EE 10 specifications cover a wide range of topics:
 
                         - Dependency Injection
                         - Persistence
@@ -544,16 +544,16 @@
 
                         Implementations of the specifications are often referred to as **runtimes**.
 
-                        Runtimes implementing spectifications can take many forms:
+                        Runtimes implementing specifications can take many forms:
                         - Application servers (e.g. GlassFish, OpenLiberty, WildFly, Paraya, TomEE, etc.)
-                        - embedded servers ()
+                        - Embedded servers ()
                         - Frameworks (e.g. Spring Boot, Quarkus, Helidon, Micronaut, etc.)
                         - Libraries (e.g. Hibernate, EclipseLink, etc.)
 
                         Some runtimes are **certified** by the Eclipse Foundation (GlassFish, OpenLiberty, WildFly, Paraya, TomEE).
                         Other runtimes use the specification as a **baseline**, but are not **certified** (Spring Boot, Quarkus, Helidon, Micronaut, etc.).
 
-                        The promise of the specifications is that application are **portable** between **certified** runtimes.
+                        The promise of the specifications is that applications are **portable** between **certified** runtimes.
                         In other words an application written for one runtime can be deployed on another runtime without modification.
 
                     </textarea>
