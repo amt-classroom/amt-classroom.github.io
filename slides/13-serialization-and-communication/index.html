@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>GRPC</title>
+
+    <link rel="stylesheet" href="/node_modules/reveal.js/dist/reveal.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="/node_modules/reveal.js/dist/theme/white.css" crossorigin="anonymous" id="theme">
+    <script src="/node_modules/reveal.js/dist/reveal.js"></script>
+    <script src="/node_modules/reveal.js/plugin/markdown/markdown.js"></script>
+    <script src="/node_modules/reveal.js/plugin/highlight/highlight.js"></script>
+    <script src="/node_modules/reveal.js/plugin/notes/notes.js"></script>
+    <script src="/node_modules/reveal.js/plugin/search/search.js"></script>
+    <script src="/slides/script.js" type="module"></script>
+    <link rel="stylesheet" href="/css/solarized-light.css" />
+    <link rel="stylesheet" href="/slides/style.css">
+
+    <script src="/fontawesome-6.4.2/js/all.min.js"></script>
+</head>
+
+<body>
+
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- Title and outline -->
+            <section data-background="#333333">
+                <h2>AMT</h2>
+                <h1>Serialization and Communication</h1>
+                <p>Bertil Chapuis</p>
+            </section>
+
+            <section data-markdown>
+                <textarea data-template>
+                    ## <i class="fas fa-tasks"></i> Overview of Today's Class
+                    - Serialization in Java
+                    - JSON Serialization
+                    - XML Serialization
+                    - Protobuf and GRPC
+                </textarea>
+            </section>
+            <section data-markdown>
+                <textarea data-template>
+                    ## <i class="fas fa-hand-paper"></i> Companion repository
+                    
+                    Checkout the companion repository for this course on [GitHub](https://github.com/amt-classroom/example-serialization-and-communication).
+                
+                </textarea>
+            </section>
+
+            <section>
+                <section data-background="#333333">
+                    <h2>Serialization</h2>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## Serialization in Java
+
+                        - **What is serialization?**
+                            - Serialization is the process of converting an object's state into a byte stream.
+                            - The byte stream can be persisted to a file, database, or sent over a network.
+                        - **Why do we need serialization?**
+                            - To save and restore the state of an object.
+                            - To send an object over a network.
+                             
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## Key Concepts in Java Serialization
+
+                        - **Serializable Interface**
+                            - A marker interface (java.io.Serializable) with no methods.
+                            - Classes must implement this interface to be serializable.
+                        - **ObjectOutputStream and ObjectInputStream**
+                            - ObjectOutputStream: Used for writing objects to a byte stream.
+                            - ObjectInputStream: Used for reading objects from a byte stream.
+                        - **SerialVersionUID**
+                            - A unique identifier to verify the sender and receiver of a serialized object.
+                            - Recommended to declare explicitly for consistent deserialization across different versions of a same class.
+                        - **Transient Keyword**
+                            - Fields marked as transient are not serialized.
+                            - Useful for fields that should not be persisted.
+                        - **Static Fields**
+                            - Static fields are not serialized.
+                            - They are not part of the object's state.
+                         
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-hand-paper"></i> Putting it all together
+
+                        ```java
+                        class Person implements Serializable {
+                            private static final long serialVersionUID = 1L;
+                            private String name;
+                            private int age;
+                            private transient String ignoredField = "This field will not be serialized";
+
+                            public Person(String name, int age) {
+                                this.name = name;
+                                this.age = age;
+                            }
+
+                            @Override
+                            public String toString() {
+                                return "Person{" +  "name='" + name + '\'' + ", age=" + age + '}';
+                            }
+                        }
+
+                        public class Main {
+                            public static void main(String[] args) throws Exception {
+                                var p1 = new Person("John", 42);
+                                var p2 = new Person("Jane", 36);
+
+                                // Write the objects to a file
+                                try (var ObjectOutputStream = new ObjectOutputStream(new FileOutputStream("persons.ser"))) {
+                                    ObjectOutputStream.writeObject(p1);
+                                    ObjectOutputStream.writeObject(p2);
+                                }
+
+                                // Read the objects from the file
+                                try (var ObjectInputStream = new ObjectInputStream(new FileInputStream("persons.ser"))) {
+                                    var p3 = (Person) ObjectInputStream.readObject();
+                                    System.out.println(p3);
+                                    var p4 = (Person) ObjectInputStream.readObject();
+                                    System.out.println(p4);
+                                }
+                            }
+                        }
+
+                        ```
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## taking control of serialization
+
+                        - **Custom Serialization**
+                            - Override the default serialization process.
+                            - Useful for handling special cases.
+                            - Improves performance.
+
+                        - **Externalizable Interface**
+                            - Provides complete control over the serialization process.
+                            - Requires implementing writeExternal and readExternal methods.
+                             
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fas fa-hand-paper"></i> Putting it all together
+
+                        ```java           
+                        class Person implements Externalizable {
+                            private static final long serialVersionUID = 1L;
+                            private String name;
+                            private int age;
+
+                            public Person() {
+                                // Required for Externalizable
+                            }
+
+                            public Person(String name, int age) {
+                                this.name = name;
+                                this.age = age;
+                            }
+
+                            @Override
+                            public void writeExternal(ObjectOutput out) throws IOException {
+                                out.writeUTF(name);
+                                out.writeInt(age);
+                            }
+
+                            @Override
+                            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+                                name = in.readUTF();
+                                age = in.readInt();
+                            }
+
+                            @Override
+                            public String toString() {
+                                return "Person{" +
+                                        "name='" + name + '\'' +
+                                        ", age=" + age +
+                                        '}';
+                            }
+                        }
+
+                        ```
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## Remote Method Invocation (RMI)
+
+                        RMI (Remote Method Invocation) was a Java API that performs remote communication between Java objects using serialization.
+
+                        RMI was kind of magic as it allowed Java objects to communicate with each other over the network, but it had limitations:
+                        - Java-to-Java communication only.
+                        - Java serialization only.
+                        - No support for other languages.
+                        - No support for other platforms.
+                        - No support for other data formats.
+
+                        It has now been **deprecated** in favor of more modern technologies developed outside of Java.
+                             
+                    </textarea>
+                </section>
+            </section>
+
+
+            <section>
+                <section data-background="#333333">
+                    <h2>XML serialization</h2>
+                </section>
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## XML Serialization in Java
+
+                        - **What is XML?**
+                            - XML (eXtensible Markup Language) is a markup language that defines a set of rules for encoding documents in a format that is both human-readable and machine-readable.
+                            - It is a standard for data exchange, configuration files, web services, etc.
+                            - Many technologies are based on XML (e.g. DOCX, SVG, RSS, etc.).
+                            - It is still widely used in the industry.
+
+                        - **What are DTD and XSD?**
+                            - DTD (Document Type Definition) and XSD (XML Schema Definition) are used to define the structure of an XML document.
+                            - DTD is the older standard.
+                            - XSD is the newer standard.
+
+                        - **What is XSL-T?**
+                            - XSL-T (eXtensible Stylesheet Language Transformations) is a language for transforming XML documents into other XML documents.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## XML Parsers
+
+                        XML parsers are characterized by different types of architectures:
+
+                        - **DOM (Document Object Model)**
+                            - Loads the entire XML document into memory.
+                            - Allows for random access.
+                            - Suitable for small documents.
+
+                        - **SAX (Simple API for XML)**
+                            - Reads the XML document sequentially.
+                            - Event-driven (you provide callbacks).
+                            - Suitable for large documents.
+
+                        - **StAX (Streaming API for XML)**
+                            - Reads the XML document sequentially.
+                            - Pull-based (you pull and process events).
+                            - Suitable for large documents.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## Jakarta XML Binding (JAXB)
+
+                        - **What is JAXB?**
+                            - JAXB is a Java API for XML Binding.
+                            - It provides a convenient way to bind an XML schema to a representation in Java code.
+                            - It allows Java developers to access and process XML data without having to know XML or XML processing.
+
+                        - **How does JAXB work?**
+                            - JAXB provides two main features: the ability to marshal Java objects into XML and the ability to unmarshal XML back into Java objects.
+                            - It uses annotations to map Java objects to XML elements.
+                            - It generates Java classes from an XML schema.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## Generating classes from an XML schema
+
+                        XJC (XML to Java Compiler) is a tool that generates Java classes annotated with JAXB annotations from an XML schema (XSD).
+
+                        Plugins are available to generate JAXB classes from an XSD schema with XJC in Maven or Gradle projects.
+
+                        These tools probably make java the best language to deal with complex XML schemas and documents.
+  
+                        Checkout [eCH](https://www.ech.ch/fr) for examples of complex XML schemas and documents used in Switzerland.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## JAX-B and JAX-RS
+
+                        JAX-B (Java Architecture for XML Binding) is often used in combination with JAX-RS (Java API for RESTful Web Services) to serialize and deserialize Java objects to and from XML.
+
+                        ```java
+                        @Path("/persons")
+                        public class PersonResource {
+                            @GET
+                            @Produces(MediaType.APPLICATION_XML)
+                            public Person getPerson() {
+                                return new Person("John", 42);
+                            }
+                        }
+                        ```
+
+                        JAX-RS delegates the serialization and deserialization of Java objects to an XML provider such as JAXB or Jackson.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## Limitations of XML
+
+                        - Very verbose and inneficient.
+                        - No support for binary data.
+                        - Rather difficult to stream.
+                        - Rather difficult to optimize for performance.
+                        - A mess to deal with outside of the Java ecosystem.
+                        - Etc.
+
+                    </textarea>
+                </section>
+            </section>
+
+            <section>
+                <section data-background="#333333">
+                    <h2>JSON serialization</h2>
+                </section>
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## JSON Serialization in Java
+
+                        - **What is JSON?**
+                            - JSON (JavaScript Object Notation) is a lightweight data-interchange format.
+                            - It is easy for humans to read and write.
+                            - It is easy for machines to parse and generate.
+                            - It is based on key-value pairs.
+                            - It is everywhere.
+
+                        - **What are JSON schemas?**
+                            - [JSON schema](https://json-schema.org/) is a vocabulary that allows you to annotate and validate JSON documents.
+                            - Unfortunately, it is not as widely used as XML schema...
+                            
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## JSON and JAX-RS
+
+                        JSON is often used in combination with JAX-RS (Java API for RESTful Web Services) to serialize and deserialize Java objects to and from XML.
+
+                        ```java
+                        @Path("/persons")
+                        public class PersonResource {
+                            @GET
+                            @Produces(MediaType.APPLICATION_JSON)
+                            public Person getPerson() {
+                                return new Person("John", 42);
+                            }
+                        }
+                        ```
+
+                        JAX-RS delegates the serialization and deserialization of Java objects to a JSON provider such as Jackson, Gson, or JSON-B.
+                
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## Limitations of JSON
+
+                        - No support for binary data.
+                        - Rather difficult to stream.
+                        - Rather difficult to optimize for performance.
+                        - No support for type and schema information.
+                        - Etc.
+                
+                    </textarea>
+                </section>
+            </section>
+
+
+            <section>
+                <section data-background="#333333">
+                    <h2>Protobuf and gRPC</h2>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## Protobuf
+                        
+                        XML and JSON are great for human readability, but they are not the most efficient way to serialize data.
+
+                        [Protocol Buffers (protobuf)](https://protobuf.dev/) is a language-agnostic binary serialization format developed by Google.
+
+                        It lets you define the structure of your data, then use a code generator (protoc) to create source code that can read and write this data.
+
+                        Protobuf is faster, smaller, and simpler than XML and JSON.
+                        
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## gRPC
+                        
+                        Protobuf is often used in combination with [gRPC](https://grpc.io/), a high-performance, open-source universal RPC framework.
+
+                        gRPC is based on HTTP/2, uses protobuf as its interface definition language, and provides features such as authentication and bidirectional streaming.
+
+                        It is widely used for communication between microservices and with mobile devices, and gaining popularity for the Web as well (grpc-web).
+
+                        gRPC is supported in many languages, including Java, Go, Python, Node.js, C++, etc.
+
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## Limitations of Protobuf and gRPC
+                        
+                        - Requires a code generator.
+                        - Not human-readable.
+                        - Not human-editable.
+                        - Hard to debug.
+                        - Not as widely used as XML and JSON.
+
+                    </textarea>
+                </section>
+            </section>
+
+            <section>
+                <h2><i class="fas fa-hand-paper"></i> Questions?</h2>
+            </section>
+
+        </div>
+    </div>
+</body>
+
+</html>
