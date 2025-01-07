@@ -31,15 +31,19 @@
             <section data-background="#333333">
                 <h2>AMT</h2>
                 <h1>Serialization and Communication</h1>
-                <p>Bertil Chapuis</p>
+                <p>
+                    Bertil Chapuis
+                    <br />
+                    Miguel Santamaria
+                </p>
             </section>
 
             <section data-markdown>
                 <textarea data-template>
                     ## <i class="fas fa-tasks"></i> Overview of Today's Class
                     - Serialization in Java
-                    - JSON Serialization
                     - XML Serialization
+                    - JSON Serialization
                     - Protobuf and GRPC
                 </textarea>
             </section>
@@ -63,6 +67,7 @@
                         - **What is serialization?**
                             - Serialization is the process of converting an object's state into a byte stream.
                             - The byte stream can be persisted to a file, database, or sent over a network.
++                           - Byte streams are often lighter than text (less use of disk space / bandwidth)
                         - **Why do we need serialization?**
                             - To save and restore the state of an object.
                             - To send an object over a network.
@@ -234,11 +239,11 @@
 
                         - **What are DTD and XSD?**
                             - DTD (Document Type Definition) and XSD (XML Schema Definition) are used to define the structure of an XML document.
-                            - DTD is the older standard.
-                            - XSD is the newer standard.
+                            - DTD is the older standard, XSD is the newer standard.
 
                         - **What is XSL-T?**
                             - XSL-T (eXtensible Stylesheet Language Transformations) is a language for transforming XML documents into other XML documents.
+                            - Examples: generate HTML pages from data structured in XML, reorganise or filter XML data for integration with other systems, produce reports (text, CSV, etc.) from XML data, etc.
 
                     </textarea>
                 </section>
@@ -255,12 +260,12 @@
                             - Suitable for small documents.
 
                         - **SAX (Simple API for XML)**
-                            - Reads the XML document sequentially.
+                            - Reads the XML document sequentially (streaming).
                             - Event-driven (you provide callbacks).
                             - Suitable for large documents.
 
                         - **StAX (Streaming API for XML)**
-                            - Reads the XML document sequentially.
+                            - Reads the XML document sequentially (streaming).
                             - Pull-based (you pull and process events).
                             - Suitable for large documents.
 
@@ -316,7 +321,7 @@
                         }
                         ```
 
-                        JAX-RS delegates the serialization and deserialization of Java objects to an XML provider such as JAXB or Jackson.
+                        JAX-RS delegates the serialization and deserialization of Java objects to an XML provider such as JAXB or Jackson. JAXB annotations are used behind the sets.
 
                     </textarea>
                 </section>
@@ -350,6 +355,7 @@
                             - It is easy for machines to parse and generate.
                             - It is based on key-value pairs.
                             - It is everywhere.
+                            - You can find examples [here](https://json.org/example.html).
 
                         - **What are JSON schemas?**
                             - [JSON schema](https://json-schema.org/) is a vocabulary that allows you to annotate and validate JSON documents.
