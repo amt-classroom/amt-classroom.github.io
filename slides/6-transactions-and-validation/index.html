@@ -198,7 +198,7 @@
                        
                         Notes:
 
-                        In the above example, transaction B can see the new value of x (3) even though transaction A hasn’t been committed. It makes the users confused and may cause incorrect decisions. Furthermore, it also violates the atomicity property. If transaction A fails, the intermediate data will not be discarded and will probably be saved to the database by transaction B.
+                        In the above example, transaction B can see the new value of x (3) even though transaction A hasn’t been committed. It confuses the users and may cause incorrect decisions. Furthermore, it also violates the atomicity property. If transaction A fails, the intermediate data will not be discarded and will probably be saved to the database by transaction B.
 
                         Source:
                         https://levelup.gitconnected.com/database-transaction-isolation-levels-5d76c27d42bb
@@ -214,7 +214,7 @@
                        
                         Notes:
 
-                        Let’s imagine a user has a total of $1000 and divides them equally into 2 accounts. One day he transfers $100 from account 2 to account 1 (transaction B). In the end, account 1 should have $600 and account 2 should have $400. At the same time, an admin of the system queries the balances of two accounts (transaction A). The admin read twice, one before transaction B is committed and the other after it is committed. Now, the admin sees inconsistent data that the user has only $900. In this case, the admin can simply refresh the web page and he will have the correct data.
+                        Let’s imagine a user has a total of $1000 and divides it equally into 2 accounts. One day he transfers $100 from account 2 to account 1 (transaction B). In the end, account 1 should have $600 and account 2 should have $400. At the same time, an admin of the system queries the balances of two accounts (transaction A). The admin read twice, once before transaction B is committed and again after it is committed. Now, the admin sees inconsistent data that the user has only $900. In this case, the admin can simply refresh the web page and he will have the correct data.
 
                         Source:
                         https://levelup.gitconnected.com/database-transaction-isolation-levels-5d76c27d42bb
@@ -230,7 +230,7 @@
 
                         Notes:
 
-                        Lost update happens when multiple concurrent transactions read the same value from database, modify and write back their modified value. Almost all application systems encounter this problem. We can see it in some cases such as: incrementing the number of likes or comments on a Facebook post, editing a wiki page at the same time...
+                        Lost update happens when multiple concurrent transactions read the same value from the database, modify and write back their modified value. Almost all application systems encounter this problem. We can see it in some cases such as: incrementing the number of likes or comments on a Facebook post, editing a wiki page at the same time...
 
                         Source:
                         https://levelup.gitconnected.com/database-transaction-isolation-levels-5d76c27d42bb
@@ -312,18 +312,18 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-diagram-project"></i> Deadlock
                         
-                        A deadlock in an RDBMS occurs when two or more transactions are stuck waiting 
+                        A deadlock in a RDBMS occurs when two or more transactions are stuck waiting 
                         indefinitely for resources held by each other, causing each transaction to block the others 
                         from proceeding. This circular dependency prevents any of the transactions involved from completing unless one is terminated or rolled back by the database system.
                         
                         Handling deadlocks can be achieved by implementing error handling and retry logic for transaction failures and by monitoring the database to detect deadlocked transactions.
                         
-                        Some deadlocks situation might be counter-intuitive and specific to a RDBMS implementation. 
+                        Some deadlock situations might be counter-intuitive and specific to a RDBMS implementation. 
                         For example in MySQL concurrent transactions with "INSERT" statements can lead to a deadlock.
 
                         > InnoDB uses automatic row-level locking. You can get deadlocks even in the case of 
                         transactions that just insert or delete a single row. That is because these operations
-                        are not really “atomic”; they automatically set locks on the (possibly several) index records of the row inserted or deleted. 
+                        are not really “atomic”; they automatically set locks on the (possibly several) index records of the row inserted or deleted.
 
                         Source: https://dev.mysql.com/doc/refman/8.4/en/innodb-deadlocks-handling.html
                     </textarea>

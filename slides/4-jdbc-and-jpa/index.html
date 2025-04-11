@@ -106,7 +106,7 @@
 
                         People familiar with object-oriented programming often prefer to design their classes first, and then infer the database based on the classes definitions. This is referred as "Code first".
 
-                        People familiar with relational database often prefer to design their database first, and then infer the OOP code to access it. This is referred as "Database first".
+                        People familiar with relational databases often prefer to design their database first, and then infer the OOP code to access it. This is referred as "Database first".
 
                         Who is right?
 
@@ -128,7 +128,7 @@
 
                         It is a **low-level API** that requires a lot of boilerplate code.
 
-                        If you have performance issues, you will often need to understand it or to use it.
+                        If you have performance issues, you will often need to understand it or use it.
 
                     </textarea>
                 </section>
@@ -137,7 +137,7 @@
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> JDBC Connection
                         
-                        A JDBC **connection** is a **session** with a specific database that allows to execute SQL queries and retrieve the results.
+                        A JDBC **connection** is a **session** with a specific database that allows you to execute SQL queries and retrieve the results.
 
                         ```java
                         // The driver will be loaded through Java Service Provider, 
@@ -259,7 +259,7 @@
 
                         Opening and closing connections is a costly operation. Therefore, it is better to reuse connections when possible.
 
-                        A **connection pool** is a cache of database connections that can are kept alive and can be reused when future requests to the database are required.
+                        A **connection pool** is a cache of database connections that are kept alive and can be reused when future requests to the database are required.
 
                     </textarea>
                 </section>
@@ -280,7 +280,7 @@
 
                         The number of concurrent connections to the database sometimes becomes a bottleneck.
                         If you are doing things right, it means your application is extremely popular (e.g. instagram, figma) or has particular scalability requirements (e.g. backblaze, dropbox).
-                        In this case, micro services are not the solution. 
+                        In this case, micro services are not the solution.
                         Instead, you should consider **replicating** or **sharding** your database.
 
                     </textarea>
@@ -312,7 +312,7 @@
                         Notes:
                         Pool starvation due to connection leak leading to deadlock on the shared resources (i.e the connections)
 
-                        Why Quarkus integrated with Agroal instead of a more popular alternative is that it related to RedHat and the WildFly Application Server. https://x.com/jtgreene/status/1224412010097586177
+                        Why use Quarkus integrated with Agroal instead of a more popular alternative ? Because it is related to RedHat and the WildFly Application Server. https://x.com/jtgreene/status/1224412010097586177
                     </textarea>
                 </section>
             </section>
@@ -326,13 +326,13 @@
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> Object relational mapping for Java
 
-                        **Object relational mapping (ORM)** is a technique that allows to map objects to relational databases.
+                        **Object relational mapping (ORM)** is a technique that allows you to map objects to relational databases.
                         
                         **The Java Persistence API (JPA)** is a Java API for object relational mapping that allows Java applications to interact with a database.
 
                         JPA runtimes, such as Hibernate, are implementations of the JPA API. In general, they are implemented using the JDBC API.
 
-                        JPA is a **high-level API** that allows to write less boilerplate code.
+                        JPA is a **high-level API** that allows you to write less boilerplate code.
 
                     </textarea>
                 </section>
@@ -364,7 +364,7 @@
                         
                         A **JPA entity** is a Java class that represents an entity type in the database.
 
-                        It is similar to a class following JavaBeans conventions and annotated with the **@Entity** annotation. The requirement to implements `Serializable` is only required in specifics cases by JPA.
+                        It is similar to a class following JavaBeans conventions and annotated with the **@Entity** annotation. The implementation of `Serializable` is only required by JPA in specific cases.
 
                         <span style="font-size: 0.5em;">Details about JPA Entity specification and relationship with JavaBeans: https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1#a18 </span>
 
@@ -453,7 +453,7 @@
                     <textarea data-template>
                         ## <i class="fas fa-hand-paper"></i> Learn more about JPA and Hibernate
                         
-                        Form small groups and choose an annotation among the following one:
+                        Form small groups and choose an annotation among the following ones:
                         - `@OneToOne`
                         - `@OneToMany`
                         - `@ManyToOne`
