@@ -57,33 +57,47 @@
                 </section>
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template>
-                        ## <i class="fas fa-sitemap"></i> Definition
+                        ## <i class="fas fa-sitemap"></i> Multi-tier architecture
                         
-                        The **multi-tier** architecture, also referred to as **n-tier** or **layered** architecture, is a common architectural style for the design of modern applications.
+                        The **multi-tier architecture** (also called n-tier) is a common design approach for modern applications.
                         
-                        It is based on the idea of dividing an application into layers, each of which is responsible for a specific set of tasks.
-                        
-                        The most common implementation of the multi-tier architecture is the **three-tier** architecture (presentation, business, and data).
+                        - An application is divided into tiers, each with a specific responsibility.
+                        - The most widely used form is the three-tier architecture.
+                            - **Presentation**: user interface
+                            - **Business Logic**: core functionality
+                            - **Data**: storage and management
+                            
                     </textarea>
                 </section>
                 <section data-markdown style="font-size: 0.5em;">
                     <textarea data-template>
-                        ## Layers pattern
+                        ## Layered architecture
                         
-                        The Layers Pattern, also known as the Layered Architecture Pattern, is a design approach used in software development to structure programs into distinct layers, 
-                        each with a specific role and responsibility. This pattern promotes separation of concerns, making it easier to manage and maintain applications.
+                        The **layered architecture** (also called layer pattern), is a design approach used in software development to structure programs into distinct layers, 
+                        each with a specific role and responsibility. 
+                        
+                        - It promotes **separation of concerns**
+                        - It simplifies **maintainability**
 
-                        This pattern has also been employed for network development and a prime example is the OSI model:
+                        This pattern is also used for network development and a prime example is the OSI model:
                         <img src="./images/osi7layers.png" alt="Layered architecture" style="width: 60%;"/>
                         <div  style="font-size: 0.5em;text-align: center;"><a href="https://www.cloudflare.com/learning/ddos/glossary/open-systems-interconnection-model-osi/">Cloudflare OSI Model</a></div>
                     </textarea>
                 </section>
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template>
-                        ## Layer and tier
-                        **Layers** are logical divisions that separate different concerns or functionalities. They focus on organizing the code and improving maintainability and separation of concerns.
+                        ## Tiers vs Layers
 
-                        **Tiers** are physical divisions of an application across multiple machines. They focus on distributing the application’s components to improve security, performance, scalability, and fault tolerance.
+                        **Tiers** are physical divisions of an application across multiple machines.
+                        
+                        - Split an application across **multiple machines/servers**.
+                        - Focus on: **security**, **performance**, **scalability**, **fault tolerance**.
+
+                        **Layers** are logical divisions that separate different concerns or functionalities.
+
+                        - Split an application into **separate concerns or functions**.
+                        - Focus on: **organization**, **maintainability**, **separation of concerns**.
+
                         </div>                        
                     </textarea>
                 </section>
@@ -112,23 +126,20 @@
                 </section>
                 <section data-markdown style="font-size: 0.8em; text-align: center;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        ### Layered architecture
+                        ### Single tier layered architecture
 
                         <img src="./images/layered-architecture-1.png" alt="Layered architecture" style="width: 60%;"/>
                         
                         Notes:
 
-                        This figure depicts a multi-tier architecture with four layers grouped in a **single deployment unit**.
+                        This figure depicts a single-tier architecture. The four layers are grouped into a **single deployment unit**.
 
-                        - The **presentation layer** is responsible for the **user interface** (e.g. web, mobile).
+                        - The **presentation layer** handles the **user interface** (e.g., web, mobile).
+                        - The **business layer** manages the **business logic** (e.g., authentication, authorization, validation, transactions).
+                        - The **persistence layer** manages **data access** (e.g., entities, repositories, domain objects).
+                        - The **database layer** handles **data storage** (e.g., tables, views, indexes).
 
-                        - The **business layer** is responsible for the business logic (e.g. authentication, authorization, validation, transactions, etc.).
-                        
-                        - The **persistence layer** is responsible for the data access (e.g. entities, repositories, domain objects, etc.).
-                        
-                        - The **database** is responsible for the data storage (e.g. tables, views, indexes, etc.).
-
-                        It is common to distinguish the persistence layer from the database layer, because the database is rarely embedded or managed by the persistence layer.
+                        It is common to distinguish between the persistence layer and the database layer, since the database is rarely embedded in or managed directly by the persistence layer.
                     </textarea>
                 </section>
                 <section data-markdown style="font-size: 0.8em; text-align: center;">
@@ -139,9 +150,10 @@
                         
                         Notes:
                         
-                        This figure introduces a **second deployment unit** for the database.
+                        This figure introduces a **second tier** for the database. It is deployed in a physically separate unit.
                                                 
                         This is a common architecture for **multi-page web applications** developed with Django, Ruby on Rails, or Symfony.
+
                     </textarea>
                 </section>
                 <section data-markdown style="font-size: 0.8em; text-align: center;">
@@ -152,7 +164,7 @@
 
                         Notes:
 
-                        This figure introduces a **third deployment unit** for the presentation layer.
+                        This figure introduces a **third tier** for the presentation layer. It is deployed in a physically separate unit (e.g., a mobile device or a web browser).
 
                         This is a common architecture for **single-page web applications** developed with Angular, React, or Vue.js.
 
@@ -167,27 +179,25 @@
                         
                         Notes:
 
-                        In the **multi-tier architecture**, a layer can be **closed** or **open**.
+                        In a **layered architecture**, a layer can be **closed** or **open**.
 
-                        - A **closed layer** is a layer that can only be accessed by the layer above it.
+                        - A **closed layer** can only be accessed by the layer directly above it.
+                        - An **open layer** can be accessed by a set of higher layers selected by the architect.
+                        
+                        It may be tempting to **make all layers open**.  
+                        For example, the presentation layer sometimes accesses the database directly.  
+                        However, this is considered bad practice because it breaks the separation of concerns.  
+                        With **tightly coupled layers**, changes become harder to isolate, and the application is more difficult to maintain.  
 
-                        - An **open layer** is a layer that can be accessed by any layer.
+                        **Closed layers** are used to improve **separation of concerns** and reduce **coupling** between layers.  
+                        The less coupled the layers are, the easier the system is to maintain and evolve.  
+                        A change in one layer should ideally only affect the layer directly above it.  
+                        As a result, the impact of a change is more predictable and easier to test.
 
-                        - When a **request** is made to a **closed layer**, it is **forwarded** to the **layer below**.
+                        **Maintaining strict isolation between layers** is not always easy.  
+                        Because it often requires extra boilerplate code, developers may be tempted to make layers open.  
+                        Hence, keeping the number of layers small helps reduce unnecessary complexity.
 
-                        It may be tempting to make all layers open.
-                        For example, it is common to see the presentation layer accessing the database directly.
-                        However, this is a bad practice because it breaks the separation of concerns.
-                        With **tightly coupled layers** changes will be more difficult to isolate and the application will be harder to maintain.
-
-                        Closed layers are often used to improve **separation of concerns** and **low coupling** between layers.
-                        The less coupled the layers are, the easier it is to maintain and evolve the application.
-                        A change in a layer should theoretically only affect its siblings.
-                        As a result, the result of a change should be predictable and easy to test.
-
-                        Maintaining isolation between layers is not always easy.
-                        As it requires a lot of boilerplate code, it is often tempting to make all layers open.
-                        Keeping the number of layers small is a good way to minimize accidental complexity.
                     </textarea>
                 </section>
 
@@ -217,13 +227,14 @@
                         
                         Notes:
 
-                        As the application grows, the **business layer** becomes more and more complex. 
+                        As the application grows, the **business layer** often becomes increasingly complex.  
+                        
+                        In **monolithic applications**, this complexity leads to the creation of shared utility classes within the **business layer**.  
+                        
+                        Because these classes are accessible, components in the **presentation layer** may start using them directly, which weakens the **separation of concerns**.  
+                        
+                        And of course, our dear creative front-end engineers 👨‍🎨 aren’t always the most disciplined developers 🤷‍♂️.
 
-                        This is a common problem in **monolithic applications**, and shared utility classes start to appear in the **business layer**.
-
-                        As they are allowed to, components in the **presentation layer** start to access these utility classes directly, weakening the **separation of concerns**.
-
-                        And you know, creative front-end engineers 👨‍🎨 are not always the most disciplined developers 🤷‍♂️.
                     </textarea>
                 </section>
 
@@ -235,20 +246,18 @@
                         
                         Notes:
 
-                        This Figure addresses this issue by introducing a new **service layer** responsible for the **shared components**.
+                        To address this issue, we introduce a new **service layer** that contains the **shared components**.  
 
-                        This **service layer** is **open**. As a result, the **business layer** can access both the **service layer** and the **persistence layer**.
+                        This **service layer** is **closed**, meaning it can only be accessed by the **business layer** directly above it.  
+                        
+                        In contrast, the **persistence layer** is now **open** to both the **service layer** and the **business layer**. However, it should not be open to the **presentation layer**.  
+                        
+                        Adding a new layer increases complexity, so this decision should be made carefully. It is usually the **architect’s** responsibility to introduce new layers as the application grows and becomes too **complex**.  
+                        
+                        A good practice is to begin with a **small number of closed layers** and add more only as the application evolves.  
+                        
+                        Keep in mind that enforcing these principles often depends on the **discipline of the team**.
 
-                        By contrast, the **presentation layer** can only access the **business layer**, which is a **closed layer**, improving the **separation of concerns**.
-
-                        The decision to introduce a new layer should be made carefully, as it adds complexity to the application.
-
-                        This kind of architectural decision is typically made by the **architect** when the application grows and the **business layer** becomes too **complex**.
-
-                        In general, it is a good idea to start with a **small number of layers** and to **add layers** as the application grows.
-
-                        Notice, the enforcement of these architecture principles relies solely on the **discipline** of the team.
-                    
                     </textarea>
                 </section>
 
@@ -260,7 +269,7 @@
 
                         The **microservices architecture** is often presented as the solution 💡 to all the problems of the multi-tier architecture.
 
-                        However, a **microservice** is just a **small multi-tier application** and it is not a silver bullet to **architectural problems** 🏛️.
+                        However, a **microservice** is often just a **smaller multi-tier application** and it is not a silver bullet to **architectural problems** 🏛️.
 
                     </textarea>
                 </section>

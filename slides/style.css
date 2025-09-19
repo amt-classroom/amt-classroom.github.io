@@ -28,11 +28,6 @@ section {
     box-shadow: 0 0 0 !important;
 }
 
-/*.reveal table {
-    margin: 20px 0;
-    font-size: 0.6em;
-}*/
-
 .reveal pre {
     width: 100%;
 }
@@ -104,4 +99,15 @@ section {
 
 .spoiler.shown::before {
     opacity: 0;
+}
+
+/* Simple quote styling */
+.reveal blockquote {
+    font-style: italic;
+    text-align: left;
+    border: none !important;
+    border-left: none !important;
+    box-shadow: none !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
 }
