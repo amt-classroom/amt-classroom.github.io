@@ -34,15 +34,14 @@
             </section>
             <section data-markdown>
                 <textarea data-template>
-                    ## <i class="fas fa-tasks"></i> Overview of Today's Class
+                    ## <i class="fas fa-tasks"></i> Overview of Today’s Class
 
-                    Java runtimes for multi-tier applications often rely on advanced Java features such as:
-
-                    - Class loaders
-                    - Reflection
-                    - Proxies
-                    - Runtime annotations
-                    - Compile-time annotations
+                    Modern Java runtimes for multi-tier applications rely on several advanced features to provide flexibility, extensibility, and better developer experience:
+                    - **Class Loaders**: control how classes are discovered and loaded
+                    - **Reflection**: inspect and manipulate classes, methods, and fields at runtime
+                    - **Proxies**: intercept method calls to add behavior dynamically
+                    - **Runtime Annotations**: enable metadata-driven frameworks and tooling
+                    - **Compile-time Annotations**: generate code and optimize application startup
 
                 </textarea>
             </section>
@@ -51,11 +50,12 @@
                 <textarea data-template>
                     ## <i class="fas fa-tasks"></i> Motivations
 
-                    The job of a framework developer is to provide the best tools to help developers build applications.
+                    Framework developers aim to provide the best tools to make application development easier and more productive.
 
-                    Meta programming is of great help to provide such tools and framework developers often rely on advanced Java features to implement them and improve the developer experience.
+                    They often rely on advanced Java features to implement them and improve the developer experience.
 
-                    Today we will get a glimpse of some of these features.
+                    Today, we will get a glimpse of some of these features.
+
                 </textarea>
             </section>
 
@@ -68,18 +68,19 @@
                     <textarea data-template data-separator-notes="^Notes:">
                         ## Class loaders
 
-                        Class loaders are responsible for loading classes into the JVM at runtime.
+                        Class loaders are responsible for **loading classes into the JVM at runtime**.
 
-                        The main class loaders are:
-                        - **Bootstrap class loader:** Loads classes from the JVM's core library (`$JAVA_HOME/lib/`)
-                        - **Platform class loader:** Loads classes from the JVM that are platform specific. Before JDK 9 it was known as Extension class loader. ([JEP 261](https://openjdk.org/jeps/261#Class-loaders))
-                        - **System class loader:** also called application class loader, loads classes from the classpath (`.`)
+                        Main types of class loaders:
+                        - **Bootstrap class loader:** Loads core Java classes from `$JAVA_HOME/lib/` (e.g., `java.lang.*`).
+                        - **Platform class loader:** Loads platform-specific libraries; Known as the Extension class loader before JDK 9 ([JEP 261](https://openjdk.org/jeps/261#Class-loaders)).
+                        - **System class loader:** Loads application classes from the classpath (e.g., `.` or JAR files).
 
-                        When a class is not found by the application class loader, the class loader will recursively delegate the loading of the class to the parent class loader until the bootstrap class loader is reached.
+                        Delegation Model:
+                        - Each class loader delegates to its parent first.  
+                        - If no parent can load the class, the loader tries itself.  
+                        - Failure through the chain results in a **`ClassNotFoundException`**.  
 
-                        If the class is not found through the entire delegation chain, the class loader will throw a `ClassNotFoundException`.
-
-                        [Java 21 built-in class loaders](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/ClassLoader.html#builtinLoaders)
+                        📖 Reference: [Java 21 built-in class loaders](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/ClassLoader.html#builtinLoaders)  
                     
                     </textarea>
                 </section>
@@ -118,18 +119,20 @@
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        ## Custom class loaders?
+                        ## Custom Class Loaders
 
-                        Custom class loaders can be useful in various scenarios:
-                        - Loading classes from non-standard sources (e.g., a network location)
-                        - Implementing class reloading (e.g., for hot-swapping code)
-                        - Implementing class transformation (e.g., for bytecode manipulation)
-                        - etc.
-
-                        Some examples spotted in the wild:
-                        - **Spring boot** uses them to reload classes when the application is [restarted](https://github.com/spring-projects/spring-boot/blob/2dbf7d9c255a7f9f7a736a92e5d72c6d229489b7/spring-boot-project/spring-boot-devtools/src/main/java/org/springframework/boot/devtools/restart/classloader/RestartClassLoader.java#L38).
-                        - **Quarkus** uses them for [hot-reload](https://quarkus.io/guides/class-loading-reference) in dev mode.
-                        - **OSGi frameworks** use them to manage modularity and versioning of Java applications.
+                        Custom class loaders are useful when the default loading mechanism isn’t enough.  
+                        
+                        They enable scenarios such as:  
+                        - Loading classes from non-standard sources (e.g., network, encrypted files)  
+                        - Reloading classes at runtime (e.g., hot-swapping code)  
+                        - Transforming classes dynamically (e.g., bytecode manipulation)  
+                        - Supporting modularity or versioning  
+                        
+                        Real-world examples:
+                        - **Spring Boot**: reloads classes when the application is [restarted](https://github.com/spring-projects/spring-boot/blob/2dbf7d9c255a7f9f7a736a92e5d72c6d229489b7/spring-boot-project/spring-boot-devtools/src/main/java/org/springframework/boot/devtools/restart/classloader/RestartClassLoader.java#L38).  
+                        - **Quarkus**: supports [hot reload](https://quarkus.io/guides/class-loading-reference) in development mode.  
+                        - **OSGi frameworks**: manage modularity and versioning of Java applications.  
 
                     </textarea>
                 </section>
@@ -173,6 +176,9 @@
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
+
+                        ## Changing the default class loader
+
                         Changing the default class loader at startup:
 
                         ```
@@ -192,12 +198,12 @@
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        ## For more fun
-                        
-                        Check out the [`UrlClassLoader`](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URLClassLoader.html) of the standard library to load classes from URLs.
+                        ## For More Fun
 
-                        Check out the [`example-classloader`](https://github.com/amt-classroom/example-classloader) repository to see how a class loader can compile java files on the fly with the Java compiler API or generate classes dynamically with the new ClassFile API (Java 23 required).
-
+                        - Explore the [`URLClassLoader`](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URLClassLoader.html) to load classes directly from **URLs**.  
+                        - Try the [`example-classloader`](https://github.com/amt-classroom/example-classloader) project to see how you can:  
+                          - Compile Java files on the fly with the **Java Compiler API**  
+                          - Generate classes dynamically with the new **ClassFile API** (Java 23+) 
                     </textarea>
                 </section>
 
@@ -222,20 +228,22 @@
                         - Dynamically access fields
                         - Code generation
 
-
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        ## Reflection API
+                        ## <i class="fas fa-microscope"></i> Reflection API
 
-                        Java provides a rich Reflection API in the `java.lang.reflect` package:
-
-                        - `Class<?>`: Represents classes and interfaces in a running Java application
-                        - `Method`: Provides information about, and access to, a single method on a class or interface
-                        - `Field`: Provides information about, and dynamic access to, a single field of a class or interface
-                        - `Constructor`: Provides information about, and access to, a single constructor for a class
+                        The **Reflection API** (in `java.lang.reflect`) allows programs to inspect and manipulate classes at runtime:
+                        
+                        - **`Class<?>`**: represents a loaded class or interface  
+                        - **`Method`**: describes and invokes a method  
+                        - **`Field`**: describes and accesses a field (variables)  
+                        - **`Constructor`**: describes and creates new instances  
+                        
+                        📖 Reference: [Java Reflection API docs](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/reflect/package-summary.html)  
+                        
 
                     </textarea>
                 </section>
@@ -269,13 +277,15 @@
 
                 <section data-markdown style="font-size: 0.8em;">
                     <textarea data-template data-separator-notes="^Notes:">
-                        ## Reflection and object-oriented programming
+                        ## Reflection and OOP
 
-                        While it provides great flexibility, reflection can also break some of the core principles of object-oriented programming:
-
-                        For instance, reflection can be used to break encapsulation by accessing private fields and methods.
-
-                        Therefore, these features should be used with caution.
+                        Reflection offers powerful flexibility, but it can also **violate core OOP principles**:
+                        
+                        - ⚠️ **Encapsulation risk**: private fields and methods can be accessed or modified  
+                        - ⚠️ **Safety concerns**: bypasses compile-time checks, increasing runtime errors  
+                        - ⚠️ **Performance cost**: reflective operations are slower than direct calls  
+                        
+                        Use reflection **with caution**: it’s best reserved for frameworks and tooling, not everyday code.  
 
                     </textarea>
                 </section>
@@ -418,11 +428,11 @@
                     <textarea data-template data-separator-notes="^Notes:">
                         ## Compile-time annotations
 
-                        Annotations can also be used at compile-time to generate code.
+                        Annotations can be used at compile-time to generate code.
 
-                        Recently compile-time annotations have been used as a means to accelerate the startup time of large Java applications.
+                        Recently compile-time annotations have been used to accelerate the startup time of large Java applications.
 
-                        A significant amount of time was spent at startup to introspect the code base, load and initialize classes.
+                        A significant amount of time was spent at startup to introspect the program, load and initialize classes.
 
                         Compile-time annotations must be processed by a compiler plugin called an annotation processor.
 
