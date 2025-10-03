@@ -29,7 +29,7 @@
             <!-- Title and outline -->
             <section data-background="#333333">
                 <h2>AMT</h2>
-                <h1>Crash course</h1>
+                <h1><i class="fa-solid fa-car-burst"></i> Crash course</h1>
                 <p>Bertil Chapuis</p>      
             </section>
 
@@ -45,19 +45,19 @@
             <!-- Jakarta Messaging -->
             <section>
                 <section data-background="#333333">
-                    <h2><i class="fas fa-hand-paper"></i> Development process</h2>
+                    <h2><i class="fa-solid fa-hand-paper"></i> Development process</h2>
                 </section>
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-hand-paper"></i> User stories and mockups
+                        ## <i class="fa-solid fa-user"></i> User Stories & Requirements
 
-                        We want to build a simple service that probes the availability of websites.
+                        **Project Goal:** Build a website uptime monitoring service
 
-                        As a user, I want to be able to:
-                        - Consult the home page of the application
-                        - Consult the list of probes
-                        - Consult the status of a probe
-                        - Register a new probe
+                        - *As a user*, I want to have a home page *so that* I can see the main features of the service
+                        - *As a user*, I want to see all monitored websites *so that* I can quickly assess the health of my services
+                        - *As a user*, I want to add/remove website URLs to monitor *so that* I can control which services are being tracked
+                        - *As a user*, I want to consult the status history of a specific probe *so that* I can analyze uptime patterns and incidents
+                        - *As a user*, I want to see current probe status (up/down/response time) *so that* I can react quickly to outages
 
                     </textarea>
                 </section>
@@ -76,13 +76,13 @@
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        <img src="/images/uptime-3.png" alt="Uptime" style="width: 100%;">
+                        <img src="/images/uptime-4.png" alt="Uptime" style="width: 100%;">
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        <img src="/images/uptime-4.png" alt="Uptime" style="width: 100%;">
+                        <img src="/images/uptime-3.png" alt="Uptime" style="width: 100%;">
                     </textarea>
                 </section>
 
@@ -117,6 +117,7 @@
 
                         Our data model is composed of two entities:
                         - Probe:
+                            - id
                             - url
                         - Status:
                             - id
