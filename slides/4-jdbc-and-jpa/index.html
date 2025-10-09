@@ -50,15 +50,16 @@
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> Data tier
 
-                        <img src="./images/layered-architecture-1.png" alt="Layered architecture">
+                        <img src="./images/layered-architecture-1.png" alt="Diagram showing the layered architecture with presentation, business, persistence, and database layers">
+                        <figcaption style="text-align:center; font-size:0.8em;">Layered architecture: presentation, business, persistence, and database layers</figcaption>
                         
                         Notes:
                        
-                        Recall that the data tier is often split into two parts: the **persistence layer** and the **database layer**.
+                        Recall that the data tier is often split into two parts: the **persistence layer** and the **database layer**. The persistence layer translates application requests into database queries that are executed by the database layer.
 
                         The **persistence layer** is the layer that allows the application to access the data. 
                         It is often a set of classes that encapsulate the database access logic.
-                        As it requires a lot of boilerplate code, it is often implemented using a framework.
+                        As it requires a lot of boilerplate code, it is often implemented using an object-relational mapper (e.g., Hibernate, Spring Data) or a similar framework (e.g., JOOQ).
 
                         The **database layer** is the actual storage of the data. 
                         It is often a **relational database**, but it can also be a NoSQL database or a file system.
@@ -70,15 +71,14 @@
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> Object-oriented programming (OOP)
 
-                        Object-oriented programming is often used to implement the persistence layer.
+                        Object-oriented programming is often used to implement the persistence layer, as it provides encapsulation and abstraction, making it easier to manage and organize data access logic.
 
                         At this level, data is stored in **objects**.
                         - Each **object** has a *type* (class) and a set of *attributes* (fields).
                         - Each **instance** (object) represents an instance of the *entity type*.
                         - Objects can have **methods** (functions) that can be used to manipulate the data.
                         
-                        Object-oriented software is often designed using UML diagrams.
-                        Approaches, such as Domain-driven design (DDD), are used to design the domain model and the business logic.
+                        Unified Modeling Language (UML) and Domain-Driven Design (DDD) are commonly used to model the domain and business logic.
 
                     </textarea>
                 </section>
@@ -87,15 +87,15 @@
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> Relational database (BDR)
 
-                        Relational databases are often used to implement the database layer.
+                        Relational databases are commonly used to implement the database layer.
 
                         At this level, data is stored in **tables** (relations).
-                        - Each **table** has a *name* and a set of *columns* (attributes) and represents an *entity type*.
-                        - Each **row** (tuple) represents an instance of the *entity type*.
-                        - Tables can be related to each other using **foreign keys**.
+                        - Each **table** has a *name* and a set of *columns* (attributes); it represents an *entity type*.
+                        - Each **row** (tuple) represents an instance of that *entity type*.
+                        - Tables can be related to one another using **foreign keys**.
                         
-                        Databases are often designed using **Entity-Relationship diagrams** (ER diagrams).
-                        Database **normalization** is the process of organizing the columns and tables of a relational database to minimize data redundancy.
+                        Databases are often designed using **Entity–Relationship (ER) diagrams**.
+                        Database **normalization** is the process of organizing a relational database's tables and columns to minimize redundancy and improve data integrity.
 
                     </textarea>
                 </section>
@@ -104,11 +104,13 @@
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> OOP vs BDR
 
-                        People familiar with object-oriented programming often prefer to design their classes first, and then infer the database based on the classes definitions. This is referred as "Code first".
+                        <img src="./images/chicken-egg-problem.jpg" alt="Chicken and egg problem" style="width: 400px; margin-left: 0;">
 
-                        People familiar with relational databases often prefer to design their database first, and then infer the OOP code to access it. This is referred as "Database first".
+                        People familiar with object-oriented programming often prefer to design their classes first and then infer the database schema from the class definitions. This is known as **code-first**.
 
-                        Who is right?
+                        People familiar with relational databases often prefer to design the database schema first and then derive the object-oriented (OOP) code to access it. This is known as **database-first**.
+
+                        Which camp do you belong to?
 
                     </textarea>
                 </section>
@@ -120,15 +122,15 @@
                 </section>
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fas fa-database"></i> JDBC API and drivers
+                        ## <i class="fas fa-database"></i> JDBC API and Driver Implementations
                         
-                        JDBC is a **Java API** that allows Java applications to interact with a database.
-
-                        A **JDBC driver** is an **implementation** of the JDBC API for a specific database.
-
+                        **JDBC** is a **Java API** that allows Java applications to interact with a database in a database-agnostic way.
                         It is a **low-level API** that requires a lot of boilerplate code.
 
-                        If you have performance issues, you will often need to understand it or use it.
+                        A **JDBC driver** is an **implementation** of the JDBC API for a specific database, typically provided by the database vendor or a third party.
+
+
+                        If you have performance issues, you will often need to understand or use JDBC directly, because higher-level frameworks may add overhead or hide details that are important for tuning or troubleshooting.
 
                     </textarea>
                 </section>
@@ -162,6 +164,7 @@
                             System.out.println(resultSet.getInt(1));
                         }
                         ```
+
                     </textarea>
                 </section>
 
@@ -272,16 +275,16 @@
 
                         Notes:
 
-                        If the number of threads that need to access the database is greater than the number of connections in the pool, the threads are blocked until a connection is available.
-                        In this case, the application is said to be **connection pool exhausted**.
-                        - One strategy to avoid this problem is to increase the size of the connection pool. However, this is not always possible as the database may not be able to handle more connections.
-                        - Another strategy is to size the connection pool to the number of threads that handles the user requests. This is often a good strategy as the number of threads is often limited by the number of CPU cores.
-                        - In all cases, it is important to release the connections as soon as possible.
+                        If the number of threads that need to access the database is greater than the number of connections in the pool, threads are blocked until a connection becomes available.
+                        In this case, the application is said to have exhausted the connection pool.
+                        - One strategy to avoid this problem is to increase the size of the connection pool. However, this is not always possible, as the database may not be able to handle more connections.
+                        - Another strategy is to size the connection pool to the number of threads that handle user requests. This is often a good approach, since the number of threads is often limited by the number of CPU cores.
+                        - In all cases, it is important to release connections as soon as possible.
 
-                        The number of concurrent connections to the database sometimes becomes a bottleneck.
-                        If you are doing things right, it means your application is extremely popular (e.g. instagram, figma) or has particular scalability requirements (e.g. backblaze, dropbox).
-                        In this case, micro services are not the solution.
-                        Instead, you should consider **replicating** or **sharding** your database.
+                        The number of concurrent connections to the database can become a bottleneck.
+                        If you are doing things right, it means your application is extremely popular (e.g., Instagram, Figma) or has particular scalability requirements (e.g., Backblaze, Dropbox).
+                        In this case, microservices are not the solution.
+                        Instead, first consider using database replication or sharding.
 
                     </textarea>
                 </section>
@@ -304,15 +307,14 @@
                         DataSource dataSource = new HikariDataSource(config);
                         ```
 
-                        Connection pooling does not solve all the problems. 
-                        
-                        Can you think of a situation where the use of a connection pool could lead to a deadlock?
+                        Connection pooling does not solve all the problems.
 
-                        
+                        Can you think of a situation where the misuse of a connection pool in the persistence layer could lead to a deadlock?
+
                         Notes:
-                        Pool starvation due to connection leak leading to deadlock on the shared resources (i.e the connections)
 
-                        Why use Quarkus integrated with Agroal instead of a more popular alternative ? Because it is related to RedHat and the WildFly Application Server. https://x.com/jtgreene/status/1224412010097586177
+                        Hint: Pool starvation due to connection leak leading to deadlock on the shared resources (i.e the connections)
+
                     </textarea>
                 </section>
             </section>
@@ -326,31 +328,31 @@
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> Object relational mapping for Java
 
-                        **Object relational mapping (ORM)** is a technique that allows you to map objects to relational databases.
-                        
-                        **The Java Persistence API (JPA)** is a Java API for object relational mapping that allows Java applications to interact with a database.
+                        **Object–relational mapping (ORM)** maps in-memory objects to rows in relational tables, translating between object graphs and SQL.
 
-                        JPA runtimes, such as Hibernate, are implementations of the JPA API. In general, they are implemented using the JDBC API.
+                        The **Java Persistence API (JPA)** is the standard Java API for ORM. It provides annotations and the EntityManager API to define entities, manage their lifecycle, run queries, and participate in transactions.
 
-                        JPA is a **high-level API** that allows you to write less boilerplate code.
+                        A **JPA provider (runtime)** such as Hibernate or EclipseLink implement the JPA specification and generally use JDBC under the hood.
+
+                        JPA is a **higher-level abstraction** that reduces JDBC boilerplate and offers features like caching and lazy loading, while still allowing low-level access when needed.
 
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fas fa-database"></i> Plain Old Java Objects (POJO) and JavaBeans
-                        
-                        A **plain old Java object (POJO)** is an ordinary Java object that does not follow some specialized conventions.
+                        ## <i class="fas fa-database"></i> Plain Old Java Objects (POJOs) and JavaBeans
+                                                
+                        A **plain old Java object (POJO)** is an ordinary Java object that does not follow any special conventions.
 
-                        By contrast, a class complying with **JavaBeans** is a Java class that follows some conventions:
-                        - It has a public default constructor.
+                        By contrast, a **JavaBean** is a class that follows the JavaBeans conventions:
+                        - It has a public no-argument constructor.
                         - It has private fields.
-                        - It has public getter and setter methods for the fields.
+                        - It provides public getter and setter methods for its properties.
                         - It implements the Serializable interface.
 
-                        JavaBeans are easy to manipulate using reflection and, therefore, are extensively used by frameworks.
-                        The persistence layer is often implemented using JavaBeans specification, or inspired by it with some of these constraints relaxed.
+                        JavaBeans are easy to **manipulate using reflection** and are therefore widely used by frameworks.
+                        The persistence layer is often implemented using the JavaBeans conventions, or inspired by them with some constraints relaxed.
 
                         <span style="font-size: 0.5em;">Reference: 
                         https://docs.oracle.com/en/java/javase/21/docs/api/java.desktop/java/beans/package-summary.html 
@@ -364,7 +366,7 @@
                         
                         A **JPA entity** is a Java class that represents an entity type in the database.
 
-                        It is similar to a class following JavaBeans conventions and annotated with the **@Entity** annotation. The implementation of `Serializable` is only required by JPA in specific cases.
+                        It is similar to a class that follows the JavaBeans conventions and is annotated with the **@Entity** annotation. Implementing `Serializable` is required by JPA only in specific cases.
 
                         <span style="font-size: 0.5em;">Details about JPA Entity specification and relationship with JavaBeans: https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1#a18 </span>
 
@@ -393,14 +395,9 @@
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> Entity Manager
                         
-                        The **entity manager** is the interface to manage **JPA entities**: creation, persistence and removal.
+                        The **EntityManager** is the interface used to manage **JPA entities**: creation, persistence, and removal.
 
-                        **Jakarta Persistence
- 3.1, [3.1. EntityManager](https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1#a1062):**
-
-                        <i class="fa-solid fa-quote-left"></i>
-                        An EntityManager instance is associated with a persistence context. A **persistence context** is a set of entity instances in which for any persistent entity identity there is a unique entity instance. Within the persistence context, the **entity instances and their lifecycle are managed**. The EntityManager interface defines the methods that are used to interact with the persistence context.
-                        <i class="fa-solid fa-quote-right"></i>
+                        **Jakarta Persistence 3.1, [§3.1 EntityManager](https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1#a1062):**
 
                         It is often injected using the **@Inject** annotation (more about injection in a future class).
 
@@ -419,6 +416,11 @@
                             // ...
                         }
                         ```
+
+                        Notes:
+
+                        An EntityManager instance is associated with a persistence context. A **persistence context** is a set of entity instances in which, for any persistent entity identity, there is a unique entity instance. Within the persistence context, the **entity instances and their lifecycle are managed**. The EntityManager interface defines the methods used to interact with the persistence context.
+
                         
                     </textarea>
                 </section>
@@ -427,23 +429,23 @@
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> Entity Annotations
                         
-                        In order to be persisted to the underlying data store, annotations are used within entities to map to the relational data:
+                        To persist entities to the underlying data store, use annotations to map them to relational data:
                         
-                        - `@Entity` to mark the class as an entity.
-                        - `@Id` to mark the primary key.
-                        - `@Column` to map the fields to the columns.
-                        - `@OneToOne`, `@OneToMany`, `@ManyToOne` and `@ManyToMany` to map the relationships between entities.
-                        - `@JoinColumn` to map the foreign keys.
-                        - `@GeneratedValue` to generate the primary key.
-                        - `@Enumerated` to map an enum to a column.
-                        - `@Embeddable` and `@Embedded` to map an embedded object to a column.
+                        - `@Entity` - marks the class as an entity.
+                        - `@Id` - marks the primary key.
+                        - `@Column` - maps fields to columns.
+                        - `@OneToOne`, `@OneToMany`, `@ManyToOne`, and `@ManyToMany` - map relationships between entities.
+                        - `@JoinColumn` - maps foreign keys.
+                        - `@GeneratedValue` - generates primary key values.
+                        - `@Enumerated` - maps enum types to a column.
+                        - `@Embeddable` and `@Embedded` - map embedded objects to columns.
 
                         Notes:
 
-                        The extent of the possibilities offered by JPA is beyond the scope of this class.
-                        However, you should be aware that it is possible to map almost anything to a database using JPA.
+                        The full range of possibilities offered by JPA is beyond the scope of this class.
+                        However, you should be aware that JPA can map almost anything to a database.
                         
-                        When developing an application, you should keep the specification (JPA) and the documentation of the runtime (Hibernate) at hand.
+                        When developing an application, keep the JPA specification and the runtime documentation (for example, Hibernate) at hand.
 
                         
                     </textarea>
