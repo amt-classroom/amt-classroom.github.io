@@ -35,7 +35,6 @@
             <section data-markdown>
                 <textarea data-template>
                     ## <i class="fas fa-tasks"></i> Overview of Today's Class
-                    - Quizz
                     - Transaction
                     - Validation
 
@@ -74,7 +73,7 @@
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> Transactions and JDBC
+                        ## <i class="fa-solid fa-diagram-project"></i> JDBC Transactions 
 
                         ```java
                         var connection = dataSource.getConnection();
@@ -87,12 +86,16 @@
                         }
                         ```
 
+                        This code snippet demonstrates manual transaction management in JDBC.
+                        
+                        Auto-commit is disabled so you can explicitly commit or roll back changes, ensuring that either all operations succeed or none are applied if an error occurs.
+
                     </textarea>
                 </section>
 
-                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> Transactions and Jakarta EE
+                        ## <i class="fa-solid fa-diagram-project"></i> Jakarta Transactions
 
                         ```java
                         import jakarta.enterprise.context.ApplicationScoped;
@@ -116,10 +119,12 @@
                         }
                         ```
 
-                        Provided by Jakarta Transactions specification. 
-                        In Quarkus, the JTA implementation used is Narayana: https://quarkus.io/guides/transaction
+                        This code snippet demonstrates transaction management using [Jakarta Transactions](https://jakarta.ee/specifications/transactions/2.0/jakarta-transactions-spec-2.0).
 
-                        Reference: https://jakarta.ee/specifications/transactions/2.0/jakarta-transactions-spec-2.0#transactional-annotation
+                        In Quarkus, the implementation of Jakarta Transaction is [Narayana](https://quarkus.io/guides/transaction).
+
+                        The `@Transactional` annotation indicates that the method should be executed within a transaction. If the method completes successfully, the transaction is committed. If an exception is thrown, the transaction is rolled back.
+
                     </textarea>
                 </section>
 
@@ -145,12 +150,13 @@
                         The isolation level determines how transactions are isolated from each other.
 
                         The following isolation levels are defined in the JDBC API:
-                        - **None:** Isolation is not specified.
-                        - **Read uncommitted:** A transaction may read data that is still uncommitted by other transactions.
-                        - **Read committed:** A transaction can only read data that has been committed by other transactions.
+
+                        - **Serializable (highest level):** Transactions are executed in such a way that the outcome is the same as if they were run one after another, ensuring complete isolation.
                         - **Repeatable read:** A transaction can only read data that has been committed and will see a consistent snapshot of the data for the duration of the transaction.
-                        - **Serializable (highest level):** Transactions are completely isolated from each others transactions, as if they were executed serially, one after the other.
-                    
+                        - **Read committed:** A transaction can only read data that has been committed by other transactions.
+                        - **Read uncommitted:** A transaction may read data that is still uncommitted by other transactions.
+                        - **None:** Isolation is not specified.
+
                         Notes:
                         Other isolation levels are possible, but they are not defined in the JDBC API.
 
@@ -169,6 +175,8 @@
                         connection.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
                         connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
                         ```
+
+                        This code snippet demonstrates how to set the isolation level in JDBC.
 
                     </textarea>
                 </section>
@@ -312,18 +320,9 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-diagram-project"></i> Deadlock
                         
-                        A deadlock in a RDBMS occurs when two or more transactions are stuck waiting 
-                        indefinitely for resources held by each other, causing each transaction to block the others 
-                        from proceeding. This circular dependency prevents any of the transactions involved from completing unless one is terminated or rolled back by the database system.
-                        
-                        Handling deadlocks can be achieved by implementing error handling and retry logic for transaction failures and by monitoring the database to detect deadlocked transactions.
-                        
-                        Some deadlock situations might be counter-intuitive and specific to a RDBMS implementation. 
-                        For example in MySQL concurrent transactions with "INSERT" statements can lead to a deadlock.
+                        A deadlock occurs when transactions are stuck waiting for resources held by each other, preventing progress. This circular wait means none can complete unless one is rolled back.
 
-                        > InnoDB uses automatic row-level locking. You can get deadlocks even in the case of 
-                        transactions that just insert or delete a single row. That is because these operations
-                        are not really “atomic”; they automatically set locks on the (possibly several) index records of the row inserted or deleted.
+                        Deadlocks are handled by error detection, retry logic, and database monitoring. They can occur even with simple operations like single-row inserts, as in MySQL, due to row-level locking on index records.
 
                         Source: https://dev.mysql.com/doc/refman/8.4/en/innodb-deadlocks-handling.html
                     </textarea>
@@ -339,7 +338,7 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-diagram-project"></i> Distributed transactions
 
-                        A distributed transaction is a transaction that accesses and updates data on two or more networked computer systems.
+                        A distributed transaction is a transaction that accesses and updates data on two or more networked computer systems, requiring coordination across all involved systems.
                         
                     </textarea>
                 </section>
@@ -348,7 +347,10 @@
                     <textarea data-template>
 
                         <img src="/images/distributed-transactions.png" style="width: 60%;">
-                        
+
+                        Notes:
+
+                        A distributed transaction may be coordinated by a transaction manager in the persistence layer and span multiple databases or other transactional resources.
                     </textarea>
                 </section>
 
@@ -366,19 +368,14 @@
 
                 <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-
-                        <a href="https://www.youtube.com/watch?v=-_rdWB9hN1c" target="_blank">
-                            <img src="/images/kleppmann-2pc.png" style="width: 80%;">
-                        </a>
+                        <iframe width="1000" height="500" src="https://www.youtube.com/embed/-_rdWB9hN1c?si=vy3CulFzMmBdjoal" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
 
-                        ## <i class="fa-solid fa-diagram-project"></i> Jakarta JTA
-
-                        The Java Transaction API (Jakarta JTA) is used to manage distributed transactions in Java applications.
+                        ## <i class="fa-solid fa-diagram-project"></i> Jakarta Transactions (Distributed)
 
                         ```java
                         @ApplicationScoped
@@ -401,6 +398,8 @@
                             }
                         }
                         ```
+
+                        In this code snippet, the Java Transactions is used to manage distributed transactions in Java applications.
 
                         Notes:
 
@@ -433,15 +432,10 @@
 
                         Validation is the process of checking whether a given input is valid.
 
-                        Jakarta Bean Validation (or simply Jakarta Validation) is a specification that defines a metadata model and API for JavaBean validation.
+                        [Jakarta Bean Validation](https://jakarta.ee/specifications/bean-validation/) is a specification that defines a metadata model and API for JavaBean validation.
 
-                        https://jakarta.ee/specifications/bean-validation/
-                        
-                        Hibernate Validator is the reference implementation of the Jakarta Bean Validation specification.
+                        [Hibernate Validator](https://hibernate.org/validator/) is the reference implementation of the Jakarta Bean Validation specification.
 
-                        
-                        https://hibernate.org/validator/ 
-                    
                     </textarea>
                 </section>
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
@@ -468,6 +462,14 @@
                         
                         }
                         ```
+
+                        In this code snippet, we define a `Person` class with various validation constraints using Jakarta Bean Validation annotations.
+
+                        Notes:
+
+                        The person class is not necessarily a JPA entity; it can be any Java class used for data transfer or business logic.
+                        
+                        In fact, entities are not always the best place to put validation constraints, as they should focus on representing the data model rather than enforcing business rules.
                     
                     </textarea>
                 </section>
@@ -495,6 +497,13 @@
                             }
                         }
                         ```
+
+                        In this code snippet, we define a `ValidationService` class that demonstrates both manual and automatic validation of a `Person` object using Jakarta Bean Validation.
+
+                        Notes:
+
+                        Adding the `@Valid` annotation to a method parameter triggers automatic validation of that parameter only the enclosing method is invoked by a framework that supports validation.
+
                     </textarea>
                 </section>
 
@@ -503,17 +512,14 @@
 
                         ## <i class="fa-solid fa-diagram-project"></i> Jakarta Persistence and Jakarta Validation relationship
 
-                        Jakarta Persistence utilizes Jakarta Validation for JPA entities. However for the validation to trigger the entity instance must be "passed through" the EntityManager during 
-                        its lifecycle.
-
-                        https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1#a2366
-
+                        Jakarta Persistence utilizes Jakarta Validation for JPA entities, but validation is only triggered for **managed** entities during specific EntityManager lifecycle events such as persist or update.
+                        
                         When using Hibernate ORM, simply adding the dependency to Hibernate Validator should enable automatic validation based on Jakarta Validation API usage in JPA entities.
 
                         References:
-                        * https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1#a2366
-                        * https://jakarta.ee/specifications/bean-validation/3.0/jakarta-bean-validation-spec-3.0#integration
-                        * https://docs.jboss.org/hibernate/validator/8.0/reference/en-US/html_single/#validator-integration 
+                        * [Jakarta Persistence Specification 3.1](https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1#a2366)
+                        * [Jakarta Bean Validation Specification 3.0](https://jakarta.ee/specifications/bean-validation/3.0/jakarta-bean-validation-spec-3.0#integration)
+                        * [Hibernate Validator Integration](https://docs.jboss.org/hibernate/validator/8.0/reference/en-US/html_single/#validator-integration)
                     </textarea>
                 </section>
 
