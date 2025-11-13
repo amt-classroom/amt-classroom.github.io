@@ -35,7 +35,7 @@
             <section data-markdown>
                 <textarea data-template>
                     ## <i class="fas fa-tasks"></i> Overview of Today's Class
-                    - Abstraction in software engineering
+                    - Abstractions
                     - Schema/Code generation through Hibernate ORM
                     - Database migration tool
                     - Schema evolution
@@ -44,19 +44,33 @@
 
             <section>
                 <section data-background="#333333">
-                    <h2><i class="fa-solid fa-cubes"></i> Abstraction in software engineering</h2>
+                    <h2><i class="fa-solid fa-cubes"></i> Abstraction</h2>
                 </section>
-                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-cubes"></i> Abstraction
 
-                        Abstraction is a skill and a process in computer science.
-                        
-                        - Generalization (grouping, simplification, categorization)
-                        - Hide concrete details
-                        - Focus on core features or attributes
-                        - Interface or model to interact with abstractions
-                        - Design decisions
+                        An **Abstraction** is a simplified view of an entity that omits unimportant details to enable higher level thinking.
+
+                        **Key principle:** The word "**unimportant**" is crucial
+                        - Omitting unimportant details → simpler, easier to understand
+                        - Omitting important details → false abstraction, obscurity
+
+                        **Two ways abstractions fail:**
+                        1. **Including unimportant details** → unnecessary complexity
+                        2. **Omitting important details** → obscurity, incorrect usage
+
+                        **Example: File System**
+                        - ✅ Omits: block allocation mechanism (unimportant to users)
+                        - ❌ Cannot omit: data flushing rules (critical for databases)
+
+                        Notes:
+
+                        In modular programming, each module provides an abstraction through its interface. The interface presents a simplified view - implementation details are omitted because they're unimportant from the abstraction's standpoint.
+
+                        The file system example shows how some details (like block allocation) can be hidden, while others (like when data is written to disk) must be exposed because they're critical for certain use cases like databases that need to guarantee data persistence.
+
+                        We use abstractions everywhere: microwaves hide complex electronics behind simple buttons, cars hide intricate mechanisms behind a steering wheel and pedals.
                     </textarea>
                 </section>
 
@@ -66,10 +80,13 @@
                         ## <i class="fa-solid fa-cubes"></i> Abstraction in Operating System
 
                         > The job of the operating system is to create good abstractions and then implement
-                            and manage the abstract objects thus created. [Abstractions] are one of the keys to understanding operating systems.
+                            and manage the abstract objects thus created. Abstractions are one of the keys to understanding operating systems.
 
-                        <img src="/images/7-abstraction-jooq/moderoperatingsystem.png" alt="Layered architecture" style="width: 60%;"/>
-                        Andrew Tanenbaum & Herbert Bos (2014). <i>Modern Operating Systems (Fourth edition)</i>
+                        <img src="/images/7-abstraction-jooq/moderoperatingsystem.png" alt="Layered architecture" style="width: 60%; margin-left:0;"/>
+                        
+                        Notes:
+
+                        Source: Andrew Tanenbaum & Herbert Bos (2014). <i>Modern Operating Systems (Fourth edition)</i>
 
                     </textarea>
                 </section>
@@ -98,12 +115,6 @@
                         [...] One reason the law of leaky abstractions is problematic is that it means that abstractions do not really simplify our lives as much as they were meant to.
                         > </br> --<cite>Joel Spolsky (2002) [The Law of Leaky Abstractions](https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/)</cite>
 
-
-
-                        Notes:
-
-                        A
-
                     </textarea>
                 </section>
 
@@ -126,11 +137,49 @@
 
             <section>
                 <section data-background="#333333">
-                    <h2><i class="fa-solid fa-file-code"></i> Hibernate & Schema Management</h2>
+                    <h2><i class="fa-solid fa-file-code"></i> ORM as Data Abstraction</h2>
+                </section>
+
+                <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-cubes"></i> ORM as Data Abstraction
+
+                        **Object-Relational Mapping (ORM)** provides an abstraction over database operations.
+
+                        **What ORMs abstract away (unimportant details):**
+                        - SQL query syntax and dialect differences
+                        - Connection management and pooling
+                        - Basic CRUD operations boilerplate
+                        - Type conversions between database and application
+
+                        **What ORMs cannot hide (important details):**
+                        - Database schema design and relationships
+                        - Query performance and optimization (N+1 problem)
+                        - Transaction boundaries and isolation levels
+                        - Data consistency and integrity constraints
+
+                        **Trade-off:** Productivity vs. Control
+
+                        Notes:
+
+                        ORMs like Hibernate, JPA, Entity Framework, or ActiveRecord aim to simplify database interactions by mapping objects to tables. They handle repetitive tasks and provide database independence.
+
+                        However, they cannot abstract away fundamental database concepts. Developers still need to understand how databases work, especially for:
+                        - Performance-critical queries
+                        - Complex joins and aggregations
+                        - Concurrency and locking
+                        - Schema evolution
+
+                        This is a classic example of leaky abstraction - the abstraction works well for simple cases but requires understanding the underlying system for complex scenarios.
+                    </textarea>
                 </section>
                 <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-file-code"></i> Hibernate Schema Generation
+                        ## <i class="fa-solid fa-file-code"></i> Abstracting Schema Generation
+
+                        **Schema generation abstracts database design, but it's a leaky abstraction** - it works for simple cases but requires understanding the underlying database for production use.
+
+                        Hibernate exposes the following mode for generating the database schema.
 
                         |  mode | purpose | reproducible with data retained |
                         |--------|------|------------------------------|
@@ -139,34 +188,33 @@
                         | create-drop        | drop the schema and recreate it on SessionFactory startup. Additionally, drop the schema on SessionFactory shutdown  | <i class="fa-regular fa-circle-xmark"></i>  |
                         | drop               | drop the schema on SessionFactory shutdown           | <i class="fa-regular fa-circle-xmark"></i> |
                         | validate          | validate the database schema without changing it     | <i class="fa-regular fa-circle-check"></i> |
-                        | update             | only export what’s missing in the schema           | <i class="fa-regular fa-circle-question"></i> [1][2] |
+                        | update             | only export what's missing in the schema           | <i class="fa-regular fa-circle-question"></i> |
 
-                        https://docs.jboss.org/hibernate/orm/6.3/introduction/html_single/Hibernate_Introduction.html
 
-                        [1] [Hibernate: hbm2ddl.auto=update in production?](https://stackoverflow.com/questions/221379/hibernate-hbm2ddl-auto-update-in-production)
+                        Notes:
 
-                        [2] [Hibernate User Guide](https://docs.jboss.org/hibernate/orm/6.3/userguide/html_single/Hibernate_User_Guide.html#best-practices) discourage using `update` in production
+                        The [Hibernate User Guide](https://docs.jboss.org/hibernate/orm/6.3/userguide/html_single/Hibernate_User_Guide.html#best-practices) discourage using `update` in production proving the limits of this abstraction.
 
-                        > Although the automatic schema generation is very useful for testing and prototyping purposes, in a production environment,
-                        > it’s much more flexible to manage the schema using incremental migration scripts.
-                        > </br>-- https://docs.jboss.org/hibernate/orm/6.3/userguide/html_single/Hibernate_User_Guide.html#schema-generation
+                        The [Hibernate User Guide](https://docs.jboss.org/hibernate/orm/6.3/userguide/html_single/Hibernate_User_Guide.html#schema-generation) documentation also states that while automatic schema generation is very useful for testing and prototyping, in a production environment, it’s much more flexible to manage the schema using incremental migration scripts, as these provide safety, auditability, and control over changes.
+                        
                     </textarea>
                 </section>
-                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-file-code"></i> Greenfield Utopia
+
                         The developer focuses on code and lets the magic happen in the database.
+
+                        <img src="/images/7-abstraction-jooq/schema-utopia.png" alt="Layered architecture" style="width: 50%; margin-left: 0;"/>
 
                         > Isn't the ORM supposed to abstract away the database from me?
                         > </br>-- <cite>An anonymous developer, practitioner of code-(only)-first approach</cite>
 
-                        <img src="/images/7-abstraction-jooq/schema-utopia.png" alt="Layered architecture" style="width: 50%;"/>
-
                     </textarea>
                 </section>
-                <section data-markdown style="font-size: 0.4em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.55em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-file-code"></i> Greenfield Utopia, the hidden truth
+                        ## <i class="fa-solid fa-file-code"></i> Greenfield Utopia: the hidden truth
                         Input Java classes:
                         ```
                         @Entity
@@ -209,34 +257,37 @@
                             references "Group"
                         ```
 
+                        Notes:
+
+                        The abstraction omits important details leading to an incorrect usage of the database:
                         * The associative table is unexpected for a one-to-many relation and likely to lead to performance issues.
                         * The naming of foreign key constraints are technical and debatable.
 
-                        [More annotations and code](https://vladmihalcea.com/the-best-way-to-map-a-onetomany-association-with-jpa-and-hibernate/) are required in Java classes to obtain a saner database schema.
+                        The solution is to use [more annotations and code](https://vladmihalcea.com/the-best-way-to-map-a-onetomany-association-with-jpa-and-hibernate/) to obtain a saner database schema; however, requiring additional annotations and code to correct the schema exposes underlying database details, reducing the effectiveness of the abstraction.
                     </textarea>
                 </section>
-                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.55em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-file-code"></i> Greenfield Utopia - Evolution, forcing destiny
+                        ## <i class="fa-solid fa-file-code"></i> Greenfield Utopia: Evolution, forcing destiny
                         * Forcing the abstraction of a database as much as possible by using schema generation to drive the development of migrations.
                         * Java classes remain the source of truth and a back and forth is done using schema generation to find the correct annotations and code to produce a manageable schema.
                         * In worse cases the migrations becomes a bundle of generated, semi-generated and manually authored migrations.
-                        <img src="/images/7-abstraction-jooq/schema-utopia-evolution.png" alt="Layered architecture" style="width: 60%;"/>
+                        <img src="/images/7-abstraction-jooq/schema-utopia-evolution.png" alt="Layered architecture" style="width: 60%; margin-left: 0; margin-top: 20px"/>
                     </textarea>
                 </section>
 
-                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.55em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-file-code"></i> Labo1 Sakila
                         * The database is the source of truth and the migrations are authored and under control.
                         * The schema is designed according to the needs of the RDBMS system and with all its features and expressiveness (e.g. triggers, partitions, rules).
                         * The initial migration could come from an early prototyping with schema generation as a seed migration, however this seed migration should be reviewed and not blindly applied.
-                        <img src="/images/7-abstraction-jooq/labo1-sakila.png" alt="Layered architecture" style="width: 60%;"/>
+                        <img src="/images/7-abstraction-jooq/labo1-sakila.png" alt="Layered architecture" style="width: 60%; margin-top: 20px; margin-left: 0"/>
 
                     </textarea>
                 </section>
 
-                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-file-code"></i> Schema under control
 
@@ -248,32 +299,36 @@
                         * the schema is not under control as it is applied dynamically at runtime.
                         * the breakaway effort is correlated to the growth of the schema while it was not under control
 
-                        Hibernate User Guide recommends to put migrations under control:
-                        > Although Hibernate provides the update option for the hibernate.hbm2ddl.auto configuration property, this feature is not suitable for a production environment.
-                        > </br>[...]</br>
-                        > An automated schema migration tool (e.g. Flyway, Liquibase) allows you to use any database-specific DDL feature (e.g. Rules, Triggers, Partitioned Tables). Every migration should have an associated script, which is stored on the Version Control System, along with the application source code.
-                        > </br>[...]</br>
-                        > You should always use an automatic schema migration tool and have all the migration scripts stored in the Version Control System.
-                        > </br> -- https://docs.jboss.org/hibernate/orm/6.3/userguide/html_single/Hibernate_User_Guide.html#best-practices
+                        Notes:
+
+                        The [Hibernate User Guide](https://docs.jboss.org/hibernate/orm/6.3/userguide/html_single/Hibernate_User_Guide.html#best-practices) recommends to put migrations under control:
+                        
+                        Although Hibernate provides the update option for the hibernate.hbm2ddl.auto configuration property, this feature is not suitable for a production environment.
+                        </br>[...]</br>
+                        An automated schema migration tool (e.g. Flyway, Liquibase) allows you to use any database-specific DDL feature (e.g. Rules, Triggers, Partitioned Tables). Every migration should have an associated script, which is stored on the Version Control System, along with the application source code.
+                        </br>[...]</br>
+                        You should always use an automatic schema migration tool and have all the migration scripts stored in the Version Control System.
 
                     </textarea>
                 </section>
 
-                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-file-code"></i> ORM abstraction
                         ORMs are complex abstractions and leak by design. They are often highly criticized because of misplaced expectations.
                         Using an ORM abstraction doesn't remove the need to understand the database.
 
-                        >  if you are writing an application backed by a relational database you should damn well know how a relational database works.
-                        > </br>[...]</br>
-                        > they just want to deal with in-memory data-structures and let the ORM deal with the database. This way of thinking can work for small applications and loads, but it soon falls apart once the going gets tough
-                        > </br>[...]</br>
-                        >  Active Record [a Ruby On Rails ORM] is designed with that in mind, it takes care of boring stuff, but provides manholes so you can get down with the SQL when you have to.
-                        > </br> --<cite>Martin Fowler 2012 [ORMHate](https://martinfowler.com/bliki/OrmHate.html)<cite>
+                        Notes:
+
+                        If you are writing an application backed by a relational database you should damn well know how a relational database works.
+                        </br>[...]</br>
+                        they just want to deal with in-memory data-structures and let the ORM deal with the database. This way of thinking can work for small applications and loads, but it soon falls apart once the going gets tough
+                        </br>[...]</br>
+                        Active Record [a Ruby On Rails ORM] is designed with that in mind, it takes care of boring stuff, but provides manholes so you can get down with the SQL when you have to.
+                        </br> --<cite>Martin Fowler 2012 [ORMHate](https://martinfowler.com/bliki/OrmHate.html)<cite>
                     </textarea>
                 </section>
-                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-certificate"></i> Abstraction and generation, trust but verify
                         Abstractions that generate code and schemas are often mistrusted, however they are ubiquitous to software development.
@@ -290,6 +345,8 @@
                         * place them under control
                         * track the changes
                         * learn and understand what and how it abstracts
+
+                        Notes:
 
                         Borrowing a concept used in cyber-security among others: [Trust, but verify](https://en.wikipedia.org/wiki/Trust,_but_verify)
                     </textarea>
@@ -376,13 +433,23 @@
                         ## <i class="fas fa-database"></i> Be careful with migrations
 
                         When using migration tools, you should be **extremely careful**:
-                        - **Backup your database** before running a migration script.
-                        - **Test your migration** scripts on a dump of your production database before running them on the production database.
-                        - **Do not** **modify**, **delete**, **rename**, or **change** a migration script that has already been executed.
+                        - **Backup your database** before running a migration script
+                        - **Test your migration** scripts on a dump of your production database before running them in production
+                        - **Never modify** a migration script that has already been executed
+                        - **Never delete** or rename executed migration scripts
 
-                        If you do any of these things, you will probably **break the migration process**.
+                        If you break these rules, you will **break the migration process**.
                        
                         **Forward thinking** is key when writing migration scripts.
+
+                        Notes:
+
+                        Migration tools like Flyway abstract away the complexity of tracking which migrations have been executed. However, this is a leaky abstraction - you still need to understand what's happening underneath:
+                        - Flyway maintains a schema history table to track executed migrations
+                        - Checksums are used to detect if a migration file has been modified
+                        - Once executed, migrations become part of your database's history
+                        
+                        Breaking these rules exposes the abstraction's limitations and can lead to inconsistent states across environments.
 
                     </textarea>
                 </section>
@@ -390,15 +457,28 @@
                 <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fas fa-database"></i> What about rollbacks?
-                        The undo feature of Flyway is part of the commercial version. However, even if opensource alternatives exists (e.g. [Liquibase](https://docs.liquibase.com/home.html)) the **rollback feature is not a silver bullet**. 
-                        
-                        - Destructive changes are non-trivial to inverse. For instance, after dropping a table or a column, the data is lost and cannot be recovered.
-                        - Expressing the inverse of a migration will often require you to manually create the "undo" migration script.
-                        
-                        Again, **forward thinking** is crucial when writing migration scripts. For instance, if a migration script deletes data, it is a good idea to first mark the data as deprecated, and then delete it in a later migration script.
 
-                        Another example of forward thinking from the Flyway docs:
+                        **Rollbacks abstract the complexity of undoing changes, but this abstraction has important limitations.**
+
+                        The undo feature of Flyway is part of the commercial version. Even with open-source alternatives (e.g. [Liquibase](https://docs.liquibase.com/home.html)), the **rollback feature is not a silver bullet**. 
+                        
+                        **Why rollbacks are a leaky abstraction:**
+                        - **Destructive changes are non-trivial to reverse** - After dropping a table or column, data is lost and cannot be recovered
+                        - **Expressing the inverse requires manual work** - You often need to manually create the "undo" migration script
+                        - **Some operations have no inverse** - How do you "undelete" dropped data?
+
+                        **Forward thinking** is crucial. For example:
+                        - Mark data as deprecated first, delete in a later migration
+                        - Add new columns before removing old ones (expand and contract pattern)
+
                         > Rolling forward acknowledges that the later state (v4) occurred, and migrates ahead to a new distinct version (v5) that just happens to correspond to a previous state (v3).
+
+                        Notes:
+
+                        This is another example where the abstraction (automatic rollbacks) omits important details. The tool cannot know:
+                        - Whether data loss is acceptable
+                        - How to reconstruct deleted data
+                        - Complex business logic embedded in the migration
 
                         References:
                         - https://docs.liquibase.com/workflows/liquibase-community/automatic-custom-rollbacks.html
@@ -409,11 +489,18 @@
 
                 <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fas fa-database"></i> PL/SQL SQL Procedure Language 
-                        Some migrations require logic that goes beyond standard SQL statements. Most RDBMSs support a procedural language that enables the use of variables, control-flow, and error handling to implement complex procedures. For example PostgreSQL has PL/pgSQL and MySQL has a syntax close to PL/SQL. 
-                        If originally PL/SQL is tied to Oracle, then the [SQL/PSM](https://en.wikipedia.org/wiki/SQL/PSM) specification was derived from it. However the term PL/SQL remains and is often used to refer to a procedural feature of most RDBMS, even though that feature isn't exactly the PL/SQL language as found in Oracle products.
+                        ## <i class="fas fa-database"></i> PL/SQL - Procedural Language for SQL
+                        
+                        **Some migrations require procedural logic that SQL alone cannot express.**
 
-                        Here is an example of PL/pgSQL migration function:
+                        Most RDBMSs support a procedural language with variables, control-flow, and error handling.
+
+                        **Examples:**
+                        - PostgreSQL: **PL/pgSQL**
+                        - MySQL: **SQL/PSM** (Persistent Stored Modules)
+                        - Oracle: **PL/SQL** (original)
+
+                        **PL/pgSQL migration example:**
                         ```pl/pgsql
                         CREATE OR REPLACE FUNCTION migrate_employees(min_salary INT)
                         RETURNS VOID AS $$
@@ -440,6 +527,15 @@
                         END;
                         $$ LANGUAGE plpgsql;
                         ```
+
+                        Notes:
+
+                        Standard SQL abstracts data manipulation but omits procedural capabilities. PL/SQL and its variants expose these important details when migrations need:
+                        - Conditional logic during data transformation
+                        - Iterative processing of records
+                        - Complex business rules during migration
+                        - Error handling and logging
+
                         References:
                         - https://dev.mysql.com/doc/refman/8.4/en/sql-compound-statements.html
                         - https://www.postgresql.org/docs/current/plpgsql.html 
@@ -459,9 +555,11 @@
                     </textarea>
                 </section>
 
-                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fas fa-database"></i> Database refactoring - Backward-incompatible, Downtime 
+                        ## <i class="fas fa-database"></i> Database refactoring
+
+                        **Backward-incompatible, Downtime**
 
                         When service downtime is acceptable, you can implement a breaking change by coordinating changes to both the application and database schema in a single deployment. The process is as follows:
 
@@ -469,23 +567,28 @@
                         - Deploy application version X+1 which runs migration scripts to update the database to schema version Y+1, which is compatible with the new application version.
                         - Application version X+1 and database schema version Y+1 are now up and running together.
 
+                        Notes:
+
                         While this approach requires downtime, it also requires careful planning to ensure that the new application and database versions are compatible and can be deployed together. This method becomes complex and error-prone when multiple applications use the same database, and deployment automation must handle this coordinated process. This method may work for prototype applications but isn’t reliable for production.
                     </textarea>
                 </section>
 
-                <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fas fa-database"></i> Database refactoring - Backward-incompatible, expand and contract
+                        ## <i class="fas fa-database"></i> Database refactoring
+
+                        **Backward-incompatible, expand and contract**
 
                         Expand and contract is a pattern to break backward-incompatible changes into a chain of backward-compatible changes through three distinctive phases. The changes in code and database schema are decoupled so that they can be developed, tested and deployed separately.
                         * **Expand**, introduce backward-compatible changes that implement the refactoring in the database schema.
                         * **Migrate**, introduce code changes that are moving to the new capabilities of the refactored database schema.
                         * **Contract** (i.e. to reduce to smaller size), consolidation by removing or cleaning-up any non-essential changes introduced in the expand phase to support the migration phase that are not used by the code anymore.
 
-                        <img src="./images/expand-contract.png" alt="Generated schema" style="width: 30%;">
+                        <img src="./images/expand-contract.png" alt="Generated schema" style="width: 30%; margin-left:0; margin-top:20px;">
 
                         Building Evolutionary Architectures, 2017, Neal Ford, Rebecca Parsons, Patrick Kua
 
+                        Notes:
                         This pattern is not limited to database refactoring and can be applied in others contexts. See https://martinfowler.com/bliki/ParallelChange.html
                         
                     </textarea>
