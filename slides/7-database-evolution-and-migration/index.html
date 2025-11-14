@@ -36,9 +36,8 @@
                 <textarea data-template>
                     ## <i class="fas fa-tasks"></i> Overview of Today's Class
                     - Abstractions
-                    - Schema/Code generation through Hibernate ORM
-                    - Database migration tool
-                    - Schema evolution
+                    - Abstracting Database Operations
+                    - Migrating and Refactoring Databases
                 </textarea>
             </section>
 
@@ -137,12 +136,12 @@
 
             <section>
                 <section data-background="#333333">
-                    <h2><i class="fa-solid fa-file-code"></i> ORM as Data Abstraction</h2>
+                    <h2><i class="fa-solid fa-file-code"></i> Abstracting Database Operations</h2>
                 </section>
 
                 <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-cubes"></i> ORM as Data Abstraction
+                        ## <i class="fa-solid fa-cubes"></i> Abstracting Database Operations
 
                         **Object-Relational Mapping (ORM)** provides an abstraction over database operations.
 
@@ -357,7 +356,7 @@
             <!-- Migrating databases -->
             <section>
                 <section data-background="#333333">
-                    <h2><i class="fas fa-database"></i> Migrating databases </h2>
+                    <h2><i class="fas fa-database"></i> Migrating and Refactoring Databases </h2>
                 </section>
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
@@ -589,17 +588,19 @@
                         Building Evolutionary Architectures, 2017, Neal Ford, Rebecca Parsons, Patrick Kua
 
                         Notes:
-                        This pattern is not limited to database refactoring and can be applied in others contexts. See https://martinfowler.com/bliki/ParallelChange.html
+                        This pattern is not limited to database refactoring and can be applied in [others contexts](https://martinfowler.com/bliki/ParallelChange.html).
                         
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fas fa-database"></i> Database refactoring - Backward-incompatible, expand and contract
+                        ## <i class="fas fa-database"></i> Database refactoring
+                        
+                        **Backward-incompatible, expand and contract**
 
                         Example: Merge two or more tables into a single table. 
-                        <img src="./images/merge-two-tables.png" alt="Generated schema" style="width: 50%;">
+                        <img src="./images/merge-two-tables.png" alt="Generated schema" style="width: 50%; margin-top: 20px; margin-bottom: 20px; margin-left:0;">
                         https://databaserefactoring.com/MergeTables.html
 
                         Refactoring Databases: Evolutionary Database Design, 2006, Scott W. Ambler, Pramod J. Sadalage
@@ -610,10 +611,12 @@
 
                 <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fas fa-database"></i> Database refactoring - Backward-incompatible, expand and contract
+                        ## <i class="fas fa-database"></i> Database refactoring
+                        
+                        **Backward-incompatible, expand and contract**
 
                         Example: Rename an existing table Using View
-                        <img src="./images/rename-table-view.png" alt="Generated schema" style="width: 50%;">
+                        <img src="./images/rename-table-view.png" alt="Generated schema" style="width: 50%; margin-left: 0;margin-top: 20px; margin-bottom: 20px;">
                         https://databaserefactoring.com/RenameTable.html
 
                         Refactoring Databases: Evolutionary Database Design, 2006, Scott W. Ambler, Pramod J. Sadalage
