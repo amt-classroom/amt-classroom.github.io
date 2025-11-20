@@ -49,7 +49,7 @@
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-diagram-project"></i> SOLID
-                        
+
                         The **SOLID** principles are a set of principles that help us design better software. They are:
                         - **S**ingle responsibility principle (SRP)
                         - **O**pen/closed principle (OCP)
@@ -60,7 +60,17 @@
                         The first four principles will not be discussed in this course.
 
                         The last principle is the one we will focus on today.
-                        
+
+                        Notes:
+
+                        **Single Responsibility Principle (SRP)**: A class should have only one reason to change - it should have only one job or responsibility.
+
+                        **Open/Closed Principle (OCP)**: Software entities should be open for extension but closed for modification - you should be able to add new functionality without changing existing code.
+
+                        **Liskov Substitution Principle (LSP)**: Objects of a superclass should be replaceable with objects of a subclass without breaking the application - subtypes must be substitutable for their base types.
+
+                        **Interface Segregation Principle (ISP)**: Clients should not be forced to depend on interfaces they don't use - prefer many specific interfaces over one general-purpose interface.
+
                     </textarea>
                 </section>
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
@@ -79,6 +89,28 @@
                         - **Low-level modules** are modules that provide utility functions or basic infrastructure.
                         - **Abstractions** are interfaces or abstract classes.
                         - **Details** are concrete implementations of abstractions.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Why DIP Matters
+
+                        **Without DIP:**
+                        - High-level modules are tightly coupled to specific implementations
+                        - Difficult to test (hard to mock dependencies)
+                        - Hard to reuse modules in different contexts
+                        - Changes to low-level modules require changes to high-level modules
+
+                        **With DIP:**
+                        - Modules depend on abstractions, not concrete implementations
+                        - Easy to swap implementations (testing, different environments)
+                        - High-level modules become reusable
+                        - Changes to implementations don't affect high-level logic
+
+                        Notes:
+                        DIP is crucial for building maintainable, testable, and flexible applications.
 
                     </textarea>
                 </section>
@@ -217,135 +249,273 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-diagram-project"></i> Dependency injection (DI)
 
-                        **Dependency Injection (DI)** broadly refers to the process of supplying a dependency to a module from the outside.
+                        **Dependency Injection (DI)** is the technique of supplying dependencies to a module from the outside, rather than having the module create them itself.
 
-                        DI defines different roles:
-                        - A **Service** is a low-level module that provides a functionality.
-                        - A **Client** is a high-level module that depends on a service.
-                        - An **Injector** is a module that injects a service into a client.
+                        **Key roles in DI:**
+                        - **Service**: The dependency being injected (e.g., a Logger)
+                        - **Client**: The class that needs the dependency (e.g., Application)
+                        - **Injector**: The code that provides the service to the client
 
-                        There are three main ways for an **Injector** to inject a dependency:
-                        - **Constructor injection** injects the dependency to the Service through a Client's constructor.
-                        - **Setter injection** injects the dependency to the service through a client's setter.
-                        - **Interface injection** injects the dependency to the service through an interface implemented by the client.
-                
+                        **Three main injection approaches:**
+                        - **Constructor injection**: Pass dependencies via constructor
+                        - **Setter injection**: Pass dependencies via setter methods
+                        - **Framework-based injection**: Use annotations and IoC containers
+
+                        Notes:
+
+                        DI is the primary technique for implementing the Dependency Inversion Principle (DIP).
+
+                        By injecting dependencies from outside, we ensure that the client depends on an abstraction (interface) rather than a concrete implementation.
 
                     </textarea>
                 </section>
 
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-diagram-project"></i> Constructor injection
 
                         ```java
-                        // The Application corresponds to the client.
                         class Application {
+                            private final Logger logger;  // Can be final - immutable
 
-                            // The Logger corresponds to the service.
-                            private Logger logger;
-
-                            // The dependency to the service is injected via a constructor.
+                            // Dependencies are required at construction time
                             public Application(Logger logger) {
                                 this.logger = logger;
                             }
+
+                            public void performOperation() {
+                                logger.logMessage("Performing operation");
+                            }
                         }
+
+                        // Usage: injector provides the dependency
+                        Application app = new Application(new ConsoleLogger());
                         ```
+
+                        **When to use:**
+                        - For **required** dependencies (can't function without them)
+                        - When you want **immutable** objects (thread-safe)
+                        - Preferred approach in most cases
 
                         Notes:
 
-                        This approach allows you to inject the dependency when the object is created.
+                        Constructor injection makes dependencies explicit and ensures the object is always in a valid state.
+
+                        The dependency can be marked `final`, which prevents it from being changed after construction (immutability).
+
+                        This is the **recommended approach** for most dependencies.
 
                     </textarea>
                 </section>
 
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-diagram-project"></i> Setter injection
 
                         ```java
-                        // The Application corresponds to the client.
                         class Application {
+                            private Logger logger;  // Cannot be final - mutable
 
-                            // The Logger corresponds to the service.
-                            private Logger logger;
-
-                            // The dependency to the service is injected via a setter.
+                            // Optional: can be set after construction
                             public void setLogger(Logger logger) {
                                 this.logger = logger;
                             }
+
+                            public void performOperation() {
+                                if (logger != null) {  // Need to check for null
+                                    logger.logMessage("Performing operation");
+                                }
+                            }
                         }
+
+                        // Usage: injector sets dependency after creation
+                        Application app = new Application();
+                        app.setLogger(new ConsoleLogger());  // Can be changed later
                         ```
+
+                        **When to use:**
+                        - For **optional** dependencies (can work without them)
+                        - When you need to **reconfigure** at runtime
+                        - Less common than constructor injection
 
                         Notes:
 
-                        This approach allows you to inject the dependency after the object has been created.
+                        Setter injection allows flexibility but introduces potential null pointer issues.
 
-                        It also allows you to change the dependency at runtime.
+                        The object can exist in an incomplete state if the setter is never called.
+
+                        Use this when you genuinely need runtime reconfiguration or optional dependencies.
 
                     </textarea>
                 </section>
 
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> Interface injection
+                        ## <i class="fa-solid fa-diagram-project"></i> Framework-based injection
+
+                        **With frameworks** (e.g., Jakarta CDI, Spring), you declare dependencies using annotations:
 
                         ```java
-                        // The Service provides an interface with an injector method.
-                        interface LoggerSetter {
-                            void setLogger(Logger logger);
+                        interface Logger {
+                            void logMessage(String message);
                         }
 
-                        // The Client implements the interface.
-                        class Application implements LoggerSetter {
-
-                            private Logger logger;
-
-                            // The dependency is injected via the setter.
-                            public void setLogger(Logger logger) {
-                                this.logger = logger;
-                            }
-                        }
-                        
-                        // An injector injects the dependency to the client.
-                        class Injector {
-                            public void injectLogger(LoggerSetter client) {
-                                client.setLogger(new ConsoleLogger());
-                            }
-                        }
-                        ```
-
-                        Notes:
-                        Here, the injection mechanism is defined by the service, implemented by the client and used by the injector.
-                        
-                        The injector is a low-level module typically implemented by a framework.
-
-                        This approach, which is rarely used in practice, further decouples the client and the service by introducing an interface between them.
-
-                    </textarea>
-                </section>
-
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
-                    <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> Interface injection in the real world
-
-                        ```java
-                        // The Application corresponds to the client.
                         class Application {
-
-                            // The annotation acts as an interface and makes the injector aware of the dependency.
+                            // The framework will inject the dependency automatically
                             @Inject
                             private Logger logger;
 
+                            public void performOperation() {
+                                logger.logMessage("Performing an operation");
+                            }
+                        }
+
+                        // Implementation is also registered with the framework
+                        @ApplicationScoped
+                        class ConsoleLogger implements Logger {
+                            public void logMessage(String message) {
+                                System.out.println("Log: " + message);
+                            }
                         }
                         ```
 
                         Notes:
 
-                        Here, the @Inject annotation acts as an interface and makes the injector aware of the dependency.
+                        The framework (called an **IoC container**) manages the lifecycle of objects and their dependencies.
 
-                        The injector is a low-level module typically implemented by a framework and the developer does not have to implement it.
+                        At runtime, the framework:
+                        1. Scans for classes with annotations like @Inject
+                        2. Creates instances of dependencies
+                        3. Injects them into the client (typically using reflection)
 
-                        In general, reflection is used to inject the dependencies.
+                        This is called **interface injection** because the annotation acts as an interface to communicate with the framework.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Choosing the right injection approach
+
+                        | Approach | Best for | Advantages | Drawbacks |
+                        |----------|----------|------------|-----------|
+                        | **Constructor** | Required dependencies | Immutable, always valid state | Can't reconfigure |
+                        | **Setter** | Optional dependencies | Flexible, reconfigurable | Nullable, incomplete state |
+                        | **Framework** | Enterprise apps | Automatic, manages lifecycle | Framework dependency |
+
+                        **General recommendations:**
+                        1. **Prefer constructor injection** for most dependencies
+                        2. Use **setter injection** only for truly optional dependencies
+                        3. Use **framework injection** in Jakarta EE / Quarkus applications
+
+                        Notes:
+
+                        Constructor injection is the safest choice because it guarantees that the object is always in a valid state.
+
+                        Setter injection should be used sparingly, only when you genuinely need optional dependencies or runtime reconfiguration.
+
+                        Framework-based injection is powerful but ties your code to a specific framework (though the annotations are standardized in Jakarta EE).
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Multiple Implementations: Using @Named
+
+                        **Problem**: How do you inject a specific implementation when multiple classes implement the same interface?
+
+                        **Solution**: Use `@Named` with string identifiers
+
+                        ```java
+                        interface Logger { void logMessage(String message); }
+
+                        // Give each implementation a unique name
+                        @Named("console")
+                        @ApplicationScoped
+                        class ConsoleLogger implements Logger {
+                            public void logMessage(String msg) { System.out.println("Log: " + msg); }
+                        }
+
+                        @Named("file")
+                        @ApplicationScoped
+                        class FileLogger implements Logger {
+                            public void logMessage(String msg) { /* write to file */ }
+                        }
+
+                        // Specify which implementation to inject
+                        class Application {
+                            @Inject @Named("console") Logger consoleLogger;
+                            @Inject @Named("file") Logger fileLogger;
+                        }
+                        ```
+
+                        **Pros**: Simple, quick to implement
+                        
+                        **Cons**: String typos only caught at runtime, no IDE autocomplete
+
+                        Notes:
+
+                        `@Named` is part of Jakarta Dependency Injection and works in all CDI containers.
+
+                        The framework matches the string in `@Named` on the implementation with the string on the injection point.
+
+                        This is the easiest approach for simple cases, but for larger codebases, custom qualifier annotations are preferred.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.55em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Multiple Implementations: Custom Qualifiers
+
+                        **Alternative**: Create type-safe custom qualifier annotations
+
+                        ```java
+                        // Step 1: Define custom qualifier annotations
+                        @Qualifier
+                        @Retention(RUNTIME)
+                        @Target({TYPE, METHOD, FIELD, PARAMETER})
+                        public @interface Console {}
+
+                        @Qualifier
+                        @Retention(RUNTIME)
+                        @Target({TYPE, METHOD, FIELD, PARAMETER})
+                        public @interface File {}
+
+                        // Step 2: Annotate implementations with custom qualifiers
+                        @Console
+                        @ApplicationScoped
+                        class ConsoleLogger implements Logger {
+                            public void logMessage(String msg) { System.out.println("Log: " + msg); }
+                        }
+
+                        @File
+                        @ApplicationScoped
+                        class FileLogger implements Logger {
+                            public void logMessage(String msg) { /* write to file */ }
+                        }
+
+                        // Step 3: Use qualifiers for type-safe injection
+                        class Application {
+                            @Inject @Console Logger consoleLogger;  // Compile-time safe!
+                            @Inject @File Logger fileLogger;
+                        }
+                        ```
+
+                        **Pros**: Compile-time checking, IDE autocomplete, refactoring support
+
+                        **Cons**: More verbose, requires creating annotation classes
+
+                        Notes:
+
+                        Custom qualifiers provide compile-time type safety that `@Named` cannot offer.
+
+                        If you rename a qualifier annotation, the IDE will refactor all usages automatically.
+
+                        The `@Qualifier` annotation marks your custom annotation as a CDI qualifier.
+
+                        **Recommendation**: Use `@Named` for quick prototypes, custom qualifiers for production code.
 
                     </textarea>
                 </section>
@@ -378,7 +548,31 @@
                         However, the scope of the term IoC is much broader than dependency injection, as the flow of the program is not limited to dependency instantiation and injection.
 
                         For instance, some MVC frameworks use IoC at the level of the HTTP router. They control the flow of the program based on the url and routing conventions.
-                        
+
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> How DIP, DI, and IoC Relate
+
+                        These are three distinct but related concepts:
+
+                        **DIP (Dependency Inversion Principle)**
+                        - A design **principle**: "depend on abstractions, not concretions"
+                        - **What** you should do to create flexible code
+
+                        **DI (Dependency Injection)**
+                        - A design **technique**: passing dependencies from outside
+                        - **How** you implement DIP (constructor, setter, or framework-based)
+
+                        **IoC (Inversion of Control)**
+                        - A broader **architectural pattern**: framework controls the flow
+                        - **Who** is in control (framework vs your code)
+                        - DI with frameworks is one form of IoC
+
+                        Notes:
+                        Think of it this way: DIP tells you to depend on abstractions, DI is the technique to provide those abstractions from outside, and IoC containers are frameworks that automate DI for you.
+
                     </textarea>
                 </section>
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
