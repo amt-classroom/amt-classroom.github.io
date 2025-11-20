@@ -527,27 +527,94 @@
                 <section data-background="#333333">
                     <h2><i class="fa-solid fa-diagram-project"></i> IoC</h2>
                 </section>
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-diagram-project"></i> Inversion of control (IoC)
-                        
-                        **Inversion of control (IoC)** is a design principle that states that the control of the flow of a program is inverted.
 
-                        - In a traditional program, the flow of the program is **controlled by the program** itself.
+                        **Inversion of Control (IoC)** is a design principle where the framework calls your code, instead of your code calling the framework.
 
-                        - In an IoC program, the flow of the program is **controlled by a framework**.
+                        **Traditional control flow** (you call the library):
+                        ```java
+                        public static void main(String[] args) {
+                            Logger logger = new ConsoleLogger();      // You create objects
+                            Application app = new Application(logger); // You control construction
+                            app.performOperation();                    // You call methods
+                        }
+                        ```
+
+                        **Inverted control flow** (framework calls you):
+                        ```java
+                        @ApplicationScoped
+                        class Application {
+                            @Inject Logger logger;  // Framework creates and injects
+
+                            @GET @Path("/api/operation")  // Framework calls your method
+                            public void performOperation() { /* your code */ }
+                        }
+                        ```
+
+                        **The "Hollywood Principle"**: *"Don't call us, we'll call you"*
 
                         Notes:
 
-                        **Constructor and setter injection** do not necessarily imply IoC.
+                        IoC is broader than just dependency injection. Examples of IoC include:
+                        - **Dependency Management**: Framework creates and injects dependencies (CDI, Spring)
+                        - **Request Routing**: Framework calls your handlers based on URLs (JAX-RS, Servlets)
+                        - **Lifecycle Management**: Framework controls when objects are created/destroyed
+                        - **Event Handling**: Framework calls your listeners when events occur
 
-                        **Interface injection** is a form of IoC among others.
+                        The key insight: You give up control to the framework, which provides infrastructure services.
 
-                        In the java world, the term IoC is often used to refer to **interface injection**.
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> IoC Container Lifecycle
 
-                        However, the scope of the term IoC is much broader than dependency injection, as the flow of the program is not limited to dependency instantiation and injection.
+                        An **IoC Container** manages the complete lifecycle of your objects:
 
-                        For instance, some MVC frameworks use IoC at the level of the HTTP router. They control the flow of the program based on the url and routing conventions.
+                        ```java
+                        // 1. Application Startup - Container scans for beans
+                        @ApplicationScoped
+                        class EmailService { /* ... */ }
+
+                        @ApplicationScoped
+                        class UserService {
+                            @Inject EmailService emailService;  // Container will inject this
+                        }
+
+                        // 2. Container creates a dependency graph
+                        // EmailService has no dependencies → create it first
+                        // UserService depends on EmailService → inject EmailService → create UserService
+
+                        // 3. Container manages scopes and lifecycle
+                        @RequestScoped      // New instance per HTTP request
+                        @SessionScoped      // One instance per user session
+                        @ApplicationScoped  // Single instance for entire application
+
+                        // 4. Your code uses the beans - framework calls you
+                        @Path("/users")
+                        class UserResource {
+                            @Inject UserService userService;  // Container provides this
+
+                            @POST
+                            public void createUser(User user) {  // Framework calls this method
+                                userService.save(user);
+                            }
+                        }
+
+                        // 5. Application Shutdown - Container destroys beans in correct order
+                        ```
+
+                        Notes:
+
+                        The IoC container provides:
+                        - **Automatic dependency resolution**: Analyzes @Inject and creates dependency graph
+                        - **Scope management**: Controls when objects are created and destroyed
+                        - **Lifecycle hooks**: @PostConstruct, @PreDestroy for initialization/cleanup
+                        - **Thread safety**: Manages concurrent access to shared beans
+
+                        This is much more than just "dependency injection" - it's infrastructure management.
 
                     </textarea>
                 </section>
@@ -575,42 +642,77 @@
 
                     </textarea>
                 </section>
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-hand-paper"></i> Jakarta, IoC and DIP
+                        ## <i class="fa-solid fa-diagram-project"></i> Jakarta CDI Ecosystem
 
-                        The main specification is Jakarta Contexts and Dependency Injection (CDI).
-                        
-                        https://jakarta.ee/specifications/cdi/4.0/jakarta-cdi-spec-4.0 
+                        **Jakarta EE** provides standardized specifications for enterprise Java:
 
-                        However the annotations, such as `jakarta.inject.Inject` or `jakarta.inject.Qualifier`, are defined by Jakarta Dependency Injection.
-                        
-                        https://jakarta.ee/specifications/dependency-injection/2.0/
+                        **Jakarta Dependency Injection** (JSR-330)
+                        - Defines basic annotations: `@Inject`, `@Qualifier`, `@Named`, `@Singleton`
+                        - Specification: https://jakarta.ee/specifications/dependency-injection/2.0/
 
-                        In Quarkus, the dependency injection is provided by Quarkus ArC.
+                        **Jakarta Contexts and Dependency Injection (CDI)**
+                        - Extends Dependency Injection with more features: scopes, events, interceptors
+                        - Adds: `@ApplicationScoped`, `@RequestScoped`, `@PostConstruct`, etc.
+                        - Specification: https://jakarta.ee/specifications/cdi/4.0/jakarta-cdi-spec-4.0
 
-                        * https://quarkus.io/blog/quarkus-dependency-injection/
-                        * https://quarkus.io/guides/cdi
-                        * https://quarkus.io/guides/cdi-reference
+                        **Implementations:**
+                        - **Weld**: Reference implementation (full Jakarta EE)
+                        - **Quarkus ArC**: Optimized implementation for Quarkus (build-time DI)
 
-                        Browse the above references and identify why RedHat, which is the main developer of Quarkus and
-                        the reference implementation of Jakarta CDI (i.e, [Weld](http://weld.cdi-spec.org/)), decided
-                        to develop Quarkus ArC.
-                        
+                        **Why Quarkus ArC instead of Weld?**
+                        - Look at the Quarkus documentation and discuss with other students.
+
+
+                        Notes:
+
+                        The Jakarta ecosystem separates concerns:
+                        - **Dependency Injection** defines the minimal DI API (like an interface)
+                        - **CDI** extends it with enterprise features (like a rich implementation)
+
+                        Quarkus ArC is a compile-time CDI implementation that trades some runtime flexibility for better performance. It's perfect for microservices where fast startup matters.
+
+                        **Additional resources:**
+                        - [Quarkus DI Blog](https://quarkus.io/blog/quarkus-dependency-injection/)
+                        - [Quarkus CDI Guide](https://quarkus.io/guides/cdi)
+
+
                     </textarea>
                 </section>
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-hand-paper"></i> Example
+                        ## <i class="fa-solid fa-hand-paper"></i> Practical Example & Discussion
 
-                        Let's consider a more complete example!
+                        **Complete example**: https://github.com/amt-classroom/example-dipdiioc
 
-                        https://github.com/amt-classroom/example-dipdiioc
+                        **Discussion questions:**
 
-                        Are we making simple things overly complex?
+                        **1. Complexity vs Benefits**
+                        - Are we making simple things overly complex?
+                        - When is manual DI sufficient? When do you need an IoC container?
 
-                        Discuss the pros and cons of DIP, DI and IoC.
-                        
+                        **2. Testability**
+                        - How does DIP make unit testing easier?
+                        - Compare testing with and without dependency injection
+
+                        **3. Trade-offs**
+                        - **Pros**: Loose coupling, testability, flexibility, standardization
+                        - **Cons**: Learning curve, runtime overhead, debugging complexity, magic behavior
+
+                        **4. Real-world scenarios**
+                        - When would you avoid using DI frameworks?
+                        - What problems do CDI scopes (`@RequestScoped`, `@ApplicationScoped`) solve?
+
+                        Notes:
+
+                        Good discussions points:
+                        - Small applications might not need IoC containers - manual DI is fine
+                        - Large applications benefit greatly from standardized DI (easier onboarding)
+                        - Test frameworks can mock dependencies easily when using DI
+                        - Understanding the "magic" requires learning the framework
+                        - Debugging can be harder when you don't control object creation
+
                     </textarea>
                 </section>
 
