@@ -29,12 +29,12 @@
             <!-- Title and outline -->
             <section data-background="#333333">
                 <h2>AMT</h2>
-                <h1><i class="fa-solid fa-music"></i> DIP, DI, IOC</i></h1>
-                <p>Bertil Chapuis</p>      
+                <h1><i class="fa-solid fa-plug"></i> DIP, DI, IOC</i></h1>
+                <p>Bertil Chapuis</p>
             </section>
             <section data-markdown>
                 <textarea data-template>
-                    ## <i class="fas fa-tasks"></i> Overview of Today's Class
+                    ## <i class="fas fa-list-check"></i> Overview of Today's Class
                     - Dependency inversion principle (DIP)
                     - Dependency injection (DI)
                     - Inversion of control (IoC)
@@ -44,11 +44,11 @@
             <!-- Dependency inversion principle (DIP) -->
             <section>
                 <section data-background="#333333">
-                    <h2><i class="fa-solid fa-diagram-project"></i> DIP</h2>
+                    <h2><i class="fa-solid fa-link"></i> DIP</h2>
                 </section>
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> SOLID
+                        ## <i class="fa-solid fa-link"></i> SOLID
 
                         The **SOLID** principles are a set of principles that help us design better software. They are:
                         - **S**ingle responsibility principle (SRP)
@@ -75,7 +75,7 @@
                 </section>
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> Dependency inversion principle (DIP)
+                        ## <i class="fa-solid fa-link"></i> Dependency inversion principle (DIP)
                         
                         The **Dependency Inversion Principle (DIP)** states that:
 
@@ -95,7 +95,7 @@
 
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> Why DIP Matters
+                        ## <i class="fa-solid fa-lightbulb"></i> Why DIP Matters
 
                         **Without DIP:**
                         - High-level modules are tightly coupled to specific implementations
@@ -117,7 +117,7 @@
 
                 <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> Dependence between modules
+                        ## <i class="fa-solid fa-link"></i> Dependence between modules
                         
                         The following application has a **high-level module** that depends directly on a **low-level module**.
 
@@ -165,7 +165,7 @@
 
                 <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> Applying the DIP
+                        ## <i class="fa-solid fa-link"></i> Applying the DIP
                         
                         The following application has a **high-level module** that depends on an **abstraction**.
 
@@ -227,7 +227,7 @@
 
                 <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-hand-paper"></i> Exercise
+                        ## <i class="fa-solid fa-graduation-cap"></i> Exercise
 
                         Try to identify how the DIP approach is applied by the `java.sql` package (JDBC).
 
@@ -243,11 +243,11 @@
             <!-- Dependency injection (DI) -->
             <section>
                 <section data-background="#333333">
-                    <h2><i class="fa-solid fa-diagram-project"></i> DI</h2>
+                    <h2><i class="fa-solid fa-syringe"></i> DI</h2>
                 </section>
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> Dependency injection (DI)
+                        ## <i class="fa-solid fa-syringe"></i> Dependency injection (DI)
 
                         **Dependency Injection (DI)** is the technique of supplying dependencies to a module from the outside, rather than having the module create them itself.
 
@@ -272,7 +272,7 @@
 
                 <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> Constructor injection
+                        ## <i class="fa-solid fa-wrench"></i> Constructor injection
 
                         ```java
                         class Application {
@@ -310,7 +310,7 @@
 
                 <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> Setter injection
+                        ## <i class="fa-solid fa-sliders"></i> Setter injection
 
                         ```java
                         class Application {
@@ -351,7 +351,7 @@
 
                 <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> Framework-based injection
+                        ## <i class="fa-solid fa-gears"></i> Framework-based injection
 
                         **With frameworks** (e.g., Jakarta CDI, Spring), you declare dependencies using annotations:
 
@@ -395,7 +395,7 @@
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> Choosing the right injection approach
+                        ## <i class="fa-solid fa-scale-balanced"></i> Choosing the right injection approach
 
                         | Approach | Best for | Advantages | Drawbacks |
                         |----------|----------|------------|-----------|
@@ -421,7 +421,7 @@
 
                 <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> Multiple Implementations: Using @Named
+                        ## <i class="fa-solid fa-layer-group"></i> Multiple Implementations: Using @Named
 
                         **Problem**: How do you inject a specific implementation when multiple classes implement the same interface?
 
@@ -467,7 +467,7 @@
 
                 <section data-markdown style="font-size: 0.55em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> Multiple Implementations: Custom Qualifiers
+                        ## <i class="fa-solid fa-layer-group"></i> Multiple Implementations: Custom Qualifiers
 
                         **Alternative**: Create type-safe custom qualifier annotations
 
@@ -525,11 +525,11 @@
             <!-- Inversion of control (IoC) -->
             <section>
                 <section data-background="#333333">
-                    <h2><i class="fa-solid fa-diagram-project"></i> IoC</h2>
+                    <h2><i class="fa-solid fa-rotate"></i> IoC</h2>
                 </section>
                 <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> Inversion of control (IoC)
+                        ## <i class="fa-solid fa-rotate"></i> Inversion of control (IoC)
 
                         **Inversion of Control (IoC)** is a design principle where the framework calls your code, instead of your code calling the framework.
 
@@ -569,7 +569,7 @@
                 </section>
                 <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> IoC Container Lifecycle
+                        ## <i class="fa-solid fa-circle-nodes"></i> IoC Container Lifecycle
 
                         An **IoC Container** manages the complete lifecycle of your objects:
 
@@ -620,7 +620,7 @@
                 </section>
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> How DIP, DI, and IoC Relate
+                        ## <i class="fa-solid fa-sitemap"></i> How DIP, DI, and IoC Relate
 
                         These are three distinct but related concepts:
 
@@ -644,7 +644,7 @@
                 </section>
                 <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-diagram-project"></i> Jakarta CDI Ecosystem
+                        ## <i class="fa-solid fa-cube"></i> Jakarta CDI Ecosystem
 
                         **Jakarta EE** provides standardized specifications for enterprise Java:
 
@@ -682,7 +682,7 @@
                 </section>
                 <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-hand-paper"></i> Practical Example & Discussion
+                        ## <i class="fa-solid fa-comments"></i> Practical Example & Discussion
 
                         **Complete example**: https://github.com/amt-classroom/example-dipdiioc
 
@@ -719,7 +719,7 @@
             </section>
 
             <section>
-                <h2><i class="fas fa-hand-paper"></i> Questions?</h2>
+                <h2><i class="fas fa-circle-question"></i> Questions?</h2>
             </section>
 
         </div>
