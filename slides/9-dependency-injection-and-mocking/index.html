@@ -35,10 +35,10 @@
             </section>
             <section data-markdown>
                 <textarea data-template>
-                    ## <i class="fas fa-tasks"></i> Overview of Today's Class
-                    - Quizz
-                    - Dependency injection with Jakarta CDI
-                    - Mocking 
+                    ## <i class="fas fa-list-check"></i> Overview of Today's Class
+                    - Dependency Injection with Jakarta CDI
+                    - Testing with Stubs and Mocks
+                    - Testing CDI Applications
 
                 </textarea>
             </section>
@@ -83,7 +83,7 @@
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-diagram-project"></i> Core concepts of Jakarta CDI
-            
+
                         Last week, we examined a toy runtime supporting the @Inject annotation.
 
                         Jakarta CDI is a more complex specification that introduces the following concepts:
@@ -96,6 +96,43 @@
                         - Decorators
                         - Events and Observers
                         - Etc.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-syringe"></i> Injection with @Inject
+
+                        The `@Inject` annotation marks where dependencies should be injected. Three approaches are available:
+
+                        ```java
+                        @ApplicationScoped
+                        public class GreetingService {
+
+                            // Field injection - simple but harder to test
+                            @Inject
+                            HelloService helloService;
+
+                            // Constructor injection - preferred, explicit dependencies
+                            private final GoodbyeService goodbyeService;
+
+                            @Inject
+                            public GreetingService(GoodbyeService goodbyeService) {
+                                this.goodbyeService = goodbyeService;
+                            }
+
+                            // Method injection - useful for optional dependencies
+                            private LogService logService;
+
+                            @Inject
+                            public void setLogService(LogService logService) {
+                                this.logService = logService;
+                            }
+                        }
+                        ```
+
+                        **Recommendation**: Prefer constructor injection for required dependencies (immutable, testable).
 
                     </textarea>
                 </section>
@@ -125,7 +162,7 @@
 
                 <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-thumbs-up"></i> Scopes
+                        ## <i class="fa-solid fa-clock"></i> Scopes
 
                         A **scope** defines the lifecycle of a **managed instance**.
 
@@ -145,7 +182,7 @@
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-thumbs-up"></i> Scopes
+                        ## <i class="fa-solid fa-clock"></i> Scopes
 
                         The following code snippet illustrates the use of the @ApplicationScoped scope.
 
@@ -164,9 +201,31 @@
                     </textarea>
                 </section>
 
+                <section data-markdown style="font-size: 0.55em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-clock"></i> Choosing the Right Scope
+
+                        | Scope | Lifecycle | Proxy | Use Case |
+                        |-------|-----------|-------|----------|
+                        | `@ApplicationScoped` | One per app | Yes | Services, configurations, caches |
+                        | `@SessionScoped` | One per HTTP session | Yes | User preferences, shopping cart |
+                        | `@RequestScoped` | One per HTTP request | Yes | Request-specific data, transactions |
+                        | `@Dependent` | One per injection point | No | Stateless helpers, default scope |
+                        | `@Singleton` | One per app (eager) | No | App-wide state, no proxy overhead |
+
+                        **Decision guide:**
+                        - Need shared state across requests? → `@ApplicationScoped`
+                        - User-specific data? → `@SessionScoped`
+                        - Request-specific isolation? → `@RequestScoped`
+                        - No shared state needed? → `@Dependent`
+                        - Need eager initialization or direct reference? → `@Singleton`
+
+                    </textarea>
+                </section>
+
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-thumbs-up"></i> Producers and Qualifiers
+                        ## <i class="fa-solid fa-industry"></i> Producers and Qualifiers
 
                         The `@Produces` annotation can be used to define a **producer**.
                         - It can be used on a method or a field.
@@ -183,7 +242,7 @@
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-thumbs-up"></i> Producers and Qualifiers
+                        ## <i class="fa-solid fa-industry"></i> Producers and Qualifiers
 
                         The following code snippet illustrates the use of a producer with a qualifier.
 
@@ -217,7 +276,7 @@
 
                 <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-thumbs-up"></i> Producers and Qualifiers
+                        ## <i class="fa-solid fa-industry"></i> Producers and Qualifiers
 
                         The developer can define custom qualifiers by using the `@Qualifier` annotation.
 
@@ -253,11 +312,48 @@
                     </textarea>
                 </section>
 
+                <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-magnifying-glass"></i> Programmatic Lookup with Instance
 
+                        Sometimes you need to resolve dependencies **dynamically** at runtime. The `Instance<T>` interface provides programmatic lookup:
+
+                        ```java
+                        @ApplicationScoped
+                        public class PaymentProcessor {
+
+                            @Inject
+                            Instance&lt;PaymentGateway&gt; gateways;  // All implementations
+
+                            @Inject
+                            @CreditCard
+                            Instance&lt;PaymentGateway&gt; creditCardGateway;  // Specific one
+
+                            public void process(Payment payment) {
+                                // Iterate over all available implementations
+                                for (PaymentGateway gateway : gateways) {
+                                    if (gateway.supports(payment)) {
+                                        gateway.process(payment);
+                                        return;
+                                    }
+                                }
+
+                                // Or get a specific instance
+                                if (creditCardGateway.isResolvable()) {
+                                    creditCardGateway.get().process(payment);
+                                }
+                            }
+                        }
+                        ```
+
+                        Useful for: plugin systems, strategy patterns, optional dependencies.
+
+                    </textarea>
+                </section>
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-thumbs-up"></i> Lifecycle
+                        ## <i class="fa-solid fa-heart-pulse"></i> Lifecycle
 
                         The lifecycle of a managed instance is defined by the [Contextual](https://jakarta.ee/specifications/cdi/4.0/jakarta-cdi-spec-4.0.html#contextual) interface.
 
@@ -272,7 +368,7 @@
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-thumbs-up"></i> Lifecycle
+                        ## <i class="fa-solid fa-heart-pulse"></i> Lifecycle
 
                         The following code snippet illustrates the use of lifecycle annotations.
 
@@ -298,7 +394,7 @@
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-thumbs-up"></i> Interceptors
+                        ## <i class="fa-solid fa-filter"></i> Interceptors
 
                         An **interceptor** is a class that can intercept the execution of a method.
 
@@ -317,7 +413,7 @@
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-thumbs-up"></i> Interceptors
+                        ## <i class="fa-solid fa-filter"></i> Interceptors
 
                         The following code snippet illustrates the use of interceptors to create a binding and use it to intercept the execution of a method.
 
@@ -354,7 +450,7 @@
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-thumbs-up"></i> Decorators
+                        ## <i class="fa-solid fa-gift"></i> Decorators
 
                         A **decorator** is a class that can decorate the behavior of a managed instance.
                         
@@ -372,7 +468,7 @@
 
                 <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-thumbs-up"></i> Decorators
+                        ## <i class="fa-solid fa-gift"></i> Decorators
 
                         The following code snippet illustrates the use of decorators.
 
@@ -415,7 +511,7 @@
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-thumbs-up"></i> Events and Observers
+                        ## <i class="fa-solid fa-bell"></i> Events and Observers
 
                         The **event** mechanism allows managed instances to communicate with each other without coupling them.
                         - The Event class can be used to define and fire events.
@@ -426,7 +522,7 @@
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-thumbs-up"></i> Events and Observers
+                        ## <i class="fa-solid fa-bell"></i> Events and Observers
 
                         The following code snippet illustrates the use of events and observers.
 
@@ -453,11 +549,77 @@
 
                     </textarea>
                 </section>
+
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-bell"></i> Advanced Events
+
+                        **Async events** allow non-blocking event processing:
+
+                        ```java
+                        @ApplicationScoped
+                        public class OrderService {
+                            @Inject
+                            Event&lt;OrderPlaced&gt; orderEvent;
+
+                            public void placeOrder(Order order) {
+                                // Fire asynchronously - returns immediately
+                                orderEvent.fireAsync(new OrderPlaced(order))
+                                    .thenAccept(event -> log.info("Order processed"));
+                            }
+                        }
+
+                        @ApplicationScoped
+                        public class EmailNotifier {
+                            public void onOrderPlaced(@ObservesAsync OrderPlaced event) {
+                                // Executed in a separate thread
+                                sendEmail(event.getOrder().getCustomerEmail());
+                            }
+                        }
+                        ```
+
+                        **Event qualifiers** allow selective observation:
+
+                        ```java
+                        @Inject @Priority(HIGH) Event&lt;Alert&gt; highPriorityAlert;
+
+                        public void onHighAlert(@Observes @Priority(HIGH) Alert alert) { ... }
+                        ```
+
+                    </textarea>
+                </section>
             </section>
 
             <section>
                 <section data-background="#333333">
                     <h2><i class="fa-solid fa-vial-circle-check"></i> Testing with Stubs and Mocks</h2>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-link"></i> Why DI Enables Better Testing
+
+                        Dependency Injection makes code **testable by design**:
+
+                        **Without DI** (hard to test):
+                        ```java
+                        public class OrderService {
+                            private EmailService email = new EmailService(); // Tight coupling
+                            private PaymentGateway payment = new StripeGateway(); // Real API!
+                        }
+                        ```
+
+                        **With DI** (easy to test):
+                        ```java
+                        public class OrderService {
+                            @Inject EmailService email;      // Can inject mock
+                            @Inject PaymentGateway payment;  // Can inject fake
+                        }
+                        ```
+
+                        DI allows you to **swap real dependencies with test doubles** (stubs, mocks, fakes) without changing the class under test.
+
+                    </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
@@ -473,7 +635,31 @@
                           - **Arrange**: Set up the necessary objects and state.
                           - **Act**: Invoke the method or functionality to be tested.
                           - **Assert**: Verify the outcome matches the expectations.
-                
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-scale-balanced"></i> Stub vs Mock: When to Use Which?
+
+                        | Aspect | Stub | Mock |
+                        |--------|------|------|
+                        | **Purpose** | Provide canned answers | Verify interactions |
+                        | **Focus** | State/behavior of class under test | Communication with dependencies |
+                        | **Assertion** | On return values | On method calls |
+                        | **Complexity** | Simpler | More complex |
+
+                        **Use a Stub when:**
+                        - You need controlled return values from dependencies
+                        - Testing the **output** or **state** of the class under test
+                        - The dependency is a data source (repository, API client)
+
+                        **Use a Mock when:**
+                        - You need to verify a method was called (and how)
+                        - Testing **side effects** (emails sent, logs written)
+                        - The dependency performs actions but doesn't return meaningful data
+
                     </textarea>
                 </section>
 
@@ -576,12 +762,271 @@
 
                 <section data-markdown style="font-size: 1em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-hand-paper"></i> Mockito
+                        ## <i class="fa-solid fa-wand-magic-sparkles"></i> Mockito
 
                         Mockito is a popular mocking framework for Java that simplifies the creation of mocks and the verification of interactions.
 
                         Checkout the [Mockito documentation](https://site.mockito.org/), the [Baeldung Mockito Series](https://www.baeldung.com/mockito-series), and the [Mockito example](https://github.com/amt-classroom/example-mockito) for more information.
-                  
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-at"></i> Mockito Annotations
+
+                        Using annotations makes tests cleaner and more readable:
+
+                        ```java
+                        @ExtendWith(MockitoExtension.class) // JUnit 5 integration
+                        class OrderServiceTest {
+
+                            @Mock // Creates a mock
+                            private PaymentGateway paymentGateway;
+
+                            @Mock
+                            private EmailService emailService;
+
+                            @InjectMocks // Creates instance and injects mocks
+                            private OrderService orderService;
+
+                            @Captor // Captures arguments for inspection
+                            private ArgumentCaptor&lt;Email&gt; emailCaptor;
+
+                            @Test
+                            void shouldSendConfirmationEmail() {
+                                orderService.processOrder(new Order("item", 100));
+
+                                verify(emailService).send(emailCaptor.capture());
+                                assertEquals("Order Confirmation", emailCaptor.getValue().getSubject());
+                            }
+                        }
+                        ```
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-asterisk"></i> Argument Matchers
+
+                        When you don't care about exact argument values, use **matchers**:
+
+                        ```java
+                        // Match any value of a type
+                        when(repository.findById(anyLong())).thenReturn(Optional.of(user));
+                        when(service.process(anyString(), anyInt())).thenReturn(result);
+
+                        // Match specific conditions
+                        when(validator.validate(argThat(user -> user.getAge() >= 18)))
+                            .thenReturn(true);
+
+                        // Match null or non-null
+                        when(service.save(isNull())).thenThrow(new IllegalArgumentException());
+                        when(service.save(notNull())).thenReturn(saved);
+
+                        // Combine with eq() for exact matches
+                        when(service.find(eq("admin"), anyInt())).thenReturn(admin);
+                        ```
+
+                        **Important**: If you use a matcher for one argument, you must use matchers for **all** arguments:
+                        ```java
+                        // WRONG: when(service.find("admin", anyInt()))
+                        // RIGHT: when(service.find(eq("admin"), anyInt()))
+                        ```
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-user-secret"></i> Spies: Partial Mocking
+
+                        A **spy** wraps a real object, allowing you to stub specific methods while keeping others:
+
+                        ```java
+                        @Spy
+                        private List&lt;String&gt; spyList = new ArrayList&lt;&gt;();
+
+                        @Test
+                        void spyExample() {
+                            // Real method is called
+                            spyList.add("one");
+                            spyList.add("two");
+                            assertEquals(2, spyList.size());  // Real size
+
+                            // Stub specific method
+                            doReturn(100).when(spyList).size();
+                            assertEquals(100, spyList.size());  // Stubbed!
+
+                            // Real list still has 2 elements
+                            assertEquals("one", spyList.get(0));
+                        }
+                        ```
+
+                        **When to use spies:**
+                        - Testing legacy code that can't be easily refactored
+                        - When you need most of the real behavior but want to override one method
+                        - **Avoid when possible** - prefer full mocks with proper DI
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-check-double"></i> Verification Options
+
+                        Mockito provides flexible verification of method calls:
+
+                        ```java
+                        // Verify exact number of calls
+                        verify(emailService, times(3)).send(any());
+                        verify(emailService, times(1)).send(any());  // same as verify(...)
+
+                        // Verify never called
+                        verify(paymentGateway, never()).refund(any());
+
+                        // Verify at least / at most
+                        verify(logger, atLeastOnce()).log(any());
+                        verify(logger, atLeast(2)).log(any());
+                        verify(logger, atMost(5)).log(any());
+
+                        // Verify call order
+                        InOrder inOrder = inOrder(validator, repository, emailService);
+                        inOrder.verify(validator).validate(any());
+                        inOrder.verify(repository).save(any());
+                        inOrder.verify(emailService).send(any());
+
+                        // Verify no more interactions
+                        verifyNoMoreInteractions(emailService);
+                        ```
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-bomb"></i> Stubbing Exceptions
+
+                        Test error handling by making mocks throw exceptions:
+
+                        ```java
+                        @Test
+                        void shouldHandlePaymentFailure() {
+                            // Stub to throw exception
+                            when(paymentGateway.charge(any()))
+                                .thenThrow(new PaymentException("Card declined"));
+
+                            // Verify exception is handled correctly
+                            assertThrows(OrderException.class,
+                                () -> orderService.processOrder(order));
+
+                            // Verify rollback was called
+                            verify(repository).rollback(order);
+                        }
+
+                        @Test
+                        void shouldRetryOnTimeout() {
+                            // First call fails, second succeeds
+                            when(apiClient.fetch(any()))
+                                .thenThrow(new TimeoutException())
+                                .thenReturn(response);
+
+                            Result result = service.fetchWithRetry();
+
+                            assertEquals(response, result);
+                            verify(apiClient, times(2)).fetch(any());
+                        }
+                        ```
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-triangle-exclamation"></i> Mocking Best Practices
+
+                        **Do:**
+                        - Mock external dependencies (APIs, databases, file systems)
+                        - Keep mocks simple - complex mock setups are a code smell
+                        - Use constructor injection for easier testing
+                        - Verify only meaningful interactions
+
+                        **Don't:**
+                        - Mock value objects or data classes
+                        - Mock the class under test
+                        - Over-verify - not every call needs verification
+                        - Create mocks that return mocks (mock chains)
+
+                        **Warning signs your tests may be too coupled to implementation:**
+                        - Tests break when refactoring without changing behavior
+                        - Mock setup is longer than the actual test
+                        - Testing implementation details instead of outcomes
+
+                        **Alternative**: Consider using **fakes** (simple in-memory implementations) for repositories and external services.
+
+                    </textarea>
+                </section>
+
+            </section>
+
+            <section>
+                <section data-background="#333333">
+                    <h2><i class="fa-solid fa-flask-vial"></i> Testing CDI Applications</h2>
+                </section>
+
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-flask-vial"></i> Testing with @QuarkusTest
+
+                        Quarkus provides seamless integration testing with the CDI container:
+
+                        ```java
+                        @QuarkusTest
+                        class GreetingResourceTest {
+
+                            @Inject
+                            GreetingService greetingService;  // Real CDI bean
+
+                            @InjectMock
+                            ExternalApiClient apiClient;  // Replaced with mock
+
+                            @Test
+                            void shouldGreetUser() {
+                                // Configure mock behavior
+                                when(apiClient.fetchUserName(1L)).thenReturn("Alice");
+
+                                // Test with real CDI wiring + mocked dependency
+                                String greeting = greetingService.greet(1L);
+
+                                assertEquals("Hello, Alice!", greeting);
+                                verify(apiClient).fetchUserName(1L);
+                            }
+                        }
+                        ```
+
+                        `@InjectMock` replaces the real bean with a Mockito mock **in the CDI container**.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-flask-vial"></i> Unit vs Integration Testing
+
+                        | Aspect | Unit Test | @QuarkusTest |
+                        |--------|-----------|--------------|
+                        | **Speed** | Fast (ms) | Slower (seconds) |
+                        | **CDI Container** | No | Yes |
+                        | **Dependencies** | All mocked | Mix of real and mocked |
+                        | **Scope** | Single class | Multiple beans |
+                        | **Use case** | Logic testing | Integration testing |
+
+                        **Recommendation:**
+                        - Write **many unit tests** for business logic (fast feedback)
+                        - Write **fewer integration tests** for critical paths (confidence)
+                        - Use `@QuarkusTest` when you need real CDI behavior (interceptors, events, etc.)
+
                     </textarea>
                 </section>
 
