@@ -104,17 +104,17 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-syringe"></i> Injection with @Inject
 
-                        The `@Inject` annotation marks where dependencies should be injected. Three approaches are available:
+                        The `@Inject` annotation marks where dependencies should be injected. Three approaches exist:
 
                         ```java
                         @ApplicationScoped
                         public class GreetingService {
 
-                            // Field injection - simple but harder to test
+                            // Field injection: simple but harder to test
                             @Inject
                             HelloService helloService;
 
-                            // Constructor injection - preferred, explicit dependencies
+                            // Constructor injection: preferred, explicit dependencies
                             private final GoodbyeService goodbyeService;
 
                             @Inject
@@ -122,7 +122,7 @@
                                 this.goodbyeService = goodbyeService;
                             }
 
-                            // Method injection - useful for optional dependencies
+                            // Method injection: useful for optional dependencies
                             private LogService logService;
 
                             @Inject
@@ -132,7 +132,7 @@
                         }
                         ```
 
-                        **Recommendation**: Prefer constructor injection for required dependencies (immutable, testable).
+                        Constructor injection is preferred for required dependencies as it makes them immutable and testable.
 
                     </textarea>
                 </section>
@@ -167,15 +167,15 @@
                         A **scope** defines the lifecycle of a **managed instance**.
 
                         The following scopes are defined by the specification:
-                        - `@ApplicationScoped`: One instance is created per application.
-                        - `@SessionScoped`: one instance is created per session.
-                        - `@RequestScoped`: one instance is created per request.
-                        - `@Dependent`: one instance is created per injection point (default scope).
+                        - `@ApplicationScoped`: one instance per application.
+                        - `@SessionScoped`: one instance per session.
+                        - `@RequestScoped`: one instance per request.
+                        - `@Dependent`: one instance per injection point (default scope).
 
-                        Managed instances are usually created **lazily** (i.e. when they are first injected) and destroyed when the scope ends.
-                        In general managed instances are exposed as **proxies** (i.e. the runtime injects a proxy instead of the actual instance).
-                        
-                        - `@Singleton`: similar to @ApplicationScoped, but the instance is created **eagerly** (i.e. when the application starts) and destroyed when the application stops, and the instance is not exposed as a proxy (i.e. the runtime injects the actual instance).
+                        Managed instances are usually created **lazily** (i.e., when they are first injected) and destroyed when the scope ends.
+                        In general, managed instances are exposed as **proxies** (i.e., the runtime injects a proxy instead of the actual instance).
+
+                        - `@Singleton`: similar to `@ApplicationScoped`, but the instance is created **eagerly** (i.e., when the application starts) and is not exposed as a proxy.
 
                     </textarea>
                 </section>
@@ -316,7 +316,7 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-magnifying-glass"></i> Programmatic Lookup with Instance
 
-                        Sometimes you need to resolve dependencies **dynamically** at runtime. The `Instance<T>` interface provides programmatic lookup:
+                        Sometimes dependencies need to be resolved **dynamically** at runtime. The `Instance<T>` interface provides programmatic lookup:
 
                         ```java
                         @ApplicationScoped
@@ -399,14 +399,14 @@
                         An **interceptor** is a class that can intercept the execution of a method.
 
                         The following annotations can be used to define an interceptor:
-                        - `@InterceptorBinding`: the annotation is used to define an interceptor binding.
-                        - `@Interceptor`: the class is an interceptor.
-                        - `@AroundInvoke`: the method is called before and after the execution of a method.
-                        - `@AroundConstruct`: the method is called before and after the instantiation of a managed instance.
+                        - `@InterceptorBinding`: defines an interceptor binding.
+                        - `@Interceptor`: marks the class as an interceptor.
+                        - `@AroundInvoke`: the method is called around the execution of a method.
+                        - `@AroundConstruct`: the method is called around the instantiation of a managed instance.
 
-                        Interceptors can be used to implement cross-cutting concerns such as logging, security, etc.
+                        Interceptors are used to implement cross-cutting concerns such as logging, security, etc.
 
-                        They should not be used to implement business logic.
+                        They should not be used for business logic.
 
                     </textarea>
                 </section>
@@ -455,13 +455,13 @@
                         A **decorator** is a class that can decorate the behavior of a managed instance.
                         
                         The following annotations can be used to define a decorator:
-                        - `@Decorator`: mark a class as a decorator.
-                        - `@Delegate` and `@Inject`: inject the decorated instance in a field.
-                        - `@Priority`: define the priority of the decorator (smaller values have higher priority).
+                        - `@Decorator`: marks a class as a decorator.
+                        - `@Delegate` and `@Inject`: injects the decorated instance into a field.
+                        - `@Priority`: defines the priority of the decorator (smaller values have higher priority).
 
-                        Decorators implement the interface of the decorated instance. As a result, they can be used to add behavior to a managed instance without modifying its code.
+                        Decorators implement the interface of the decorated instance and can add behavior without modifying its code.
 
-                        They can be used to implement business logic.
+                        Unlike interceptors, they can be used for business logic.
 
                     </textarea>
                 </section>
@@ -513,9 +513,9 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-bell"></i> Events and Observers
 
-                        The **event** mechanism allows managed instances to communicate with each other without coupling them.
-                        - The Event class can be used to define and fire events.
-                        - The `@Observes` annotation can be used to define an **observer** method that is called when an event is fired.
+                        The **event** mechanism allows managed instances to communicate without coupling them.
+                        - The `Event` class is used to define and fire events.
+                        - The `@Observes` annotation defines an **observer** method that is called when an event is fired.
 
                     </textarea>
                 </section>
@@ -545,7 +545,7 @@
                         }
                         ```
 
-                        Here, the event can be whatever type, and the observer method can have any name.
+                        The event can be of any type, and the observer method can have any name.
 
                     </textarea>
                 </section>
@@ -554,7 +554,7 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-bell"></i> Advanced Events
 
-                        **Async events** allow non-blocking event processing:
+                        **Asynchronous events** allow non-blocking event processing:
 
                         ```java
                         @ApplicationScoped
@@ -599,7 +599,7 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-link"></i> Why DI Enables Better Testing
 
-                        Dependency Injection makes code **testable by design**:
+                        Dependency Injection makes code **testable by design**.
 
                         **Without DI** (hard to test):
                         ```java
@@ -612,12 +612,12 @@
                         **With DI** (easy to test):
                         ```java
                         public class OrderService {
-                            @Inject EmailService email;      // Can inject mock
-                            @Inject PaymentGateway payment;  // Can inject fake
+                            @Inject EmailService email;      // Can inject a mock
+                            @Inject PaymentGateway payment;  // Can inject a fake
                         }
                         ```
 
-                        DI allows you to **swap real dependencies with test doubles** (stubs, mocks, fakes) without changing the class under test.
+                        DI allows **swapping real dependencies with test doubles** (stubs, mocks, fakes) without changing the class under test.
 
                     </textarea>
                 </section>
@@ -626,15 +626,15 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-book-open"></i> Key Concepts and Definitions
                 
-                        - The **Class Under Test** is the primary class being tested. 
-                        - A **Dependency** is a class that the class under test relies on for its functionality.
-                        - **Unit tests** are written to verify the **behavior** and **interactions** of the class under test with its dependencies.
-                        - A **Stub** is a simplified dependency replacement that returns controlled values for testing the **behavior** of the class under test in isolation.
-                        - A **Mock** is a sophisticated dependency replacement that enables the verification of the **interactions** between the class under test and its dependencies.
-                        - The **AAA Pattern** is a common structure for writing unit tests:
-                          - **Arrange**: Set up the necessary objects and state.
-                          - **Act**: Invoke the method or functionality to be tested.
-                          - **Assert**: Verify the outcome matches the expectations.
+                        - The **class under test** is the primary class being tested.
+                        - A **dependency** is a class that the class under test relies on.
+                        - **Unit tests** verify the **behavior** and **interactions** of the class under test.
+                        - A **stub** is a simplified replacement that returns controlled values for testing the **behavior** of the class under test in isolation.
+                        - A **mock** is a replacement that enables verification of the **interactions** between the class under test and its dependencies.
+                        - The **AAA pattern** is a common structure for unit tests:
+                          - **Arrange**: set up the necessary objects and state.
+                          - **Act**: invoke the method to be tested.
+                          - **Assert**: verify the outcome matches expectations.
 
                     </textarea>
                 </section>
@@ -650,15 +650,15 @@
                         | **Assertion** | On return values | On method calls |
                         | **Complexity** | Simpler | More complex |
 
-                        **Use a Stub when:**
-                        - You need controlled return values from dependencies
-                        - Testing the **output** or **state** of the class under test
-                        - The dependency is a data source (repository, API client)
+                        **Use a stub when:**
+                        - You need controlled return values from dependencies.
+                        - Testing the **output** or **state** of the class under test.
+                        - The dependency is a data source (repository, API client).
 
-                        **Use a Mock when:**
-                        - You need to verify a method was called (and how)
-                        - Testing **side effects** (emails sent, logs written)
-                        - The dependency performs actions but doesn't return meaningful data
+                        **Use a mock when:**
+                        - You need to verify a method was called (and how).
+                        - Testing **side effects** (emails sent, logs written).
+                        - The dependency performs actions but does not return meaningful data.
 
                     </textarea>
                 </section>
@@ -667,12 +667,12 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-vial-circle-check"></i> Stubbing
 
-                        **Stubbing** is a technique used to replace an abstract or concrete dependency with a **stub**.
-                
-                        A **stub** is a simple implementation of a dependency that returns predefined values.
-                
-                        Stubbing is used to isolate the **behavior** of a class under test by controlling its dependencies.
-                
+                        **Stubbing** is a technique used to replace a dependency with a **stub**.
+
+                        A **stub** is a simple implementation that returns predefined values.
+
+                        Stubbing isolates the **behavior** of the class under test by controlling its dependencies.
+
                         When testing, focus on verifying the **behavior of the class**, not the stub.
                   
                     </textarea>
@@ -713,13 +713,13 @@
                     <textarea data-template>
                             ## <i class="fa-solid fa-vial-circle-check"></i> Mocking
     
-                            **Mocking** is a technique used to replace an abstract or concrete dependency with a **mock**.
+                            **Mocking** is a technique used to replace a dependency with a **mock**.
 
-                            A **mock** is a more advanced implementation of a dependency that allows verification of interactions.
-                    
-                            Mocking is used to test the **interactions** between a class and its dependencies, ensuring the class behaves as expected when working with them.
-                    
-                            It focuses on the **class under test** and validate its communication with dependencies through mocks.
+                            A **mock** is an implementation that allows verification of interactions.
+
+                            Mocking tests the **interactions** between a class and its dependencies, ensuring the class behaves as expected.
+
+                            It focuses on the **class under test** and validates its communication with dependencies.
     
                         </textarea>
                 </section>
@@ -766,7 +766,7 @@
 
                         Mockito is a popular mocking framework for Java that simplifies the creation of mocks and the verification of interactions.
 
-                        Checkout the [Mockito documentation](https://site.mockito.org/), the [Baeldung Mockito Series](https://www.baeldung.com/mockito-series), and the [Mockito example](https://github.com/amt-classroom/example-mockito) for more information.
+                        Check out the [Mockito documentation](https://site.mockito.org/), the [Baeldung Mockito Series](https://www.baeldung.com/mockito-series), and the [Mockito example](https://github.com/amt-classroom/example-mockito) for more information.
 
                     </textarea>
                 </section>
@@ -775,7 +775,7 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-at"></i> Mockito Annotations
 
-                        Using annotations makes tests cleaner and more readable:
+                        Annotations make tests cleaner and more readable:
 
                         ```java
                         @ExtendWith(MockitoExtension.class) // JUnit 5 integration
@@ -810,7 +810,7 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-asterisk"></i> Argument Matchers
 
-                        When you don't care about exact argument values, use **matchers**:
+                        When exact argument values do not matter, use **matchers**:
 
                         ```java
                         // Match any value of a type
@@ -842,7 +842,7 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-user-secret"></i> Spies: Partial Mocking
 
-                        A **spy** wraps a real object, allowing you to stub specific methods while keeping others:
+                        A **spy** wraps a real object, allowing specific methods to be stubbed while keeping others:
 
                         ```java
                         @Spy
@@ -865,9 +865,9 @@
                         ```
 
                         **When to use spies:**
-                        - Testing legacy code that can't be easily refactored
-                        - When you need most of the real behavior but want to override one method
-                        - **Avoid when possible** - prefer full mocks with proper DI
+                        - Testing legacy code that cannot be easily refactored.
+                        - When most of the real behavior is needed but one method should be overridden.
+                        - **Avoid when possible**: prefer full mocks with proper DI.
 
                     </textarea>
                 </section>
@@ -947,23 +947,23 @@
                         ## <i class="fa-solid fa-triangle-exclamation"></i> Mocking Best Practices
 
                         **Do:**
-                        - Mock external dependencies (APIs, databases, file systems)
-                        - Keep mocks simple - complex mock setups are a code smell
-                        - Use constructor injection for easier testing
-                        - Verify only meaningful interactions
+                        - Mock external dependencies (APIs, databases, file systems).
+                        - Keep mocks simple: complex mock setups are a code smell.
+                        - Use constructor injection for easier testing.
+                        - Verify only meaningful interactions.
 
-                        **Don't:**
-                        - Mock value objects or data classes
-                        - Mock the class under test
-                        - Over-verify - not every call needs verification
-                        - Create mocks that return mocks (mock chains)
+                        **Do not:**
+                        - Mock value objects or data classes.
+                        - Mock the class under test.
+                        - Over-verify: not every call needs verification.
+                        - Create mocks that return mocks (mock chains).
 
-                        **Warning signs your tests may be too coupled to implementation:**
-                        - Tests break when refactoring without changing behavior
-                        - Mock setup is longer than the actual test
-                        - Testing implementation details instead of outcomes
+                        **Warning signs tests may be too coupled to implementation:**
+                        - Tests break when refactoring without changing behavior.
+                        - Mock setup is longer than the actual test.
+                        - Testing implementation details instead of outcomes.
 
-                        **Alternative**: Consider using **fakes** (simple in-memory implementations) for repositories and external services.
+                        **Alternative**: consider using **fakes** (simple in-memory implementations) for repositories and external services.
 
                     </textarea>
                 </section>
@@ -979,7 +979,7 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-flask-vial"></i> Testing with @QuarkusTest
 
-                        Quarkus provides seamless integration testing with the CDI container:
+                        Quarkus provides integration testing with the CDI container:
 
                         ```java
                         @QuarkusTest
@@ -1023,9 +1023,9 @@
                         | **Use case** | Logic testing | Integration testing |
 
                         **Recommendation:**
-                        - Write **many unit tests** for business logic (fast feedback)
-                        - Write **fewer integration tests** for critical paths (confidence)
-                        - Use `@QuarkusTest` when you need real CDI behavior (interceptors, events, etc.)
+                        - Write **many unit tests** for business logic (fast feedback).
+                        - Write **fewer integration tests** for critical paths (confidence).
+                        - Use `@QuarkusTest` when real CDI behavior is needed (interceptors, events, etc.).
 
                     </textarea>
                 </section>
@@ -1051,7 +1051,7 @@
                         - The shelf should offer a method to retrieve books by title.
 
                         Implement a **Librarian** bean that offers services to **borrow** and **return** books.
-                        - A client should be able to borrow a book to the librarian.
+                        - A client should be able to borrow a book from the librarian.
                         - A client should be able to return a book to the librarian.
                         - The librarian has access to the shelf.
 
@@ -1071,7 +1071,7 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-hand-paper"></i> Solution
 
-                        Checkout the [solution](https://github.com/amt-classroom/example-cdi) on GitHub.
+                        Check out the [solution](https://github.com/amt-classroom/example-cdi) on GitHub.
 
                     </textarea>
                 </section>
