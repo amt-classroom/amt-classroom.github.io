@@ -37,22 +37,22 @@
             <section data-markdown>
                 <textarea data-template>
                     ## <i class="fas fa-tasks"></i> Overview of Today's Class
-                    - Presentation Layer
-                    - Java Serialization
-                    - XML Serialization
-                    - JSON Serialization
-                    - Protobuf and GRPC
+                    - Presentation layer
+                    - Java serialization
+                    - XML serialization
+                    - JSON serialization
+                    - Protobuf and gRPC
                 </textarea>
             </section>
 
             <section data-markdown>
                 <textarea data-template>
-                    ## <i class="fas fa-hand-paper"></i> Companion repository
-                    
+                    ## <i class="fas fa-hand-paper"></i> Companion Repositories
+
                     Checkout the companion repositories for this course:
-                    - [Presentation Layer](https://github.com/amt-classroom/example-presentation)
-                    - [Serialization and Communication](https://github.com/amt-classroom/example-serialization-and-communication)
-                
+                    - [Presentation layer](https://github.com/amt-classroom/example-presentation)
+                    - [Serialization and communication](https://github.com/amt-classroom/example-serialization-and-communication)
+
                 </textarea>
             </section>
 
@@ -68,21 +68,21 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-paint-roller"></i> Data Transfer Objects (DTO)
 
-                        Data Transfer Objects (DTO) are objects that carry data between processes.
-                        - They are often used in the presentation layer to transfer data between the client and the server.
-                        - They are closely related to serialization and deserialization.
-                        - They should not contain any business logic.
-                        - They should not mirror the domain model and leak domain logic.
+                        Data Transfer Objects (DTOs) are objects that carry data between processes:
+                        - They are often used in the presentation layer to transfer data between the client and the server
+                        - They are closely related to serialization and deserialization
+                        - They should not contain any business logic
+                        - They should not mirror the domain model and leak domain logic
 
                         Notes:
-                    
+
                     </textarea>
                 </section>
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-paint-roller"></i> Mapper, Assembler, Adapter, etc.
-                       
-                        The data transfer objects are often mapped to domain objects using mappers, assemblers, adapters, etc.
+                        ## <i class="fa-solid fa-paint-roller"></i> Mappers, Assemblers, Adapters, etc.
+
+                        Data transfer objects are often mapped to domain objects using mappers, assemblers, adapters, etc.
 
                         Start with simple mapping logic located in the presentation layer and refactor it to a dedicated layer if needed.
 
@@ -90,7 +90,7 @@
                         Popular mapping tools in Java:
                         * https://modelmapper.org/
                         * https://mapstruct.org/
-                    
+
                     </textarea>
                 </section>
                 <section>
@@ -98,42 +98,42 @@
                 </section>
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-hand-paper"></i> Using the entities as DTOs
-                       
-                        In some cases (examples, proof of concepts, etc.), the entities are used as DTOs.
+                        ## <i class="fa-solid fa-hand-paper"></i> Using Entities as DTOs
 
-                        In your opinion, is this a good idea? What could be the advantages and disadvantages of such an approach?
+                        In some cases (examples, proof of concepts, etc.), entities are used as DTOs.
+
+                        In your opinion, is this a good idea? What are the advantages and disadvantages of such an approach?
 
                         Notes:
-                    
+
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-hand-paper"></i> JAX-RS and Resteasy
+                        ## <i class="fa-solid fa-paint-roller"></i> JAX-RS and RESTEasy
 
-                        [Jakarta Restful Web Service (JAX-RS)](https://jakarta.ee/specifications/restful-ws/) is a specification for building RESTful web services.
+                        [Jakarta RESTful Web Services (JAX-RS)](https://jakarta.ee/specifications/restful-ws/) is a specification for building RESTful web services.
 
-                        [Resteasy](https://resteasy.dev/) is a popular JAX-RS implementation or runtime maintained by Red Hat.
+                        [RESTEasy](https://resteasy.dev/) is a popular JAX-RS implementation maintained by Red Hat.
 
                         Notes:
-                    
+
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-hand-paper"></i> Testing the presentation layer
-                       
+                        ## <i class="fa-solid fa-paint-roller"></i> Testing the Presentation Layer
+
                         There is a tendency to not test the presentation layer or to test it with complex system tests (Selenium, Puppeteer, etc.).
 
                         Recall the testing pyramid and the importance of unit and integration tests.
 
-                        [REST-assured](https://rest-assured.io/) is a library that can be used to test REST APIs. You should use such tools extensively to test your presentation layer.
+                        [REST-assured](https://rest-assured.io/) is a library that can be used to test REST APIs. Use such tools extensively to test your presentation layer.
 
                         Notes:
-                    
+
                     </textarea>
                 </section>
 
@@ -141,48 +141,38 @@
 
             <section>
                 <section data-background="#333333">
-                    <h2>Java Serialization</h2>
+                    <h2><i class="fa-solid fa-file-export"></i> Java Serialization</h2>
                 </section>
 
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## Java Serialization
+                        ## <i class="fa-solid fa-file-export"></i> What is Serialization?
 
-                        - **What is serialization?**
-                            - Serialization is the process of converting an object's state into a byte stream.
-                            - The byte stream can be persisted to a file, database, or sent over a network.
-                            - Byte streams are often lighter than text (less use of disk space / bandwidth)
-                        - **Why do we need serialization?**
-                            - To save and restore the state of an object.
-                            - To send an object over a network.
-                             
+                        Serialization is the process of converting an object's state into a byte stream:
+                        - The byte stream can be persisted to a file, database, or sent over a network
+                        - Byte streams are often lighter than text (less disk space and bandwidth)
+
+                        Why do we need serialization?
+                        - To save and restore the state of an object
+                        - To send an object over a network
+
                     </textarea>
                 </section>
                 <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## Key Concepts in Java Serialization
+                        ## <i class="fa-solid fa-file-export"></i> Key Concepts in Java Serialization
 
-                        - **Serializable Interface**
-                            - A marker interface (java.io.Serializable) with no methods.
-                            - Classes must implement this interface to be serializable.
-                        - **ObjectOutputStream and ObjectInputStream**
-                            - ObjectOutputStream: Used for writing objects to a byte stream.
-                            - ObjectInputStream: Used for reading objects from a byte stream.
-                        - **SerialVersionUID**
-                            - A unique identifier to verify the sender and receiver of a serialized object.
-                            - Recommended to declare explicitly for consistent deserialization across different versions of a same class.
-                        - **Transient Keyword**
-                            - Fields marked as transient are not serialized.
-                            - Useful for fields that should not be persisted.
-                        - **Static Fields**
-                            - Static fields are not serialized.
-                            - They are not part of the object's state.
-                         
+                        - **Serializable interface**: A marker interface (`java.io.Serializable`) with no methods that classes must implement to be serializable
+                        - **ObjectOutputStream and ObjectInputStream**: Used for writing and reading objects to/from a byte stream
+                        - **SerialVersionUID**: A unique identifier to verify the sender and receiver of a serialized object (recommended to declare explicitly for consistent deserialization)
+                        - **Transient keyword**: Fields marked as transient are not serialized (useful for fields that should not be persisted)
+                        - **Static fields**: Static fields are not serialized as they are not part of the object's state
+
                     </textarea>
                 </section>
                 <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fas fa-hand-paper"></i> Putting it all together
+                        ## <i class="fa-solid fa-file-export"></i> Serializable Example
 
                         ```java
                         class Person implements Serializable {
@@ -208,46 +198,43 @@
                                 var p2 = new Person("Jane", 36);
 
                                 // Write the objects to a file
-                                try (var ObjectOutputStream = new ObjectOutputStream(new FileOutputStream("persons.ser"))) {
-                                    ObjectOutputStream.writeObject(p1);
-                                    ObjectOutputStream.writeObject(p2);
+                                try (var oos = new ObjectOutputStream(new FileOutputStream("persons.ser"))) {
+                                    oos.writeObject(p1);
+                                    oos.writeObject(p2);
                                 }
 
                                 // Read the objects from the file
-                                try (var ObjectInputStream = new ObjectInputStream(new FileInputStream("persons.ser"))) {
-                                    var p3 = (Person) ObjectInputStream.readObject();
+                                try (var ois = new ObjectInputStream(new FileInputStream("persons.ser"))) {
+                                    var p3 = (Person) ois.readObject();
                                     System.out.println(p3);
-                                    var p4 = (Person) ObjectInputStream.readObject();
+                                    var p4 = (Person) ois.readObject();
                                     System.out.println(p4);
                                 }
                             }
                         }
-
                         ```
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## taking control of serialization
+                        ## <i class="fa-solid fa-file-export"></i> Taking Control of Serialization
 
-                        - **Custom Serialization**
-                            - Override the default serialization process.
-                            - Useful for handling special cases.
-                            - Improves performance.
+                        **Custom serialization** allows you to override the default serialization process:
+                        - Useful for handling special cases
+                        - Improves performance
 
-                        - **Externalizable Interface**
-                            - Provides complete control over the serialization process.
-                            - Requires implementing writeExternal and readExternal methods.
-                             
+                        **Externalizable interface** provides complete control over the serialization process:
+                        - Requires implementing `writeExternal` and `readExternal` methods
+
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fas fa-hand-paper"></i> Putting it all together
+                        ## <i class="fa-solid fa-file-export"></i> Externalizable Example
 
-                        ```java           
+                        ```java
                         class Person implements Externalizable {
                             private static final long serialVersionUID = 1L;
                             private String name;
@@ -276,32 +263,27 @@
 
                             @Override
                             public String toString() {
-                                return "Person{" +
-                                        "name='" + name + '\'' +
-                                        ", age=" + age +
-                                        '}';
+                                return "Person{" + "name='" + name + '\'' + ", age=" + age + '}';
                             }
                         }
-
                         ```
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## Remote Method Invocation (RMI)
+                        ## <i class="fa-solid fa-file-export"></i> Remote Method Invocation (RMI)
 
                         RMI (Remote Method Invocation) was a Java API that performs remote communication between Java objects using serialization.
 
-                        RMI was kind of magic as it allowed Java objects to communicate with each other over the network, but it had limitations:
-                        - Java-to-Java communication only.
-                        - Java serialization only.
-                        - No support for other languages.
-                        - No support for other platforms.
-                        - No support for other data formats.
+                        RMI allowed Java objects to communicate over the network, but it had limitations:
+                        - Java-to-Java communication only
+                        - Java serialization only
+                        - No support for other languages or platforms
+                        - No support for other data formats
 
-                        It has now been **deprecated** in favor of more modern technologies developed outside of Java.
-                             
+                        It has been **deprecated** in favor of more modern technologies.
+
                     </textarea>
                 </section>
             </section>
@@ -309,90 +291,75 @@
 
             <section>
                 <section data-background="#333333">
-                    <h2>XML serialization</h2>
+                    <h2><i class="fa-solid fa-code"></i> XML Serialization</h2>
                 </section>
                 <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## XML Serialization in Java
+                        ## <i class="fa-solid fa-code"></i> What is XML?
 
-                        - **What is XML?**
-                            - XML (eXtensible Markup Language) is a markup language that defines a set of rules for encoding documents in a format that is both human-readable and machine-readable.
-                            - It is a standard for data exchange, configuration files, web services, etc.
-                            - Many technologies are based on XML (e.g. DOCX, SVG, RSS, etc.).
-                            - It is still widely used in the industry.
+                        XML (eXtensible Markup Language) is a markup language that defines rules for encoding documents in a human-readable and machine-readable format:
+                        - It is a standard for data exchange, configuration files, web services, etc.
+                        - Many technologies are based on XML (e.g., DOCX, SVG, RSS, etc.)
+                        - It is still widely used in the industry
 
-                        - **What are DTD and XSD?**
-                            - DTD (Document Type Definition) and XSD (XML Schema Definition) are used to define the structure of an XML document.
-                            - DTD is the older standard, XSD is the newer standard.
+                        **DTD and XSD** are used to define the structure of an XML document:
+                        - DTD (Document Type Definition) is the older standard
+                        - XSD (XML Schema Definition) is the newer standard
 
-                        - **What is XSL-T?**
-                            - XSL-T (eXtensible Stylesheet Language Transformations) is a language for transforming XML documents into other XML documents.
-                            - Examples: generate HTML pages from data structured in XML, reorganise or filter XML data for integration with other systems, produce reports (text, CSV, etc.) from XML data, etc.
+                        **XSL-T** (eXtensible Stylesheet Language Transformations) is a language for transforming XML documents (e.g., generate HTML, reorganize data, produce reports)
 
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## XML Parsers
+                        ## <i class="fa-solid fa-code"></i> XML Parsers
 
                         XML parsers are characterized by different types of architectures:
 
-                        - **DOM (Document Object Model)**
-                            - Loads the entire XML document into memory.
-                            - Allows for random access.
-                            - Suitable for small documents.
-
-                        - **SAX (Simple API for XML)**
-                            - Reads the XML document sequentially (streaming).
-                            - Event-driven (you provide callbacks).
-                            - Suitable for large documents.
-
-                        - **StAX (Streaming API for XML)**
-                            - Reads the XML document sequentially (streaming).
-                            - Pull-based (you pull and process events).
-                            - Suitable for large documents.
+                        - **DOM (Document Object Model)**: Loads the entire XML document into memory, allows random access, suitable for small documents
+                        - **SAX (Simple API for XML)**: Reads the XML document sequentially (streaming), event-driven (you provide callbacks), suitable for large documents
+                        - **StAX (Streaming API for XML)**: Reads the XML document sequentially (streaming), pull-based (you pull and process events), suitable for large documents
 
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## Jakarta XML Binding (JAXB)
+                        ## <i class="fa-solid fa-code"></i> Jakarta XML Binding (JAXB)
 
-                        - **What is JAXB?**
-                            - JAXB is a Java API for XML Binding.
-                            - It provides a convenient way to bind an XML schema to a representation in Java code.
-                            - It allows Java developers to access and process XML data without having to know XML or XML processing.
+                        JAXB is a Java API for XML Binding:
+                        - It provides a convenient way to bind an XML schema to a representation in Java code
+                        - It allows Java developers to access and process XML data without having to know XML or XML processing
 
-                        - **How does JAXB work?**
-                            - JAXB provides two main features: the ability to marshal Java objects into XML and the ability to unmarshal XML back into Java objects.
-                            - It uses annotations to map Java objects to XML elements.
-                            - It generates Java classes from an XML schema.
+                        How does JAXB work?
+                        - It provides two main features: marshalling Java objects into XML and unmarshalling XML back into Java objects
+                        - It uses annotations to map Java objects to XML elements
+                        - It generates Java classes from an XML schema
 
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## Generating classes from an XML schema
+                        ## <i class="fa-solid fa-code"></i> Generating Classes from an XML Schema
 
                         XJC (XML to Java Compiler) is a tool that generates Java classes annotated with JAXB annotations from an XML schema (XSD).
 
                         Plugins are available to generate JAXB classes from an XSD schema with XJC in Maven or Gradle projects.
 
-                        These tools probably make java the best language to deal with complex XML schemas and documents.
-  
-                        Checkout [eCH](https://www.ech.ch/fr) for examples of complex XML schemas and documents used in Switzerland.
+                        These tools probably make Java the best language to deal with complex XML schemas and documents.
+
+                        Check out [eCH](https://www.ech.ch/fr) for examples of complex XML schemas and documents used in Switzerland.
 
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## JAX-B and JAX-RS
+                        ## <i class="fa-solid fa-code"></i> JAXB and JAX-RS
 
-                        JAX-B (Java Architecture for XML Binding) is often used in combination with JAX-RS (Java API for RESTful Web Services) to serialize and deserialize Java objects to and from XML.
+                        JAXB (Java Architecture for XML Binding) is often used in combination with JAX-RS (Java API for RESTful Web Services) to serialize and deserialize Java objects to and from XML.
 
                         ```java
                         @Path("/persons")
@@ -405,21 +372,20 @@
                         }
                         ```
 
-                        JAX-RS delegates the serialization and deserialization of Java objects to an XML provider such as JAXB or Jackson. JAXB annotations are used behind the sets.
+                        JAX-RS delegates the serialization and deserialization of Java objects to an XML provider such as JAXB or Jackson. JAXB annotations are used behind the scenes.
 
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## Limitations of XML
+                        ## <i class="fa-solid fa-code"></i> Limitations of XML
 
-                        - Very verbose and inneficient.
-                        - No support for binary data.
-                        - Rather difficult to stream.
-                        - Rather difficult to optimize for performance.
-                        - A mess to deal with outside of the Java ecosystem.
-                        - Etc.
+                        - Very verbose and inefficient
+                        - No support for binary data
+                        - Rather difficult to stream
+                        - Rather difficult to optimize for performance
+                        - Difficult to deal with outside of the Java ecosystem
 
                     </textarea>
                 </section>
@@ -427,31 +393,28 @@
 
             <section>
                 <section data-background="#333333">
-                    <h2>JSON serialization</h2>
+                    <h2><i class="fa-solid fa-file"></i> JSON Serialization</h2>
                 </section>
                 <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## JSON Serialization in Java
+                        ## <i class="fa-solid fa-file"></i> What is JSON?
 
-                        - **What is JSON?**
-                            - JSON (JavaScript Object Notation) is a lightweight data-interchange format.
-                            - It is easy for humans to read and write.
-                            - It is easy for machines to parse and generate.
-                            - It is based on key-value pairs.
-                            - It is everywhere.
-                            - You can find examples [here](https://json.org/example.html).
+                        JSON (JavaScript Object Notation) is a lightweight data-interchange format:
+                        - It is easy for humans to read and write
+                        - It is easy for machines to parse and generate
+                        - It is based on key-value pairs
+                        - It is everywhere
+                        - You can find examples [here](https://json.org/example.html)
 
-                        - **What are JSON schemas?**
-                            - [JSON schema](https://json-schema.org/) is a vocabulary that allows you to annotate and validate JSON documents.
-                            - Unfortunately, it is not as widely used as XML schema...
-                            
+                        [JSON Schema](https://json-schema.org/) is a vocabulary that allows you to annotate and validate JSON documents (unfortunately, it is not as widely used as XML schema).
+
                     </textarea>
                 </section>
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## JSON and JAX-RS
+                        ## <i class="fa-solid fa-file"></i> JSON and JAX-RS
 
-                        JSON is often used in combination with JAX-RS (Java API for RESTful Web Services) to serialize and deserialize Java objects to and from XML.
+                        JSON is often used in combination with JAX-RS (Java API for RESTful Web Services) to serialize and deserialize Java objects to and from JSON.
 
                         ```java
                         @Path("/persons")
@@ -465,19 +428,18 @@
                         ```
 
                         JAX-RS delegates the serialization and deserialization of Java objects to a JSON provider such as Jackson, Gson, or JSON-B.
-                
+
                     </textarea>
                 </section>
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## Limitations of JSON
+                        ## <i class="fa-solid fa-file"></i> Limitations of JSON
 
-                        - No support for binary data.
-                        - Rather difficult to stream.
-                        - Rather difficult to optimize for performance.
-                        - No support for type and schema information.
-                        - Etc.
-                
+                        - No support for binary data
+                        - Rather difficult to stream
+                        - Rather difficult to optimize for performance
+                        - No support for type and schema information
+
                     </textarea>
                 </section>
             </section>
@@ -485,45 +447,40 @@
 
             <section>
                 <section data-background="#333333">
-                    <h2>Protobuf and gRPC</h2>
+                    <h2><i class="fa-solid fa-bolt"></i> Protobuf and gRPC</h2>
                 </section>
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## Protobuf
-                        
+                        ## <i class="fa-solid fa-bolt"></i> What is Protobuf?
+
                         XML and JSON are great for human readability, but they are not the most efficient way to serialize data.
 
-                        [Protocol Buffers (protobuf)](https://protobuf.dev/) is a language-agnostic binary serialization format developed by Google.
-
-                        It lets you define the structure of your data, then use a code generator (protoc) to create source code that can read and write this data.
-
-                        Protobuf is faster, smaller, and simpler than XML and JSON.
-                        
-                    </textarea>
-                </section>
-                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
-                    <textarea data-template>
-                        ## gRPC
-                        
-                        Protobuf is often used in combination with [gRPC](https://grpc.io/), a high-performance, open-source universal RPC framework.
-
-                        gRPC is based on HTTP/2, uses protobuf as its interface definition language, and provides features such as authentication and bidirectional streaming.
-
-                        It is widely used for communication between microservices and with mobile devices, and gaining popularity for the Web as well (grpc-web).
-
-                        gRPC is supported in many languages, including Java, Go, Python, Node.js, C++, etc.
+                        [Protocol Buffers (Protobuf)](https://protobuf.dev/) is a language-agnostic binary serialization format developed by Google:
+                        - It lets you define the structure of your data, then use a code generator (protoc) to create source code that can read and write this data
+                        - Protobuf is faster, smaller, and simpler than XML and JSON
 
                     </textarea>
                 </section>
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## Limitations of Protobuf and gRPC
-                        
-                        - Requires a code generator.
-                        - Not human-readable.
-                        - Not human-editable.
-                        - Hard to debug.
-                        - Not as widely used as XML and JSON.
+                        ## <i class="fa-solid fa-bolt"></i> What is gRPC?
+
+                        Protobuf is often used in combination with [gRPC](https://grpc.io/), a high-performance, open-source universal RPC framework:
+                        - gRPC is based on HTTP/2, uses Protobuf as its interface definition language, and provides features such as authentication and bidirectional streaming
+                        - It is widely used for communication between microservices and with mobile devices, and gaining popularity for the Web as well (grpc-web)
+                        - gRPC is supported in many languages, including Java, Go, Python, Node.js, C++, etc.
+
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-bolt"></i> Limitations of Protobuf and gRPC
+
+                        - Requires a code generator
+                        - Not human-readable
+                        - Not human-editable
+                        - Hard to debug
+                        - Not as widely used as XML and JSON
 
                     </textarea>
                 </section>
