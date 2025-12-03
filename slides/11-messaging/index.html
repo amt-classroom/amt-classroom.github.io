@@ -57,11 +57,11 @@
 
                         Notes:
 
-                        Messaging is a method of communication between software components or applications.
+                        Messaging enables communication between software components or applications.
 
                         Each client connects to a message broker that provides the messaging service.
-                        
-                        Once the connection established the messaging system looks like a peer-to-peer facility: A messaging client can send messages to, and receive messages from, any other client.
+
+                        Once connected, the system behaves like a peer-to-peer facility: clients send messages to and receive messages from any other client.
                     
 
                     </textarea>
@@ -87,9 +87,9 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-envelope"></i> Jakarta Messaging
 
-                        [Jakarta Messaging (JMS)](https://jakarta.ee/specifications/messaging/) is a Java API that allows applications to create, send, receive, and read messages.
+                        [Jakarta Messaging (JMS)](https://jakarta.ee/specifications/messaging/) provides a Java API for applications to create, send, receive, and read messages.
 
-                        JMS has been standardized early on:
+                        JMS standardization began early:
                         - JMS 1.0 in 1998
                         - JMS 1.1 in 2002
                         - JMS 2.0 in 2013
@@ -97,7 +97,7 @@
                         - JMS 3.0 in 2020
                         - JMS 3.1 in 2022
 
-                        It demonstrate how important messaging is in complex systems and applications.
+                        This long history demonstrates messaging's importance in complex systems and applications.
 
                         Notes:
                     
@@ -113,9 +113,9 @@
 
                         Notes:
 
-                        The **JMS API** hides the complexity of the messaging system.
+                        The **JMS API** hides the messaging system's complexity.
 
-                        A lot of message brokers (runtimes) implement the JMS API (specification).
+                        Many message brokers (runtimes) implement the JMS API (specification).
 
                         The **Connection Factory** is used to create a connection (old API) or a context (new API) to the message broker.
 
@@ -150,15 +150,15 @@
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## <i class="fa-solid fa-envelope"></i> Connection Factory 
+                        ## <i class="fa-solid fa-envelope"></i> Connection Factory
 
-                        The **connection factory** is used to create a connection to the message broker.
+                        The **connection factory** creates a connection to the message broker.
 
                         ```java
                         var connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
                         ```
 
-                        In practice, you rarely create the connection factory directly. You use a dependency injection framework to inject the connection factory.
+                        In practice, a dependency injection framework injects the connection factory rather than creating it directly.
 
                         ```java
                         @Inject
@@ -173,17 +173,17 @@
 
                         Notes:
 
-                        The **queue model** is the simplest messaging model. It is based on the point-to-point (PTP) communication paradigm.
+                        The **queue model** is the simplest messaging model, based on point-to-point (PTP) communication.
 
-                        A **queue** is a **destination** where one or more **producers** send messages to and one or more **consumers** receive messages from.
+                        A **queue** is a **destination** where producers send messages and consumers receive them.
 
-                        A **message** sent to a queue is received and processed by one consumer only.
+                        Each message sent to a queue reaches only one consumer.
 
-                        This model is fire-and-forget: the producer sends a message and forgets about it. The consumer receives the message and processes it. The producer and consumer are decoupled.
+                        This model uses fire-and-forget: the producer sends a message and forgets it. The consumer receives and processes the message. Producer and consumer remain decoupled.
 
-                        **Queues** are used for asynchronous processing, load balancing, failover, etc.
+                        **Queues** enable asynchronous processing, load balancing, and failover.
 
-                        For instance, a queue can be used to send emails. The producer sends an email to the queue and a consumer sends the email to the recipient.
+                        Example: a queue sends emails. The producer queues an email; a consumer sends it to the recipient.
 
                     </textarea>
                 </section>
@@ -193,7 +193,7 @@
 
                         ## <i class="fa-solid fa-envelope"></i> Queue Producer
 
-                        Use the connection factory to create a context, create a queue, create a producer, create a message, and send the message to the queue.
+                        Create a context from the connection factory, then create a queue, producer, and message. Send the message to the queue.
 
 
                         ```java
@@ -218,7 +218,7 @@
 
                         ## <i class="fa-solid fa-envelope"></i> Queue Consumer
 
-                        Use the connection factory to create a context, create a queue, create a consumer and handle the message asynchronously.
+                        Create a context from the connection factory, then create a queue and consumer. Handle the message asynchronously.
 
                         ```java
                         var context = connectionFactory.createContext();
@@ -243,17 +243,17 @@
 
                         Notes:
 
-                        The **Topic model** is based on the publish/subscribe communication paradigm.
+                        The **Topic model** uses publish/subscribe communication.
 
-                        A **topic** is a **destination** where one or more **producers** send messages to and one or more **consumers** receive messages from.
+                        A **topic** is a **destination** where producers send messages and consumers receive them.
 
-                        A **message** sent to a topic is received and processed by one or more consumers.
+                        Each message sent to a topic reaches one or more consumers.
 
-                        This model is fire-and-forget: the producer sends a message and forgets about it. The consumer receives the message and processes it. The producer and consumer are decoupled.
+                        This model uses fire-and-forget: the producer sends a message and forgets it. Consumers receive and process the message. Producer and consumers remain decoupled.
 
-                        **Topics** are used for broadcasting, event notification, etc.
+                        **Topics** enable broadcasting and event notification.
 
-                        For instance, a topic can be used to represent the price of a stock. The producer sends the price of the stock to the topic and all consumers receive the price of the stock.
+                        Example: a topic represents a stock price. The producer sends the price to the topic; all consumers receive it.
 
                     </textarea>
                 </section>
@@ -263,7 +263,7 @@
 
                         ## <i class="fa-solid fa-envelope"></i> Topic Producer
 
-                        Use the connection factory to create a context, create a topic, create a producer, create a message and send the message to the topic.
+                        Create a context from the connection factory, then create a topic, producer, and message. Send the message to the topic.
 
                         ```java
                         var context = connectionFactory.createContext()) {
@@ -288,7 +288,7 @@
 
                         ## <i class="fa-solid fa-envelope"></i> Topic Consumer
 
-                        Use the connection factory to create a context, create a topic, create a consumer and handle the message asynchronously.
+                        Create a context from the connection factory, then create a topic and consumer. Handle the message asynchronously.
 
                         ```java
                         // Create a JMS context
@@ -308,14 +308,14 @@
                 <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-envelope"></i> Durable subscriptions
-                        
-                        Until now, we need to have a consumer connected to the topic to receive the message.
-                        However, in some cases, we want to receive the message even if the consumer is not connected.
 
-                        To solve this problem, we can create a durable subscription.
-                        A durable subscription is a subscription that survives a consumer disconnection.
+                        So far, consumers must connect to the topic to receive messages.
+                        However, sometimes you want to receive messages even when the consumer disconnects.
 
-                        To create a durable subscription, the consumer needs to provide a client ID and a subscription name.
+                        Durable subscriptions solve this problem.
+                        A durable subscription survives consumer disconnection.
+
+                        To create a durable subscription, provide a client ID and subscription name.
 
                         ```java
                         var context = connectionFactory.createContext();
@@ -337,18 +337,18 @@
 
                         Notes:
 
-                        The **Request/Response model** is based on the point-to-point (PTP) communication paradigm.
+                        The **Request/Response model** uses point-to-point (PTP) communication.
 
-                        However, the producer needs to wait for the response from the consumer and fire and forget is not suitable.
-                        
-                        To solve this problem:
-                        - The **producer** sends a message to a queue, initialize a temporary queue, include the temporary queue in the message and wait for the response on the temporary queue.
-                        - The **consumer** receives the message, processes it and sends the response to the temporary queue.
-                        - The **producer** receives the response and processes it.
+                        However, the producer must wait for the consumer's response, making fire-and-forget unsuitable.
 
-                        **Request/Response** is often used for long asynchronous processing tasks (e.g. batch processing, report generation, etc.) where the producer needs to know when the processing is done and the result is available.
+                        The solution:
+                        - The **producer** sends a message to a queue, creates a temporary queue, includes it in the message, and waits for the response on the temporary queue.
+                        - The **consumer** receives the message, processes it, and sends the response to the temporary queue.
+                        - The **producer** receives and processes the response.
 
-                        For instance, booking a travel is a long asynchronous processing task: the booking system needs to check the availability of the flight, the availability of the seats, the availability of the hotel, etc. before confirming the booking.
+                        **Request/Response** suits long asynchronous tasks (batch processing, report generation) where the producer needs to know when processing completes and results arrive.
+
+                        Example: travel booking requires checking flight availability, seat availability, hotel availability, etc. before confirming the booking.
                     
                     </textarea>
                 </section>
@@ -358,7 +358,7 @@
 
                         ## <i class="fa-solid fa-envelope"></i> Send a request and wait for the response
 
-                        Use the connection factory to create a context, create a topic, create a consumer and handle the message asynchronously.
+                        Create a context from the connection factory, then create a queue and producer. Send the request and block until the response arrives.
 
                         ```java
                         // Create the queue and the producer
@@ -392,7 +392,7 @@
 
                         ## <i class="fa-solid fa-envelope"></i> Handle a request and send the response
 
-                        Use the connection factory to create a context, create a queue, create a consumer and handle the message asynchronously.
+                        Create a context from the connection factory, then create a queue and consumer. Handle requests asynchronously and send responses.
 
                         ```java
                         var context = connectionFactory.createContext();
@@ -465,14 +465,14 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-envelope"></i> Message Acknowledgement
 
-                        **Message acknowledgements (ACK)** are used to ensure that the message is processed and not lost. JMS provides different **acknowledgement modes**:
-                        
-                        - **AUTO_ACKNOWLEDGE**: The session automatically acknowledges the receipt of a message once the consumer has received it. This is the simplest mode but may not be suitable for all scenarios.
-                        - **CLIENT_ACKNOWLEDGE**: The client explicitly acknowledges the message by calling the `acknowledge` method on the received message. This gives the client more control but requires additional code to handle acknowledgements.
-                        - **SESSION_TRANSACTED**: Messages are acknowledged as part of a transaction. This mode ensures that a group of messages are processed atomically, either all are acknowledged or none are.
-                        - **DUPS_OK_ACKNOWLEDGE**: The session lazily acknowledges the delivery of messages. This mode reduces the overhead of message delivery but allows for the possibility of duplicate messages if the consumer crashes.
-                        
-                        Choosing the right acknowledgement mode depends on the specific requirements of your application, such as the need for reliability, performance, and complexity of implementation.
+                        **Message acknowledgements (ACK)** ensure that messages are processed and not lost. JMS provides different **acknowledgement modes**:
+
+                        - **AUTO_ACKNOWLEDGE**: The session automatically acknowledges messages when the consumer receives them. This is the simplest mode but may not suit all scenarios.
+                        - **CLIENT_ACKNOWLEDGE**: The client explicitly acknowledges messages by calling the `acknowledge` method. This provides more control but requires additional code.
+                        - **SESSION_TRANSACTED**: The session acknowledges messages as part of a transaction. This ensures atomic processing: either all messages are acknowledged or none are.
+                        - **DUPS_OK_ACKNOWLEDGE**: The session lazily acknowledges message delivery. This reduces overhead but allows duplicate messages if the consumer crashes.
+
+                        Choose the acknowledgement mode based on your application's reliability, performance, and complexity requirements.
                         
                 
                     </textarea>
@@ -483,7 +483,7 @@
 
                         ## <i class="fa-solid fa-envelope"></i> Client Acknowledge
 
-                        Use the `CLIENT_ACKNOWLEDGE` mode to explicitly acknowledge the message.
+                        Use `CLIENT_ACKNOWLEDGE` mode to explicitly acknowledge messages.
 
                         ```java
                         // Create a JMS context
@@ -512,7 +512,7 @@
 
                         ## <i class="fa-solid fa-envelope"></i> Session Transacted
 
-                        Use the `SESSION_TRANSACTED` mode to process a group of messages atomically.
+                        Use `SESSION_TRANSACTED` mode to process message groups atomically.
 
                         ```java
                         // Create a JMS context with transacted session
@@ -544,15 +544,15 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-envelope"></i> Ordering guarantees
 
-                        Depending on the broker, you get different ordering guarantees.
-                        - **Out-of-order** - The messages are not ordered.
-                        - **FIFO** - The first message in is the first message out.
-                        - **LIFO** - The last message in is the first message out.
-                        - **Priority** - The messages are ordered by priority.
+                        Brokers provide different ordering guarantees:
+                        - **Out-of-order** - Messages are not ordered.
+                        - **FIFO** - First message in is the first message out.
+                        - **LIFO** - Last message in is the first message out.
+                        - **Priority** - Messages are ordered by priority.
 
                         Notes:
-                        You should not make any assumption about the guarantees provided by the broker. 
-                        Always check the documentation of the broker to know what guarantees are provided.
+                        Make no assumptions about the broker's guarantees.
+                        Always check the broker's documentation for specific guarantees.
 
                 
                     </textarea>
@@ -562,15 +562,15 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-envelope"></i> Delivery guarantees
 
-                        Depending on the broker, you get different delivery guarantees.
-                        - **At most once** - The message is delivered at most once, but it may not be delivered.
-                        - **At least once** - The message is always delivered, but it may be delivered multiple times.
-                        - **Exactly once** - The message is always delivered once and only once.
-                        
+                        Brokers provide different delivery guarantees:
+                        - **At most once** - The message may be delivered once or not at all.
+                        - **At least once** - The message is always delivered but may arrive multiple times.
+                        - **Exactly once** - The message is delivered once and only once.
+
 
                         Notes:
-                        You should not make any assumptions about the guarantees provided by the broker. 
-                        Always check the documentation of the broker to know what guarantees are provided and from which perspective (i.e., producer or consumer).
+                        Make no assumptions about the broker's guarantees.
+                        Always check the broker's documentation for specific guarantees and from which perspective (producer or consumer).
 
                         References:
                         * https://kafka.apache.org/documentation/#semantics
@@ -585,14 +585,14 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-envelope"></i> Other guarantees
 
-                        - **Persistent** - The message is stored on disk and is not lost if the broker crashes.
-                        - **Transactional** - The message is only delivered if the transaction is committed.
-                        - **Failover** - The messages are replicated across multiple machines.
-                        - **Scalability** - The messages are distributed across multiple machines.
+                        - **Persistent** - Messages persist on disk and survive broker crashes.
+                        - **Transactional** - Messages deliver only when transactions commit.
+                        - **Failover** - Messages replicate across multiple machines.
+                        - **Scalability** - Messages distribute across multiple machines.
 
                         Notes:
-                        You should not make any assumptions about the guarantees provided by the broker.
-                        Always check the documentation of the broker to know what guarantees are provided.
+                        Make no assumptions about the broker's guarantees.
+                        Always check the broker's documentation for specific guarantees.
 
                 
                     </textarea>
@@ -604,9 +604,9 @@
 
                         Notes:
 
-                        The message broker can use persistent storage to store the messages on disk and provide at least once delivery guarantee.
+                        The message broker can use persistent storage to store messages on disk and provide at-least-once delivery.
 
-                        Here, the producer sends a message to the broker and the broker stores the message on disk. The message is not lost if the broker crashes.
+                        Here, the producer sends a message to the broker, which stores it on disk. The message survives broker crashes.
 
 
                     </textarea>
@@ -618,7 +618,7 @@
 
                         Notes:
 
-                        Similarly, the consumer handles the message and sends and acknowledgement to the broker, which deletes the message from disk. The message is not lost if the broker crashes.
+                        Similarly, the consumer handles the message and sends an acknowledgement to the broker, which deletes the message from disk. The message survives broker crashes.
                 
                     </textarea>
                 </section>
@@ -626,15 +626,15 @@
                 <section data-markdown style="font-size: 0.7em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-envelope"></i> Disk persistence
-                        In some rare cases, either the operating system or database software, can have bugs on the persistence path and lead to data loss.
-                        Some systems (e.g. distributed ones) might by design choose not to fully guarantee that data is on disk before acknowledgement.
+                        In rare cases, operating system or database bugs can cause data loss on the persistence path.
+                        Some distributed systems by design acknowledge messages before fully guaranteeing disk persistence.
 
-                        Read the following and discuss in class:
-                        * https://lwn.net/Articles/752063/ 
+                        Read and discuss in class:
+                        * https://lwn.net/Articles/752063/
                         * https://jack-vanlightly.com/blog/2023/4/24/why-apache-kafka-doesnt-need-fsync-to-be-safe
 
-                        In most cases a hard requirement for persistence will lead to increased latency to get the expected strong guarantee.
-                        For example: https://www.rabbitmq.com/docs/confirms#publisher-confirms-latency
+                        Hard persistence requirements usually increase latency to achieve strong guarantees.
+                        Example: https://www.rabbitmq.com/docs/confirms#publisher-confirms-latency
                         > basic.ack for a persistent message routed to a durable queue will be sent after persisting the message to disk. The RabbitMQ message store persists messages to disk in batches after an interval (a few hundred milliseconds) to minimise the number of fsync(2) calls, or when a queue is idle.
                         > This means that under a constant load, latency for basic.ack can reach a few hundred milliseconds.
 
