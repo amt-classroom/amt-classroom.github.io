@@ -4,9 +4,9 @@
 <head>
 
     <meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-	<title>GRPC</title>
+    <title>Presentation</title>
 
     <link rel="stylesheet" href="/node_modules/reveal.js/dist/reveal.css" crossorigin="anonymous">
     <link rel="stylesheet" href="/node_modules/reveal.js/dist/theme/white.css" crossorigin="anonymous" id="theme">
@@ -19,50 +19,134 @@
     <link rel="stylesheet" href="/css/solarized-light.css" />
     <link rel="stylesheet" href="/slides/style.css">
 
+
     <script src="/fontawesome-6.4.2/js/all.min.js"></script>
 </head>
 
 <body>
-
     <div class="reveal">
         <div class="slides">
-            
+
             <!-- Title and outline -->
             <section data-background="#333333">
                 <h2>AMT</h2>
-                <h1>Serialization and Communication</h1>
-                <p>
-                    Bertil Chapuis
-                    <br />
-                    Miguel Santamaria
-                </p>
+                <h1>Presentation, Serialization and Communication</h1>
+                <p>Bertil Chapuis</p>
             </section>
 
             <section data-markdown>
                 <textarea data-template>
                     ## <i class="fas fa-tasks"></i> Overview of Today's Class
-                    - Serialization in Java
+                    - Presentation Layer
+                    - Java Serialization
                     - XML Serialization
                     - JSON Serialization
                     - Protobuf and GRPC
                 </textarea>
             </section>
+
             <section data-markdown>
                 <textarea data-template>
                     ## <i class="fas fa-hand-paper"></i> Companion repository
                     
-                    Checkout the companion repository for this course on [GitHub](https://github.com/amt-classroom/example-serialization-and-communication).
+                    Checkout the companion repositories for this course:
+                    - [Presentation Layer](https://github.com/amt-classroom/example-presentation)
+                    - [Serialization and Communication](https://github.com/amt-classroom/example-serialization-and-communication)
                 
                 </textarea>
             </section>
 
+            <!-- Presentation Layer -->
             <section>
                 <section data-background="#333333">
-                    <h2>Serialization</h2>
+                    <h2><i class="fas fa-paint-roller"></i> Presentation Layer</h2>
                 </section>
+                <section>
+                    <img src="/images/presentation-layer.png" style="width: 50%;" alt="Presentation Layer">
+                </section>
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-paint-roller"></i> Data Transfer Objects (DTO)
+
+                        Data Transfer Objects (DTO) are objects that carry data between processes.
+                        - They are often used in the presentation layer to transfer data between the client and the server.
+                        - They are closely related to serialization and deserialization.
+                        - They should not contain any business logic.
+                        - They should not mirror the domain model and leak domain logic.
+
+                        Notes:
+                    
+                    </textarea>
+                </section>
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-paint-roller"></i> Mapper, Assembler, Adapter, etc.
+                       
+                        The data transfer objects are often mapped to domain objects using mappers, assemblers, adapters, etc.
+
+                        Start with simple mapping logic located in the presentation layer and refactor it to a dedicated layer if needed.
+
+                        Notes:
+                        Popular mapping tools in Java:
+                        * https://modelmapper.org/
+                        * https://mapstruct.org/
+                    
+                    </textarea>
+                </section>
+                <section>
+                    <img src="/images/mapper.png" style="width: 50%;" alt="Mapper">
+                </section>
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hand-paper"></i> Using the entities as DTOs
+                       
+                        In some cases (examples, proof of concepts, etc.), the entities are used as DTOs.
+
+                        In your opinion, is this a good idea? What could be the advantages and disadvantages of such an approach?
+
+                        Notes:
+                    
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hand-paper"></i> JAX-RS and Resteasy
+
+                        [Jakarta Restful Web Service (JAX-RS)](https://jakarta.ee/specifications/restful-ws/) is a specification for building RESTful web services.
+
+                        [Resteasy](https://resteasy.dev/) is a popular JAX-RS implementation or runtime maintained by Red Hat.
+
+                        Notes:
+                    
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-hand-paper"></i> Testing the presentation layer
+                       
+                        There is a tendency to not test the presentation layer or to test it with complex system tests (Selenium, Puppeteer, etc.).
+
+                        Recall the testing pyramid and the importance of unit and integration tests.
+
+                        [REST-assured](https://rest-assured.io/) is a library that can be used to test REST APIs. You should use such tools extensively to test your presentation layer.
+
+                        Notes:
+                    
+                    </textarea>
+                </section>
+
+            </section>
+
+            <section>
+                <section data-background="#333333">
+                    <h2>Java Serialization</h2>
+                </section>
+
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        ## Serialization in Java
+                        ## Java Serialization
 
                         - **What is serialization?**
                             - Serialization is the process of converting an object's state into a byte stream.
@@ -448,7 +532,6 @@
             <section>
                 <h2><i class="fas fa-hand-paper"></i> Questions?</h2>
             </section>
-
         </div>
     </div>
 </body>
