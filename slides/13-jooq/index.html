@@ -41,7 +41,7 @@
 
             <section>
                 <section data-background="#333333">
-                    <h2> <i class="fa-solid fa-hockey-puck">d</i> jOOQ, embracing RDBMS and SQL </h2>
+                    <h2> <i class="fa-solid fa-hockey-puck"></i> jOOQ, embracing RDBMS and SQL </h2>
                 </section>
                 <section data-markdown style="font-size: 0.4em;" data-separator-notes="^Notes:">
                     <textarea data-template>
@@ -123,7 +123,7 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-hockey-puck"></i> jOOQ
 
-                        <img src="/images/7-abstraction-jooq/jooq.png" alt="Layered architecture" style="width: 80%;"/>
+                        <img src="/images/7-abstraction-jooq/jooq.png" alt="jOOQ overview" style="width: 80%;"/>
 
                     </textarea>
                 </section>
@@ -183,7 +183,7 @@
                         * jOOQ facilitates CRUD using a specific API involving `org.jooq.UpdatableRecord` types.
                         * jOOQ's code generator will generate `org.jooq.UpdatableRecord` implementations for every table that has a primary key.
 
-                        ```
+                        ```java
                         //non-jooq imports omitted
                         import static ch.heigvd.amt.jooq.Tables.*;
                         import org.jooq.DSLContext;
@@ -194,6 +194,8 @@
                           @Inject
                           DSLContext dsl;
 
+                          @Test
+                          @TestTransaction
                           void testWriteActorJooq() {
                             var actor = dsl.newRecord(ACTOR);
                             actor.setFirstName("john");
@@ -245,7 +247,7 @@
                         ## <i class="fa-solid fa-hockey-puck"></i> Upgrading the code generation tool
                         When the generated code is not part of the codebase the only content in the change request is the version of the tool.
 
-                        <img src="/images/7-abstraction-jooq/upgrading-jooq.png" alt="Layered architecture" style="width: 90%;"/>
+                        <img src="/images/7-abstraction-jooq/upgrading-jooq.png" alt="Pull request upgrading jOOQ" style="width: 90%;"/>
                     </textarea>
                 </section>
 
@@ -256,20 +258,20 @@
                         It asserts a greater control over the changes that occurs due to changes affecting the generated code. (e.g. SQL migrations, dependency upgrade).
                         Any change not anticipated becomes obvious in the change request and can not be easily ignored.
 
-                         <img src="/images/7-abstraction-jooq/upgrading-jooq2.png" alt="Layered architecture" style="width: 90%;"/>
+                         <img src="/images/7-abstraction-jooq/upgrading-jooq2.png" alt="Pull request upgrading jOOQ" style="width: 90%;"/>
                     </textarea>
                 </section>
                 <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-hockey-puck"></i> Example discovering new features in abstraction
-                        <img src="/images/7-abstraction-jooq/discovering-new-features.png" alt="Layered architecture" style="width: 90%;"/>
+                        <img src="/images/7-abstraction-jooq/discovering-new-features.png" alt="Discovering new features through generated code" style="width: 90%;"/>
                     </textarea>
                 </section>
 
                 <section data-markdown style="font-size: 0.5em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-hockey-puck"></i> Multiplicity
-                        One tool can server different purpose.
+                        One tool can serve different purposes.
                         
                         <i class="fa-solid fa-quote-left"></i>
                         Some use cases encountered are:

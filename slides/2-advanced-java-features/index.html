@@ -104,7 +104,7 @@
                         ```
 
                         ```
-                        Exception in thread "main" java.lang.ClassNotFoundException: com.example.MyClass
+                        Exception in thread "main" java.lang.ClassNotFoundException: ch.heigvd.amt.MyClass
                         at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641)
                         at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
                         at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:520)
@@ -258,7 +258,7 @@
 
                         // Instantiate an object
                         Class<?> clazz = Class.forName("com.example.MyClass");
-                        Object object = clazz.newInstance();
+                        Object object = clazz.getDeclaredConstructor().newInstance();
 
                         // Invoke a method of the object
                         Method method = clazz.getMethod("myMethod");
@@ -409,7 +409,7 @@
                         }
 
                         public class MyAnnotationProcessor {
-                            public static void main(String[] args) {
+                            public static void main(String[] args) throws Exception {
                                 Class<?> clazz = Class.forName("com.example.MyClass");
                                 MyAnnotation annotation = clazz.getAnnotation(MyAnnotation.class);
                                 System.out.println(annotation.value());
@@ -457,7 +457,7 @@
                         import javax.lang.model.type.TypeMirror;
 
                         @SupportedAnnotationTypes("mypackage.MyAnnotation")
-                        @SupportedSourceVersion(SourceVersion.RELEASE_8)
+                        @SupportedSourceVersion(SourceVersion.RELEASE_21)
                         public class MyAnnotationProcessor extends AbstractProcessor {
 
                             @Override

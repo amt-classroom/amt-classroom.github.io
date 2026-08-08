@@ -29,7 +29,7 @@
             <!-- Title and outline -->
             <section data-background="#333333">
                 <h2>AMT</h2>
-                <h1><i class="fa-solid fa-plug"></i> DIP, DI, IOC</i></h1>
+                <h1><i class="fa-solid fa-plug"></i> DIP, DI, IoC</h1>
                 <p>Bertil Chapuis</p>
             </section>
             <section data-markdown>
@@ -221,7 +221,7 @@
                 
                 <section data-markdown style="font-size: 0.65em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        <img src="/images/loose-dependency.png" alt="Strong dependency" style="width: 100%;">
+                        <img src="/images/loose-dependency.png" alt="Loose dependency" style="width: 100%;">
                     </textarea>
                 </section>
 
@@ -231,8 +231,8 @@
 
                         Try to identify how the DIP approach is applied by the `java.sql` package (JDBC).
 
-                        Identify the main abstraction, the high-level modules (i.e, abstractions) and the low-level 
-                        modules (i.e, implementations).
+                        Identify the main abstraction, the high-level modules (i.e., the modules that use the abstraction) and the low-level
+                        modules (i.e., the implementations).
                         A Quarkus project with a database can be used as an example.
  
                     </textarea>
@@ -388,7 +388,7 @@
                         2. Creates instances of dependencies
                         3. Injects them into the client (typically using reflection)
 
-                        This is called **interface injection** because the annotation acts as an interface to communicate with the framework.
+                        This is called **annotation-based (field) injection**: the framework scans for the annotation and injects the dependency via reflection.
 
                     </textarea>
                 </section>

@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <title>Presentation</title>
+    <title>Presentation, Serialization and Communication</title>
 
     <link rel="stylesheet" href="/node_modules/reveal.js/dist/reveal.css" crossorigin="anonymous">
     <link rel="stylesheet" href="/node_modules/reveal.js/dist/theme/white.css" crossorigin="anonymous" id="theme">
@@ -277,12 +277,11 @@
                         RMI (Remote Method Invocation) was a Java API that performs remote communication between Java objects using serialization.
 
                         RMI allowed Java objects to communicate over the network, but it had limitations:
-                        - Java-to-Java communication only
+                        - Java-to-Java communication only (no support for other languages or platforms)
                         - Java serialization only
-                        - No support for other languages or platforms
                         - No support for other data formats
 
-                        It has been **deprecated** in favor of more modern technologies.
+                        It is considered **legacy** and has been superseded by more modern technologies.
 
                     </textarea>
                 </section>
@@ -359,7 +358,7 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-code"></i> JAXB and JAX-RS
 
-                        JAXB (Java Architecture for XML Binding) is often used in combination with JAX-RS (Java API for RESTful Web Services) to serialize and deserialize Java objects to and from XML.
+                        Jakarta XML Binding (JAXB) is often used in combination with Jakarta RESTful Web Services (JAX-RS) to serialize and deserialize Java objects to and from XML.
 
                         ```java
                         @Path("/persons")
@@ -382,8 +381,8 @@
                         ## <i class="fa-solid fa-code"></i> Limitations of XML
 
                         - Very verbose and inefficient
-                        - No support for binary data
-                        - Rather difficult to stream
+                        - Inefficient for binary data (requires base64 encoding)
+                        - Rather costly to parse due to its verbosity
                         - Rather difficult to optimize for performance
                         - Difficult to deal with outside of the Java ecosystem
 
@@ -414,7 +413,7 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-file"></i> JSON and JAX-RS
 
-                        JSON is often used in combination with JAX-RS (Java API for RESTful Web Services) to serialize and deserialize Java objects to and from JSON.
+                        JSON is often used in combination with Jakarta RESTful Web Services (JAX-RS) to serialize and deserialize Java objects to and from JSON.
 
                         ```java
                         @Path("/persons")
@@ -438,7 +437,7 @@
                         - No support for binary data
                         - Rather difficult to stream
                         - Rather difficult to optimize for performance
-                        - No support for type and schema information
+                        - Limited type system; schema validation (JSON Schema) is optional and not widely enforced
 
                     </textarea>
                 </section>

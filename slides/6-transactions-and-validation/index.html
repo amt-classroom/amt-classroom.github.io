@@ -36,6 +36,7 @@
                 <textarea data-template>
                     ## <i class="fas fa-tasks"></i> Overview of Today's Class
                     - Transaction
+                    - Distributed transactions
                     - Validation
 
                 </textarea>
@@ -155,7 +156,7 @@
                         - **Repeatable read:** A transaction can only read data that has been committed and will see a consistent snapshot of the data for the duration of the transaction.
                         - **Read committed:** A transaction can only read data that has been committed by other transactions.
                         - **Read uncommitted:** A transaction may read data that is still uncommitted by other transactions.
-                        - **None:** Isolation is not specified.
+                        - **None:** transactions are not supported.
 
                         Notes:
                         Other isolation levels are possible, but they are not defined in the JDBC API.
@@ -266,31 +267,31 @@
                             </tr>
                             <tr>
                                 <th>Read uncommitted</th>
-                                <td><i class="fa-solid fa-check"></td>
-                                <td><i class="fa-solid fa-check"></td>
-                                <td><i class="fa-solid fa-check"></td>
-                                <td><i class="fa-solid fa-check"></td>
+                                <td><i class="fa-solid fa-check"></i></td>
+                                <td><i class="fa-solid fa-check"></i></td>
+                                <td><i class="fa-solid fa-check"></i></td>
+                                <td><i class="fa-solid fa-check"></i></td>
                             </tr>
                             <tr>
                                 <th>Read committed</th>
                                 <td><i class="fa-solid fa-xmark"></i></td>
-                                <td><i class="fa-solid fa-check"></td>
-                                <td><i class="fa-solid fa-check"></td>
-                                <td><i class="fa-solid fa-check"></td>
+                                <td><i class="fa-solid fa-check"></i></td>
+                                <td><i class="fa-solid fa-check"></i></td>
+                                <td><i class="fa-solid fa-check"></i></td>
                             </tr>
                             <tr>
                                 <th>Repeatable read</th>
                                 <td><i class="fa-solid fa-xmark"></i></td>
                                 <td><i class="fa-solid fa-xmark"></i></td>
-                                <td><i class="fa-solid fa-xmark"></td>
-                                <td><i class="fa-solid fa-check"></td>
+                                <td><i class="fa-solid fa-check"></i></td>
+                                <td><i class="fa-solid fa-check"></i></td>
                             </tr>
                             <tr>
                                 <th>Serializable</th>
                                 <td><i class="fa-solid fa-xmark"></i></td>
                                 <td><i class="fa-solid fa-xmark"></i></td>
                                 <td><i class="fa-solid fa-xmark"></i></td>
-                                <td><i class="fa-solid fa-xmark"></td>
+                                <td><i class="fa-solid fa-xmark"></i></td>
                             </tr>
                         </table>
 
@@ -310,7 +311,7 @@
 
                         Why is this important?
                         - Recall that a transaction is active from the time it is started until it is committed or rolled back.
-                        - Other transactions cannot access the data that is modified by an active transaction.
+                        - Long transactions can hold locks that block other writers and force the database to retain old row versions.
                         - If a transaction is active for too long, it can cause other transactions to wait unnecessarily.
                         
                     </textarea>
@@ -361,8 +362,6 @@
 
                         The two-phase commit protocol is used to ensure that all participants in a distributed transaction commit or roll back the transaction.
 
-                        In general, this protocol, or a variant of it, is used to ensure that all participants in a distributed transaction commit or roll back the transaction.
-                        
                     </textarea>
                 </section>
 
@@ -399,7 +398,7 @@
                         }
                         ```
 
-                        In this code snippet, the Java Transactions is used to manage distributed transactions in Java applications.
+                        In this code snippet, Jakarta Transactions is used to manage distributed transactions in Java applications.
 
                         Notes:
 
@@ -428,7 +427,7 @@
                 </section>
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
-                        # <i class="fa-solid fa-diagram-project"></i> Validation
+                        ## <i class="fa-solid fa-diagram-project"></i> Validation
 
                         Validation is the process of checking whether a given input is valid.
 
@@ -453,7 +452,7 @@
                             public String lastName;
                         
                             @Min(value = 1900, message = "Year of birth must be greater than 1900")
-                            @Max(value = 2021, message = "Year of birth must be less than 2021")
+                            @Max(value = 2026, message = "Year of birth must be less than 2026")
                             public int yearOfBirth;
                         
                             @NotBlank(message = "Email cannot be blank")
@@ -502,7 +501,7 @@
 
                         Notes:
 
-                        Adding the `@Valid` annotation to a method parameter triggers automatic validation of that parameter only the enclosing method is invoked by a framework that supports validation.
+                        Adding the `@Valid` annotation to a method parameter triggers automatic validation of that parameter only when the enclosing method is invoked by a framework that supports validation.
 
                     </textarea>
                 </section>

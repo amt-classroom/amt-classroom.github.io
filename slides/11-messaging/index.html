@@ -93,7 +93,6 @@
                         - JMS 1.0 in 1998
                         - JMS 1.1 in 2002
                         - JMS 2.0 in 2013
-                        - JMS 2.1 in 2017
                         - JMS 3.0 in 2020
                         - JMS 3.1 in 2022
 
@@ -197,18 +196,18 @@
 
 
                         ```java
-                        var context = connectionFactory.createContext()) {
+                        try (var context = connectionFactory.createContext()) {
+                            // Create the queue and the producer
+                            var queue = context.createQueue("queue");
+                            var producer = context.createProducer();
 
-                        // Create the queue and the producer
-                        var queue = context.createQueue("queue");
-                        var producer = context.createProducer();
-            
-                        // Create the message
-                        var message = context.createTextMessage();
-                        message.setText(text);
-            
-                        // Send the message
-                        producer.send(queue, message);
+                            // Create the message
+                            var message = context.createTextMessage();
+                            message.setText(text);
+
+                            // Send the message
+                            producer.send(queue, message);
+                        }
                         ```
                     </textarea>
                 </section>
@@ -266,18 +265,18 @@
                         Create a context from the connection factory, then create a topic, producer, and message. Send the message to the topic.
 
                         ```java
-                        var context = connectionFactory.createContext()) {
+                        try (var context = connectionFactory.createContext()) {
+                            // Create the topic and the producer
+                            var topic = context.createTopic("topic");
+                            var producer = context.createProducer();
 
-                        // Create the topic and the producer
-                        var topic = context.createTopic("topic");
-                        var producer = context.createProducer();
-            
-                        // Create the message
-                        var message = context.createTextMessage();
-                        message.setText(text);
-            
-                        // Send the message
-                        producer.send(topic, message);
+                            // Create the message
+                            var message = context.createTextMessage();
+                            message.setText(text);
+
+                            // Send the message
+                            producer.send(topic, message);
+                        }
                         ```
 
                     </textarea>
@@ -315,12 +314,13 @@
                         Durable subscriptions solve this problem.
                         A durable subscription survives consumer disconnection.
 
-                        To create a durable subscription, provide a client ID and subscription name.
+                        To create a durable subscription, set a client ID on the context and name the subscription on the consumer.
 
                         ```java
                         var context = connectionFactory.createContext();
+                        context.setClientID("clientID");
                         var topic = context.createTopic("topic");
-                        var consumer = context.createDurableConsumer(topic, "subscription", "clientID");
+                        var consumer = context.createDurableConsumer(topic, "subscription");
                         ```
 
                         Notes:
@@ -487,7 +487,7 @@
 
                         ```java
                         // Create a JMS context
-                        var context = connectionFactory.createContext(Session.CLIENT_ACKNOWLEDGE);
+                        var context = connectionFactory.createContext(JMSContext.CLIENT_ACKNOWLEDGE);
                         var queue = context.createQueue("queue");
                         var consumer = context.createConsumer(queue);
 
@@ -495,11 +495,11 @@
                         consumer.setMessageListener(message -> {
                             try {
                                 // Process the message
-                            } catch (Exception e) {
-                                // Handle the error
-                            } finally {
+
                                 // Acknowledge the message
                                 message.acknowledge();
+                            } catch (Exception e) {
+                                // Handle the error
                             }
                         });
                         ```
@@ -516,7 +516,7 @@
 
                         ```java
                         // Create a JMS context with transacted session
-                        var context = connectionFactory.createContext(Session.SESSION_TRANSACTED);
+                        var context = connectionFactory.createContext(JMSContext.SESSION_TRANSACTED);
                         var queue = context.createQueue("queue");
                         var producer = context.createProducer();
                         var consumer = context.createConsumer(queue);

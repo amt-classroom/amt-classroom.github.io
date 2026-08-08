@@ -178,7 +178,7 @@
 
                         **Schema generation abstracts database design, but it's a leaky abstraction** - it works for simple cases but requires understanding the underlying database for production use.
 
-                        Hibernate exposes the following mode for generating the database schema.
+                        Hibernate exposes the following modes for generating the database schema.
 
                         |  mode | purpose | reproducible with data retained |
                         |--------|------|------------------------------|
@@ -192,7 +192,7 @@
 
                         Notes:
 
-                        The [Hibernate User Guide](https://docs.jboss.org/hibernate/orm/6.3/userguide/html_single/Hibernate_User_Guide.html#best-practices) discourage using `update` in production proving the limits of this abstraction.
+                        The [Hibernate User Guide](https://docs.jboss.org/hibernate/orm/6.3/userguide/html_single/Hibernate_User_Guide.html#best-practices) discourages using `update` in production proving the limits of this abstraction.
 
                         The [Hibernate User Guide](https://docs.jboss.org/hibernate/orm/6.3/userguide/html_single/Hibernate_User_Guide.html#schema-generation) documentation also states that while automatic schema generation is very useful for testing and prototyping, in a production environment, it’s much more flexible to manage the schema using incremental migration scripts, as these provide safety, auditability, and control over changes.
                         
@@ -260,7 +260,7 @@
 
                         The abstraction omits important details leading to an incorrect usage of the database:
                         * The associative table is unexpected for a one-to-many relation and likely to lead to performance issues.
-                        * The naming of foreign key constraints are technical and debatable.
+                        * The naming of foreign key constraints is technical and debatable.
 
                         The solution is to use [more annotations and code](https://vladmihalcea.com/the-best-way-to-map-a-onetomany-association-with-jpa-and-hibernate/) to obtain a saner database schema; however, requiring additional annotations and code to correct the schema exposes underlying database details, reducing the effectiveness of the abstraction.
                     </textarea>
@@ -270,7 +270,7 @@
                         ## <i class="fa-solid fa-file-code"></i> Greenfield Utopia: Evolution, forcing destiny
                         * Forcing the abstraction of a database as much as possible by using schema generation to drive the development of migrations.
                         * Java classes remain the source of truth and a back and forth is done using schema generation to find the correct annotations and code to produce a manageable schema.
-                        * In worse cases the migrations becomes a bundle of generated, semi-generated and manually authored migrations.
+                        * In the worst cases the migrations become a bundle of generated, semi-generated and manually authored migrations.
                         <img src="/images/7-abstraction-jooq/schema-utopia-evolution.png" alt="Layered architecture" style="width: 60%; margin-left: 0; margin-top: 20px"/>
                     </textarea>
                 </section>
@@ -337,10 +337,10 @@
                         * lifetime of the application (i.e.  a few months, several years)
                         * existing and predominant skills of the contributors
                         * domain complexity
-                        * abstraction relevance in meetings the expressed needs
+                        * abstraction relevance in meeting the expressed needs
 
 
-                        When depending on a abstraction that generates code or schemas becomes crucial:
+                        When depending on an abstraction that generates code or schemas becomes crucial:
                         * place them under control
                         * track the changes
                         * learn and understand what and how it abstracts
@@ -500,7 +500,7 @@
                         - Oracle: **PL/SQL** (original)
 
                         **PL/pgSQL migration example:**
-                        ```pl/pgsql
+                        ```sql
                         CREATE OR REPLACE FUNCTION migrate_employees(min_salary INT)
                         RETURNS VOID AS $$
                         DECLARE
@@ -588,7 +588,7 @@
                         Building Evolutionary Architectures, 2017, Neal Ford, Rebecca Parsons, Patrick Kua
 
                         Notes:
-                        This pattern is not limited to database refactoring and can be applied in [others contexts](https://martinfowler.com/bliki/ParallelChange.html).
+                        This pattern is not limited to database refactoring and can be applied in [other contexts](https://martinfowler.com/bliki/ParallelChange.html).
                         
                     </textarea>
                 </section>

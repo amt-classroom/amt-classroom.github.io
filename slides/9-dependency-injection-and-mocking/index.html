@@ -54,7 +54,7 @@
                         
                         Recall that Dependency Injection (DI) and Inversion of Control (IoC) are closely related concepts that promote modularity and testability.
 
-                        **Jakarta Context and Dependency Injection** is a specification for DI and IoC in Jakarta EE applications.
+                        **Jakarta Contexts and Dependency Injection** is a specification for DI and IoC in Jakarta EE applications.
 
                         Runtimes that implement this specification manage the creation and injection of dependencies and their **lifecycle**.
 
@@ -84,7 +84,7 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-diagram-project"></i> Core concepts of Jakarta CDI
 
-                        Last week, we examined a toy runtime supporting the @Inject annotation.
+                        Previously, we saw how frameworks implement support for the @Inject annotation.
 
                         Jakarta CDI is a more complex specification that introduces the following concepts:
                         - Beans
@@ -175,7 +175,7 @@
                         Managed instances are usually created **lazily** (i.e., when they are first injected) and destroyed when the scope ends.
                         In general, managed instances are exposed as **proxies** (i.e., the runtime injects a proxy instead of the actual instance).
 
-                        - `@Singleton`: similar to `@ApplicationScoped`, but the instance is created **eagerly** (i.e., when the application starts) and is not exposed as a proxy.
+                        - `@Singleton`: similar to `@ApplicationScoped`, but the instance is **not exposed as a proxy**; it is created lazily, like other beans.
 
                     </textarea>
                 </section>
@@ -211,14 +211,14 @@
                         | `@SessionScoped` | One per HTTP session | Yes | User preferences, shopping cart |
                         | `@RequestScoped` | One per HTTP request | Yes | Request-specific data, transactions |
                         | `@Dependent` | One per injection point | No | Stateless helpers, default scope |
-                        | `@Singleton` | One per app (eager) | No | App-wide state, no proxy overhead |
+                        | `@Singleton` | One per app | No | App-wide state, no proxy overhead |
 
                         **Decision guide:**
                         - Need shared state across requests? → `@ApplicationScoped`
                         - User-specific data? → `@SessionScoped`
                         - Request-specific isolation? → `@RequestScoped`
                         - No shared state needed? → `@Dependent`
-                        - Need eager initialization or direct reference? → `@Singleton`
+                        - Need a direct reference without proxy overhead? → `@Singleton`
 
                     </textarea>
                 </section>
@@ -426,6 +426,7 @@
 
                         @Interceptor
                         @Logged
+                        @Priority(Interceptor.Priority.APPLICATION)
                         public class LoggedInterceptor {
                             @AroundInvoke
                             public Object log(InvocationContext context) throws Exception {
@@ -474,6 +475,7 @@
 
                         ```java
                         @Decorator
+                        @Priority(1)
                         public class HelloDecorator implements HelloService {
                             @Inject
                             @Delegate
@@ -565,7 +567,7 @@
                             public void placeOrder(Order order) {
                                 // Fire asynchronously - returns immediately
                                 orderEvent.fireAsync(new OrderPlaced(order))
-                                    .thenAccept(event -> log.info("Order processed"));
+                                    .thenAccept(event -> System.out.println("Order processed"));
                             }
                         }
 
@@ -578,12 +580,16 @@
                         }
                         ```
 
-                        **Event qualifiers** allow selective observation:
+                        **Event qualifiers** allow observers to receive only events fired with a matching qualifier:
 
                         ```java
-                        @Inject @Priority(HIGH) Event&lt;Alert&gt; highPriorityAlert;
+                        @Qualifier @Retention(RetentionPolicy.RUNTIME)
+                        @Target({ElementType.FIELD, ElementType.PARAMETER})
+                        public @interface Urgent {}
 
-                        public void onHighAlert(@Observes @Priority(HIGH) Alert alert) { ... }
+                        @Inject @Urgent Event&lt;Alert&gt; urgentAlert;  // urgentAlert.fire(alert);
+
+                        public void onUrgentAlert(@Observes @Urgent Alert alert) { ... }
                         ```
 
                     </textarea>
