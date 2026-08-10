@@ -104,6 +104,8 @@
                     <textarea data-template>
                         ## <i class="fa-solid fa-syringe"></i> Injection with @Inject
 
+                        *Recall from the previous lecture: constructor injection is preferred; framework-based injection relies on the IoC container.*
+
                         The `@Inject` annotation marks where dependencies should be injected. Three approaches exist:
 
                         ```java
@@ -131,8 +133,6 @@
                             }
                         }
                         ```
-
-                        Constructor injection is preferred for required dependencies as it makes them immutable and testable.
 
                     </textarea>
                 </section>
@@ -226,6 +226,8 @@
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-industry"></i> Producers and Qualifiers
+
+                        *Qualifiers (`@Named` and custom qualifier annotations) were introduced in the previous lecture — here we combine them with producers.*
 
                         The `@Produces` annotation can be used to define a **producer**.
                         - It can be used on a method or a field.

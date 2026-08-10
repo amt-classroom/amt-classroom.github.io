@@ -96,6 +96,28 @@
                 <section>
                     <img src="/images/mapper.png" style="width: 50%;" alt="Mapper">
                 </section>
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-paint-roller"></i> DTO and Mapper in practice
+
+                        ```java
+                        public record PersonDto(String firstName, String lastName) {}
+
+                        public class PersonMapper {
+                            public static PersonDto toDto(Person person) {
+                                return new PersonDto(person.getFirstName(), person.getLastName());
+                            }
+                        }
+                        ```
+
+                        - A hand-written mapper is often enough; reach for MapStruct or ModelMapper only when mappings multiply
+
+                        Notes:
+                        Records are a good fit for DTOs: they are immutable and have value semantics.
+                        The mapper isolates the API contract from entity refactorings.
+
+                    </textarea>
+                </section>
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-hand-paper"></i> Using Entities as DTOs
@@ -122,6 +144,45 @@
                     </textarea>
                 </section>
 
+                <section data-markdown style="font-size: 0.55em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-paint-roller"></i> A JAX-RS resource
+
+                        ```java
+                        @Path("/persons")
+                        public class PersonResource {
+
+                            @Inject PersonService personService;
+
+                            @GET
+                            @Produces(MediaType.APPLICATION_JSON)
+                            public List<PersonDto> list() {
+                                return personService.list().stream().map(PersonMapper::toDto).toList();
+                            }
+
+                            @POST
+                            @Consumes(MediaType.APPLICATION_JSON)
+                            public Response create(@Valid PersonDto dto) {
+                                var person = personService.create(dto);
+                                return Response.status(Response.Status.CREATED)
+                                               .entity(PersonMapper.toDto(person))
+                                               .build();
+                            }
+                        }
+                        ```
+
+                        - `@Path`, `@GET`, and `@POST` map HTTP requests to methods
+                        - `@Produces` and `@Consumes` drive content negotiation
+                        - Return a `Response` when you need to control the status code (201 Created here)
+                        - `@Valid` triggers bean validation at the boundary (recall the Validation lecture)
+
+                        Notes:
+                        A 404 can be returned by throwing a `NotFoundException`.
+                        In Quarkus, this runs on the quarkus-rest extension.
+
+                    </textarea>
+                </section>
+
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
                         ## <i class="fa-solid fa-paint-roller"></i> Testing the Presentation Layer
@@ -133,6 +194,33 @@
                         [REST-assured](https://rest-assured.io/) is a library that can be used to test REST APIs. Use such tools extensively to test your presentation layer.
 
                         Notes:
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-paint-roller"></i> Testing with REST Assured
+
+                        ```java
+                        @QuarkusTest
+                        class PersonResourceTest {
+
+                            @Test
+                            void listReturnsPersons() {
+                                given()
+                                  .when().get("/persons")
+                                  .then()
+                                     .statusCode(200)
+                                     .body("size()", greaterThan(0));
+                            }
+                        }
+                        ```
+
+                        - REST Assured tests the full HTTP path (routing, serialization, status codes) against the running application
+
+                        Notes:
+                        These are the top-of-pyramid tests from the testing pyramid: keep few of them and put the bulk of assertions in service-level tests.
 
                     </textarea>
                 </section>
@@ -267,6 +355,29 @@
                             }
                         }
                         ```
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.6em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-file-export"></i> Serialization is a security liability
+
+                        - Deserializing **untrusted** data can lead to remote code execution: crafted byte streams can chain existing classes ("gadget chains") during deserialization
+                        - Never deserialize data from untrusted sources; prefer JSON or other data-only formats at trust boundaries
+                        - If you must: use an `ObjectInputFilter` (JEP 290/415) to allowlist classes
+
+                        ```java
+                        var filter = ObjectInputFilter.Config
+                            .createFilter("ch.heigvd.amt.*;java.base/*;!*");
+                        ois.setObjectInputFilter(filter);
+                        ```
+
+                        Notes:
+                        The 2015 Apache Commons Collections gadget-chain disclosures made this a mainstream attack class.
+                        Java serialization remains in the JDK, but its architects have called it a mistake ("the horrible mistake of 1997", Mark Reinhold).
+                        Modern frameworks default to JSON partly for this reason.
+                        This also applies to JMS ObjectMessage (seen in the Messaging lecture).
+
                     </textarea>
                 </section>
 

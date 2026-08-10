@@ -247,6 +247,28 @@
                     </textarea>
                 </section>
 
+                <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
+                        ## <i class="fa-solid fa-diagram-project"></i> Phantom read
+
+                        | Time | Transaction A | Transaction B |
+                        |------|---------------|---------------|
+                        | t1 | `SELECT COUNT(*) FROM orders WHERE amount > 100` → 2 | |
+                        | t2 | | `INSERT INTO orders (amount) VALUES (150)` |
+                        | t3 | | `COMMIT` |
+                        | t4 | `SELECT COUNT(*) FROM orders WHERE amount > 100` → **3** | |
+
+                        The second query sees a "phantom" row that did not exist the first time: repeatable read protects the rows already read, but not rows that newly match the predicate.
+
+                        Notes:
+
+                        Contrast this with a non-repeatable read: in a non-repeatable read, an existing row that was already read changes between two reads; in a phantom read, the rows already read are unchanged, but a new row appears (or disappears) in the set matching the predicate.
+
+                        Under the ANSI model, only the Serializable isolation level prevents phantom reads. In practice, real databases differ: for example, PostgreSQL's Repeatable Read prevents phantoms because it is snapshot-based. This echoes the note on the isolation levels and violations slide: the matrix is only a general guideline.
+
+                    </textarea>
+                </section>
+
 
                 <section data-markdown style="font-size: 0.75em;" data-separator-notes="^Notes:">
                     <textarea data-template>
@@ -361,6 +383,13 @@
                         ## <i class="fa-solid fa-diagram-project"></i> Two-phase commit protocol
 
                         The two-phase commit protocol is used to ensure that all participants in a distributed transaction commit or roll back the transaction.
+
+                        - **Phase 1 — Prepare**: the coordinator asks every participant to prepare; each participant writes its changes durably and votes *yes* (ready to commit) or *no*.
+                        - **Phase 2 — Commit or abort**: if **all** participants voted yes, the coordinator tells everyone to commit; if **any** voted no (or failed to answer), it tells everyone to roll back.
+
+                        Notes:
+
+                        The protocol is blocking: if the coordinator crashes after the prepare phase, the participants must hold their locks until it recovers, which is why the coordinator's decision must be persisted. This is also why two-phase commit is avoided at large scale in favor of patterns such as sagas or the transactional outbox.
 
                     </textarea>
                 </section>

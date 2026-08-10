@@ -625,6 +625,45 @@
 
                 <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
                     <textarea data-template>
+                        ## <i class="fas fa-database"></i> The N+1 query problem
+
+                        With lazy loading (the default for collections), iterating over entities and touching their collections triggers **one query per entity**.
+
+                        ```java
+                        List<Person> persons = em
+                            .createQuery("SELECT p FROM persons p", Person.class)
+                            .getResultList();                          // 1 query
+
+                        for (Person person : persons) {
+                            System.out.println(person.getOrders().size()); // +1 query per person
+                        }
+                        ```
+
+                        ```sql
+                        select id, first_name, last_name from persons
+                        select id, ... from orders where person_id = ?
+                        select id, ... from orders where person_id = ?
+                        -- repeated N times
+                        ```
+
+                        Remedies:
+                        - Use `JOIN FETCH` in JPQL to load the collection in the same query.
+                        - Use entity graphs to control fetching at runtime (see next slides).
+                        - Use batch fetching to load collections in groups.
+
+                        Notes:
+
+                        The N+1 problem is easy to miss in development: with a handful of rows, the extra queries are invisible. It shows up in production, where N is large and each query adds latency.
+
+                        Enabling SQL logging (as shown earlier in this deck) is the way to detect it: the repeated queries become obvious in the log.
+
+                        Eager loading is **not** the fix — it trades N+1 for over-fetching. Instead, use `JOIN FETCH` or an entity graph to fetch exactly what the use case needs.
+
+                    </textarea>
+                </section>
+
+                <section data-markdown style="font-size: 0.8em;" data-separator-notes="^Notes:">
+                    <textarea data-template>
                         ## <i class="fas fa-database"></i> Eager Loading
 
                         Eager loading fetches related entities immediately, instead of on-demand (lazy loading).
